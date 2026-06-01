@@ -7,6 +7,10 @@ import { Toaster } from "react-hot-toast";
 import Register from "./pages/Register";
 import RegisterCompany from "./pages/RegisterCompany";
 import Login from "./pages/Login";
+import AssessmentList from "./pages/dev/AssessmentList";
+import AssessmentDetail from "./pages/dev/AssessmentDetail";
+import DevRoute from "./components/dev/DevRoute";
+import DevLayout from "./components/dev/DevLayout";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +26,18 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/dev",
+    element: (
+      <DevRoute>
+        <DevLayout />
+      </DevRoute>
+    ),
+    children: [
+      { path: "assessments", element: <AssessmentList /> },
+      { path: "assessments/:id", element: <AssessmentDetail /> },
+    ],
   },
 ]);
 
