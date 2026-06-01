@@ -58,7 +58,7 @@ function Login() {
 
             <div style={fadeUp(200)} className="row-between">
               <span />
-              <Link to="/reset-password" className="link" style={{ fontSize: 13 }}>
+              <Link to="/forgot-password" className="link" style={{ fontSize: 13 }}>
                 Forgot password?
               </Link>
             </div>
