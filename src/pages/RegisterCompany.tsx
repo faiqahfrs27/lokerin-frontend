@@ -1,12 +1,12 @@
 import { ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import AppMockup from "../components/register/AppMockup";
-import ThemeToggle from "../components/register/ThemeToggle";
 import FormField from "../components/register/FormField";
 import OrangeButton from "../components/register/OrangeButton";
 import PasswordStrength from "../components/register/PasswordStrength";
 import RegisterLogo from "../components/register/RegisterLogo";
 import TermsCheckbox from "../components/register/TermsCheckbox";
+import ThemeToggle from "../components/register/ThemeToggle";
 import { useRegisterCompany } from "../hooks/useRegisterCompany";
 import { fadeUp } from "../utils/AnimationStyle";
 
@@ -33,7 +33,11 @@ function RegisterCompany() {
         </header>
 
         <div className="auth-body">
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="auth-form">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="auth-form"
+          >
             <div style={fadeUp(0)} className="auth-head">
               <h1 className="t-h2 auth-h">Create your account</h1>
               <p className="auth-sub">Post jobs and find the best talent.</p>
@@ -44,7 +48,7 @@ function RegisterCompany() {
               <button
                 type="button"
                 className="role-tab"
-                onClick={() => navigate("/auth/register")}
+                onClick={() => navigate("/register")}
               >
                 Job seeker
               </button>
@@ -127,12 +131,20 @@ function RegisterCompany() {
 
             <TermsCheckbox
               checked={agreeToTerms}
-              onChange={() => setValue("agreeToTerms", !agreeToTerms, { shouldValidate: true })}
+              onChange={() =>
+                setValue("agreeToTerms", !agreeToTerms, {
+                  shouldValidate: true,
+                })
+              }
               error={errors.agreeToTerms}
             />
 
             <div style={fadeUp(450)}>
-              <OrangeButton type="submit" loading={isPending} disabled={isPending}>
+              <OrangeButton
+                type="submit"
+                loading={isPending}
+                disabled={isPending}
+              >
                 <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   Create account <ArrowRight size={14} strokeWidth={2} />
                 </span>
@@ -141,7 +153,9 @@ function RegisterCompany() {
 
             <p style={fadeUp(500)} className="auth-foot">
               Already have an account?{" "}
-              <Link to="/login" className="link strong">Sign in</Link>
+              <Link to="/login" className="link strong">
+                Sign in
+              </Link>
             </p>
           </form>
         </div>
@@ -162,14 +176,25 @@ function RegisterCompany() {
           <div className="t-avatar">RA</div>
           <div>
             <div className="t-stars">
-              {[1,2,3,4,5].map((i) => (
-                <svg key={i} width="13" height="13" viewBox="0 0 24 24" fill="#F97316">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <svg
+                  key={i}
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="#F97316"
+                >
                   <polygon points="12 2 15 9 22 9 17 14 19 22 12 17 5 22 7 14 2 9 9 9 12 2" />
                 </svg>
               ))}
             </div>
-            <p className="t-quote">"Dapet kerjaan di Tokopedia lewat Lokerin, 11 hari dari apply ke offer. Tanpa drama."</p>
-            <div className="t-attrib">Rina A. · Product Designer · hired May 2025</div>
+            <p className="t-quote">
+              "Dapet kerjaan di Tokopedia lewat Lokerin, 11 hari dari apply ke
+              offer. Tanpa drama."
+            </p>
+            <div className="t-attrib">
+              Rina A. · Product Designer · hired May 2025
+            </div>
           </div>
         </div>
       </div>

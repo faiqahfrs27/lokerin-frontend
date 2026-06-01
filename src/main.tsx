@@ -11,6 +11,7 @@ import AssessmentList from "./pages/dev/AssessmentList";
 import AssessmentDetail from "./pages/dev/AssessmentDetail";
 import DevRoute from "./components/dev/DevRoute";
 import DevLayout from "./components/dev/DevLayout";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,9 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+  { path: "/forgot-password", 
+    element: <ForgotPassword /> 
+  },
   {
     path: "/dev",
     element: (
@@ -39,6 +43,7 @@ const router = createBrowserRouter([
       { path: "assessments/:id", element: <AssessmentDetail /> },
     ],
   },
+  
 ]);
 
 createRoot(document.getElementById("root")!).render(
