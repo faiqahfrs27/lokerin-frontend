@@ -28,13 +28,13 @@ function AssessmentDetail() {
   const deleteMutation = useDeleteQuestion(id ?? "");
   const publishMutation = usePublishAssessment(id ?? "");
 
-  if (isLoading) return <div className="dev-state">Memuat detail...</div>;
+  if (isLoading) return <div className="dev-state">Loading detail...</div>;
   if (isError)
     return (
-      <div className="dev-state">Gagal memuat: {(error as Error).message}</div>
+      <div className="dev-state">Failed to load: {(error as Error).message}</div>
     );
   if (!assessment)
-    return <div className="dev-state">Assessment tidak ditemukan</div>;
+    return <div className="dev-state">Assessment not found</div>;
 
   const q = assessment.questions.length;
   const isReady = q === REQUIRED;
@@ -42,7 +42,7 @@ function AssessmentDetail() {
   return (
     <div className="dev-page">
       <Link to="/dev/assessments" className="detail-back">
-        ← Kembali ke daftar
+        ← Back to list
       </Link>
 
       <DetailHeader
@@ -55,10 +55,10 @@ function AssessmentDetail() {
       <ProgressCard questions={q} isReady={isReady} />
 
       <div className="questions-head">
-        <h2>Soal-soal</h2>
+        <h2>Questions</h2>
         {!assessment.isPublished && (
           <button className="dev-btn-primary" onClick={() => setAddOpen(true)}>
-            <Plus size={16} strokeWidth={2.5} /> Tambah soal
+            <Plus size={16} strokeWidth={2.5} /> Add question
           </button>
         )}
       </div>
@@ -91,9 +91,9 @@ function DetailHeader({ assessment, isReady, onPublish, publishLoading }: any) {
         kicker={assessment.skillCategory}
         title={assessment.title}
         stats={[
-          assessment.isPublished ? "Sudah terbit" : "Draft",
-          `Lulus ≥${assessment.passingScore}`,
-          `Durasi ${assessment.durationMin}m`,
+          assessment.isPublished ? "Published" : "Draft",
+          `Pass ≥${assessment.passingScore}`,
+          `Duration ${assessment.durationMin}m`,
         ]}
       />
       {!assessment.isPublished && (
@@ -104,10 +104,10 @@ function DetailHeader({ assessment, isReady, onPublish, publishLoading }: any) {
           title={!isReady ? `Butuh ${REQUIRED} soal dulu` : "Terbitkan"}
         >
           {publishLoading ? (
-            "Menerbitkan..."
+            "Publishing..."
           ) : (
             <>
-              <Rocket size={16} strokeWidth={2} /> Terbitkan
+              <Rocket size={16} strokeWidth={2} /> Publish
             </>
           )}{" "}
         </button>
@@ -144,7 +144,7 @@ function ProgressCard({
       </div>
       {!isReady && (
         <p className="progress-card__hint">
-          Butuh {REQUIRED - questions} soal lagi untuk bisa terbit.
+          Need {REQUIRED - questions} more questions to publish.
         </p>
       )}
     </div>
@@ -163,7 +163,7 @@ function QuestionsList({
   if (questions.length === 0) {
     return (
       <div className="questions-empty">
-        Belum ada soal. Tambah yang pertama!
+        No questions yet. Add the first one!
       </div>
     );
   }

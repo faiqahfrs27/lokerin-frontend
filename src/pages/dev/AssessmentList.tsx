@@ -28,11 +28,11 @@ function AssessmentList() {
   return (
     <div className="dev-page">
       <DevHero
-        kicker="Bank soal"
+        kicker=""
         title="Skill assessments"
         stats={[
           `${stats.total} total`,
-          `${stats.published} terbit`,
+          `${stats.published} publish`,
           `${stats.draft} draft`,
         ]}
         action={
@@ -40,7 +40,7 @@ function AssessmentList() {
             className="dev-btn-primary"
             onClick={() => setIsModalOpen(true)}
           >
-            <Plus size={16} strokeWidth={2.5} /> Buat assessment
+            <Plus size={16} strokeWidth={2.5} /> Create assessment
           </button>
         }
       />
@@ -69,7 +69,7 @@ function SearchBar({
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Cari assessment..."
+          placeholder="Search assessment..."
         />
       </div>
     </div>

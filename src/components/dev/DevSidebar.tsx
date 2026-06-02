@@ -5,6 +5,7 @@ import {
   CheckCircle,
   Users,
   Power,
+  X,
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "../../stores/useAuth";
@@ -17,6 +18,11 @@ interface NavItem {
   badge?: string;
 }
 
+interface DevSidebarProps {
+  isMobileOpen: boolean;
+  onClose: () => void;
+}
+
 const NAV_ITEMS: NavItem[] = [
   { to: "/dev/assessments", label: "Skill assessments", icon: FileQuestion },
   { to: "/dev/subscription-plans", label: "Subscription plans", icon: CreditCard, badge: "Soon" },
@@ -24,22 +30,32 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/dev/subscribers", label: "Subscribers", icon: Users, badge: "Soon" },
 ];
 
-function DevSidebar() {
+function DevSidebar({ isMobileOpen, onClose }: DevSidebarProps) {
   return (
-    <aside className="dev-sidebar">
-      <SidebarBrand />
+    <aside className={`dev-sidebar ${isMobileOpen ? "dev-sidebar--open" : ""}`}>
+      <SidebarHeader onClose={onClose} />
       <SidebarNav />
       <SidebarFooter />
     </aside>
   );
 }
 
-function SidebarBrand() {
+function SidebarHeader({ onClose }: { onClose: () => void }) {
   return (
-    <div className="dev-sidebar__brand">
-      <div className="dev-sidebar__brand-mark">L</div>
-      <span className="dev-sidebar__brand-name">lokerin</span>
-      <span className="dev-sidebar__brand-tag">DEV</span>
+    <div className="dev-sidebar__header">
+      <div className="dev-sidebar__brand">
+        <div className="dev-sidebar__brand-mark">L</div>
+        <span className="dev-sidebar__brand-name">lokerin</span>
+        <span className="dev-sidebar__brand-tag">DEV</span>
+      </div>
+      <button
+        className="dev-sidebar__close"
+        onClick={onClose}
+        type="button"
+        aria-label="Tutup menu"
+      >
+        <X size={20} strokeWidth={2} />
+      </button>
     </div>
   );
 }

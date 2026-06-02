@@ -12,18 +12,18 @@ function AssessmentList() {
   const stats = useMemo(() => computeStats(assessments), [assessments]);
   const filtered = useMemo(() => filterBySearch(assessments, search), [assessments, search]);
 
-  if (isLoading) return <div className="dev-state">Memuat assessment...</div>;
-  if (isError) return <div className="dev-state">Gagal memuat: {(error as Error).message}</div>;
+  if (isLoading) return <div className="dev-state">Loading assessments...</div>;
+  if (isError) return <div className="dev-state">Failed to load: {(error as Error).message}</div>;
 
   return (
     <div className="dev-page">
       <DevHero
-        kicker="Bank soal"
+        kicker="Question bank"
         title="Skill assessments"
         stats={[`${stats.total} total`, `${stats.published} terbit`, `${stats.draft} draft`]}
         action={
           <button className="dev-btn-primary" onClick={() => setIsModalOpen(true)}>
-            + Buat assessment
+            + Create assessment
           </button>
         }
       />
@@ -41,7 +41,7 @@ function SearchBar({ value, onChange }: { value: string; onChange: (v: string) =
         <input
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Cari assessment..."
+          placeholder="Search assessments..."
         />
       </div>
     </div>
@@ -50,7 +50,7 @@ function SearchBar({ value, onChange }: { value: string; onChange: (v: string) =
 
 function AssessmentGrid({ items }: { items: import("../../schemas/assessmentSchema").Assessment[] }) {
   if (items.length === 0) {
-    return <div className="dev-state">Belum ada assessment. Buat yang pertama!</div>;
+    return <div className="dev-state">No assessments yet. Create the first one!</div>;
   }
   return (
     <div className="assessment-grid">

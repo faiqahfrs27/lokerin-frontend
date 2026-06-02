@@ -29,12 +29,12 @@ export function useCreateAssessment(onSuccess?: () => void) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["assessments"] });
-      toast.success("Assessment berhasil dibuat 🎉");
+      toast.success("Assessment created successfully 🎉");
       form.reset();
       onSuccess?.();
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error.response?.data.message || "Gagal membuat assessment");
+      toast.error(error.response?.data.message || "Failed to create assessment");
     },
   });
 

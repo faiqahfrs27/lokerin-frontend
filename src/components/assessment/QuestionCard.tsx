@@ -9,7 +9,7 @@ interface QuestionCardProps {
 
 function QuestionCard({ question, index, onEdit, onDelete }: QuestionCardProps) {
   const handleDelete = () => {
-    if (confirm(`Hapus soal #${index + 1}?`)) {
+    if (confirm(`Delete question #${index + 1}?`)) {
       onDelete();
     }
   };
@@ -34,13 +34,13 @@ function QuestionHeader({
 }) {
   return (
     <div className="question-card__head">
-      <span className="question-card__number">Soal #{index + 1}</span>
+      <span className="question-card__number">Question #{index + 1}</span>
       <div className="question-card__actions">
         <button className="question-card__edit" onClick={onEdit} type="button">
           Edit
         </button>
         <button className="question-card__delete" onClick={onDelete} type="button">
-          Hapus
+          Delete
         </button>
       </div>
     </div>
@@ -63,7 +63,7 @@ function QuestionOption({ text, letter, isCorrect }: { text: string; letter: str
     <div className={cls}>
       <span className="question-option__letter">{letter}.</span>
       <span>{text}</span>
-      {isCorrect && <span className="question-option__check">✓ Benar</span>}
+      {isCorrect && <span className="question-option__check">✓ Correct</span>}
     </div>
   );
 }
