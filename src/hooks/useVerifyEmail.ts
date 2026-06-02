@@ -5,7 +5,7 @@ export function useVerifyEmail(token: string) {
   const { isLoading, isSuccess, isError, error, data } = useQuery({
     queryKey: ["verify-email", token],
     queryFn: async () => {
-     const res = await axiosInstance.get(`/api/auth/verify-email?token=${token}`);
+     const res = await axiosInstance.get(`/auth/verify-email?token=${token}`);
       return res.data;
     },
     enabled: !!token,
