@@ -1744,3 +1744,155 @@ textarea.ff-input {
   background: var(--stone-700);
   color: var(--stone-100);
 }
+
+/* ============================================================
+   RESPONSIVE — mobile (≤ 768px)
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* Halaman dev — padding lebih kecil */
+  .dev-page {
+    padding: 24px 16px;
+  }
+
+  .dev-hero {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .dev-hero__title {
+    font-size: 28px;
+  }
+
+  .dev-hero .dev-btn-primary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dev-state {
+    padding: 64px 16px;
+  }
+}
+
+/* ============================================================
+   MOBILE TOPBAR & DRAWER STYLES
+   ============================================================ */
+
+/* Topbar — by default hidden, muncul cuma di mobile */
+.dev-topbar {
+  display: none;
+}
+
+.dev-topbar__menu {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 150ms;
+}
+
+.dev-topbar__menu:hover {
+  background: var(--surface-2);
+}
+
+.dev-topbar__brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  color: var(--fg);
+  letter-spacing: -0.015em;
+}
+
+/* Backdrop (overlay gelap di belakang drawer) */
+.dev-layout__backdrop {
+  display: none;
+}
+
+/* Tombol close di sidebar — by default hidden */
+.dev-sidebar__close {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--stone-400);
+  padding: 6px;
+  border-radius: 6px;
+  transition: all 150ms;
+}
+
+.dev-sidebar__close:hover {
+  background: var(--stone-800);
+  color: white;
+}
+
+/* Sidebar header (brand + close button row) */
+.dev-sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ============================================================
+   RESPONSIVE — sidebar jadi drawer di mobile (≤ 768px)
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* Layout — sidebar di-overlay, main full-width */
+  .dev-layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* Sidebar — fixed di atas, slide dari kiri */
+  .dev-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 250ms ease;
+  }
+
+  .dev-sidebar--open {
+    transform: translateX(0);
+  }
+
+  /* Backdrop muncul pas sidebar open */
+  .dev-layout__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+  }
+
+  /* Close button muncul di mobile */
+  .dev-sidebar__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Topbar muncul di mobile */
+  .dev-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+}

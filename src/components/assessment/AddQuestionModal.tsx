@@ -34,8 +34,8 @@ function AddQuestionModal({ assessmentId, onClose }: AddQuestionModalProps) {
 function ModalHead() {
   return (
     <div className="modal__head">
-      <p className="modal__kicker">Soal baru</p>
-      <h2 className="modal__title">Tambah soal</h2>
+      <p className="modal__kicker">New question</p>
+      <h2 className="modal__title">Add question</h2>
     </div>
   );
 }
@@ -43,8 +43,8 @@ function ModalHead() {
 function QuestionField({ register, error }: { register: any; error?: string }) {
   return (
     <div className="ff">
-      <label className="ff-label">Pertanyaan</label>
-      <textarea {...register("question")} className="ff-input" rows={3} placeholder="Tulis pertanyaan..." />
+      <label className="ff-label">Question</label>
+      <textarea {...register("question")} className="ff-input" rows={3} placeholder="Write the question..." />
       {error && <p className="ff-error">{error}</p>}
     </div>
   );
@@ -53,13 +53,13 @@ function QuestionField({ register, error }: { register: any; error?: string }) {
 function OptionsFieldset({ register, correctIndex, setValue, errors }: any) {
   return (
     <div className="ff">
-      <label className="ff-label">Pilihan jawaban (klik radio untuk pilih jawaban benar)</label>
+      <label className="ff-label">Answer options (click radio to mark correct answer)</label>
       <div className="add-q__options">
         {[0, 1, 2, 3].map((i) => (
           <OptionRow key={i} index={i} register={register} isCorrect={correctIndex === i} setValue={setValue} />
         ))}
       </div>
-      {errors.options && <p className="ff-error">Semua opsi wajib diisi</p>}
+      {errors.options && <p className="ff-error">All options are required</p>}
     </div>
   );
 }
@@ -75,7 +75,7 @@ function OptionRow({ index, register, isCorrect, setValue }: any) {
         className="add-q__radio"
       />
       <span className="add-q__letter">{letter}.</span>
-      <input {...register(`options.${index}`)} className="ff-input" placeholder={`Opsi ${letter}`} />
+      <input {...register(`options.${index}`)} className="ff-input" placeholder={`Option ${letter}`} />
     </div>
   );
 }
@@ -84,10 +84,10 @@ function ModalFoot({ onCancel, isPending }: { onCancel: () => void; isPending: b
   return (
     <div className="modal__foot">
       <button type="button" className="modal__btn-cancel" onClick={onCancel}>
-        Batal
+        Cancel
       </button>
       <button type="submit" className="dev-btn-primary" disabled={isPending}>
-        {isPending ? "Menyimpan..." : "Simpan soal"}
+        {isPending ? "Saving..." : "Save question"}
       </button>
     </div>
   );

@@ -39,12 +39,12 @@ export function useAddQuestion(assessmentId: string, onSuccess?: () => void) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["assessment", assessmentId] });
       queryClient.invalidateQueries({ queryKey: ["assessments"] });
-      toast.success("Soal ditambahkan 🎉");
+      toast.success("Question added 🎉");
       form.reset();
       onSuccess?.();
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error.response?.data.message || "Gagal menambah soal");
+      toast.error(error.response?.data.message || "Failed to add question");
     },
   });
 
@@ -66,10 +66,10 @@ export function useDeleteQuestion(assessmentId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["assessment", assessmentId] });
       queryClient.invalidateQueries({ queryKey: ["assessments"] });
-      toast.success("Soal dihapus");
+      toast.success("Question deleted");
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error.response?.data.message || "Gagal hapus soal");
+      toast.error(error.response?.data.message || "Failed to delete question");
     },
   });
 }
@@ -85,10 +85,10 @@ export function usePublishAssessment(assessmentId: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["assessment", assessmentId] });
       queryClient.invalidateQueries({ queryKey: ["assessments"] });
-      toast.success("Assessment diterbitkan 🚀");
+      toast.success("Assessment published ");
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error.response?.data.message || "Gagal menerbitkan");
+      toast.error(error.response?.data.message || "Failed to publish");
     },
   });
 }
@@ -117,11 +117,11 @@ export function useUpdateQuestion(
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["assessment", assessmentId] });
-      toast.success("Soal diperbarui ✏️");
+      toast.success("Question updated");
       onSuccess?.();
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error.response?.data.message || "Gagal memperbarui soal");
+      toast.error(error.response?.data.message || "Failed to update question");
     },
   });
 

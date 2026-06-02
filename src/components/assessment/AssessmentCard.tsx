@@ -30,7 +30,7 @@ function CardTop({ category, isPublished }: { category: string; isPublished: boo
     <div className="assessment-card__top">
       <span className="assessment-card__category">{category}</span>
       <span className={`assessment-card__status ${statusClass}`}>
-        {isPublished ? "Terbit" : "Draft"}
+        {isPublished ? "Published" : "Draft"}
       </span>
     </div>
   );
@@ -50,7 +50,7 @@ function CardProgress({
     <div>
       <div className={`assessment-card__progress-label ${progressClass}`}>
         <span>Progress</span>
-        <span>{questions}/{REQUIRED} soal</span>
+        <span>{questions}/{REQUIRED} questions</span>
       </div>
       <div className="assessment-card__progress-bar">
         <div style={{ width: `${pct}%`, background: full ? "#059669" : "var(--brand-orange-500)" }} />
@@ -62,8 +62,8 @@ function CardProgress({
 function CardMeta({ passingScore, durationMin }: { passingScore: number; durationMin: number }) {
   return (
     <div className="assessment-card__meta">
-      <span>Lulus <strong>≥{passingScore}</strong></span>
-      <span>Durasi <strong>{durationMin}m</strong></span>
+      <span>Pass <strong>≥{passingScore}</strong></span>
+      <span>Duration <strong>{durationMin}m</strong></span>
     </div>
   );
 }

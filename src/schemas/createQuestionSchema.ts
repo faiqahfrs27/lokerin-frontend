@@ -1,10 +1,10 @@
 import z from "zod";
 
 export const createQuestionSchema = z.object({
-  question: z.string().min(5, "Pertanyaan minimal 5 karakter"),
+  question: z.string().min(5, "Question must be at least 5 characters"),
   options: z
-    .array(z.string().min(1, "Opsi tidak boleh kosong"))
-    .length(4, "Harus tepat 4 opsi"),
+    .array(z.string().min(1, "Option cannot be empty"))
+    .length(4, "Must have exactly 4 options"),
   correctIndex: z.number().min(0).max(3),
 });
 

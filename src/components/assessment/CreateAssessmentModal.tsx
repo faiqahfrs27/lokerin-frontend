@@ -14,17 +14,17 @@ function CreateAssessmentModal({ onClose }: CreateAssessmentModalProps) {
         <ModalHead />
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="modal__body">
-            <Field label="Judul assessment" error={errors.title?.message}>
-              <input {...register("title")} placeholder="mis. JavaScript Fundamental" className="ff-input" />
+            <Field label="Assessment title" error={errors.title?.message}>
+              <input {...register("title")} placeholder="e.g. JavaScript Fundamental" className="ff-input" />
             </Field>
             <Field label="Kategori skill" error={errors.skillCategory?.message}>
-              <input {...register("skillCategory")} placeholder="mis. Frontend" className="ff-input" />
+              <input {...register("skillCategory")} placeholder="e.g. Frontend" className="ff-input" />
             </Field>
             <div className="modal__field-row">
-              <Field label="Nilai lulus" error={errors.passingScore?.message}>
+              <Field label="Passing score" error={errors.passingScore?.message}>
                 <input type="number" {...register("passingScore")} className="ff-input" />
               </Field>
-              <Field label="Durasi (menit)" error={errors.durationMin?.message}>
+              <Field label="Duration (minutes)" error={errors.durationMin?.message}>
                 <input type="number" {...register("durationMin")} className="ff-input" />
               </Field>
             </div>
@@ -39,8 +39,8 @@ function CreateAssessmentModal({ onClose }: CreateAssessmentModalProps) {
 function ModalHead() {
   return (
     <div className="modal__head">
-      <p className="modal__kicker">Assessment baru</p>
-      <h2 className="modal__title">Buat skill assessment</h2>
+      <p className="modal__kicker">New assessment </p>
+      <h2 className="modal__title">Create skill assessment</h2>
     </div>
   );
 }
@@ -49,10 +49,10 @@ function ModalFoot({ onCancel, isPending }: { onCancel: () => void; isPending: b
   return (
     <div className="modal__foot">
       <button type="button" className="modal__btn-cancel" onClick={onCancel}>
-        Batal
+        Cancel
       </button>
       <button type="submit" className="dev-btn-primary" disabled={isPending}>
-        {isPending ? "Menyimpan..." : "Simpan"}
+        {isPending ? "Saving..." : "Save"}
       </button>
     </div>
   );
