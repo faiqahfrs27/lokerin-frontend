@@ -2,12 +2,12 @@ import axios from "axios";
 import { useAuth } from "../stores/useAuth";
 
 export const axiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + "/api",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
 export const refreshInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_URL + "/api",
+  baseURL: import.meta.env.VITE_API_URL,
   withCredentials: true,
 });
 
