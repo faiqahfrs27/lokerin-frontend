@@ -18,8 +18,8 @@ import AdminRoute from "./components/admin/AdminRoute";
 import AdminLayout from "./components/admin/AdminLayout";
 import Postings from "./pages/admin/Postings";
 import VerifyEmail from "./pages/VerifyEmail";
-import UserRoute from "./components/common/userRoute";
-import UserLayout from "./components/common/userLayout";
+import UserRoute from "./components/common/UserRoute";
+import UserLayout from "./components/common/UserLayout";
 import DashboardOverview from "./components/common/DashboardOverview";
 
 const queryClient = new QueryClient();
