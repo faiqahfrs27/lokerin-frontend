@@ -21,7 +21,7 @@ interface NavItem {
 const NAV_ITEMS: NavItem[] = [
   { to: "/admin/overview", label: "Overview", icon: Home, badge: "Soon" },
   { to: "/admin/postings", label: "Job postings", icon: Briefcase },
-  { to: "/admin/applicants", label: "Applicants", icon: Users, badge: "Soon" },
+  { to: "/admin/applicants", label: "Applicants", icon: Users },
   { to: "/admin/interviews", label: "Interviews", icon: Calendar, badge: "Soon" },
   { to: "/admin/analytics", label: "Analytics", icon: BarChart3, badge: "Soon" },
   { to: "/admin/settings", label: "Settings", icon: Settings, badge: "Soon" },
