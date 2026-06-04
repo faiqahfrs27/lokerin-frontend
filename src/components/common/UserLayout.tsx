@@ -1,0 +1,103 @@
+import {
+  BadgeCheck,
+  Bookmark,
+  ChevronRight,
+  FileText,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  User,
+} from "lucide-react";
+import { Link, Outlet, useLocation } from "react-router";
+import ThemeToggle from "../register/ThemeToggle";
+import { useAuth } from "../../stores/useAuth";
+
+function getInitials(name?: string | null) {
+  if (!name) return "U";
+  return name.split(" ").map((n) => n[0]).join("").toUpperCase().slice(0, 2);
+}
+
+const NAV_ITEMS = [
+  { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { to: "/dashboard/profile", label: "My Profile", icon: User },
+  { to: "/dashboard/applications", label: "Applications", icon: FileText },
+  { to: "/dashboard/saved", label: "Saved Jobs", icon: Bookmark },
+  { to: "/dashboard/assessments", label: "Assessments", icon: BadgeCheck },
+  { to: "/dashboard/settings", label: "Settings", icon: Settings },
+];
+
+function UserLayout() {
+  const location = useLocation();
+  const user = useAuth((s) => s.user);
+  const logout = useAuth((s) => s.logout);
+
+  const displayName = user?.profile?.fullName ?? user?.email ?? "User";
+  const photoUrl = user?.profile?.photoUrl;
+
+  return (
+    <div className="dashboard-page">
+      {/* Sidebar */}
+      <aside className="dashboard-sidebar">
+        {/* Logo */}
+        <Link to="/" className="dashboard-brand" style={{ textDecoration: "none" }}>
+          <svg width="28" height="28" viewBox="0 0 64 64">
+            <rect x="2" y="2" width="60" height="60" rx="16" fill="#F97316" />
+            <path d="M22 16 L22 44 L42 44" stroke="white" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            <circle cx="44" cy="20" r="5" fill="white" />
+          </svg>
+          lokerin
+        </Link>
+
+        {/* Nav */}
+        <nav className="dashboard-nav">
+          {NAV_ITEMS.map(({ to, label, icon: Icon }) => {
+            const isActive = location.pathname === to;
+            return (
+              <Link
+                key={to}
+                to={to}
+                className={`dashboard-nav-item${isActive ? " active" : ""}`}
+                style={{ textDecoration: "none" }}
+              >
+                <Icon size={18} strokeWidth={1.75} />
+                <span>{label}</span>
+                {isActive && <ChevronRight size={14} style={{ marginLeft: "auto", color: "var(--brand)" }} />}
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* User info + logout */}
+        <div className="dashboard-sidebar-footer">
+          <div className="dashboard-user">
+            {photoUrl ? (
+              <img src={photoUrl} alt={displayName} className="dashboard-avatar" />
+            ) : (
+              <div className="dashboard-avatar initials">
+                {getInitials(user?.profile?.fullName)}
+              </div>
+            )}
+            <div className="dashboard-user-info">
+              <span className="dashboard-user-name">{displayName}</span>
+              <span className="dashboard-user-email">{user?.email}</span>
+            </div>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 4px" }}>
+            <button className="dashboard-logout" onClick={logout} style={{ width: "auto" }}>
+              <LogOut size={16} strokeWidth={1.75} />
+              Sign out
+            </button>
+            <ThemeToggle />
+          </div>
+        </div>
+      </aside>
+
+      {/* Main content */}
+      <main className="dashboard-main">
+        <Outlet />
+      </main>
+    </div>
+  );
+}
+
+export default UserLayout;

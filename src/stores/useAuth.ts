@@ -2,12 +2,35 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { axiosInstance } from "../lib/axios";
 
-interface UserAuth {
-  id: string;      
+interface UserProfile {
+  fullName: string;
+  birthDate: string | null;
+  gender: "male" | "female" | null;
+  education: string | null;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  photoUrl: string | null;
+}
+
+interface Company {
+  id: string;
   name: string;
+  phone: string | null;
+  city: string | null;
+  logoUrl: string | null;
+}
+
+export interface UserAuth {
+  id: string;
   email: string;
-  profilePic: string | null;
-  role: string;    
+  role: "user" | "admin" | "dev";
+  isVerified: boolean;
+  companyId: string | null;
+  provider: string | null;
+  createdAt: string;
+  profile: UserProfile | null;
+  company: Company | null;
 }
 
 type Store = {
@@ -24,7 +47,7 @@ export const useAuth = create<Store>()(
       logout: async () => {
         await axiosInstance.post("/auth/logout");
         set({ user: null });
-        window.location.href = "/";
+        window.location.href = "/login";
       },
     }),
     { name: "auth" },
