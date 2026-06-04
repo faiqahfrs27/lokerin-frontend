@@ -29,9 +29,18 @@ export function useLogin() {
     onSuccess: (data) => {
       setAuth(data.user);
       toast.success("Welcome back! 👋");
-      // redirect ke halaman sebelumnya, atau "/" kalau tidak ada
-      const from = (location.state as { from?: string })?.from ?? "/";
-      navigate(from, { replace: true });
+
+      const from = (location.state as { from?: string })?.from;
+
+      if (from) {
+        navigate(from, { replace: true });
+      } else if (data.user.role === "admin") {
+        navigate("/admin/postings", { replace: true });
+      } else if (data.user.role === "dev") {
+        navigate("/dev/assessments", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     },
     onError: (error: AxiosError<{ message: string }>) => {
       toast.error(error.response?.data.message || "Login failed, please try again.");
