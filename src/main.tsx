@@ -21,6 +21,10 @@ import Postings from "./pages/admin/Postings";
 import JobDetail from "./pages/admin/JobDetail";
 import Applicants from "./pages/admin/Applicants";
 import VerifyEmail from "./pages/VerifyEmail";
+import UserRoute from "./components/common/UserRoute";
+import UserLayout from "./components/common/UserLayout";
+import DashboardOverview from "./components/common/DashboardOverview";
+import Jobs from "./pages/Jobs";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +35,7 @@ const router = createBrowserRouter([
   { path: "/forgot-password", element: <ForgotPassword /> },
   { path: "/reset-password/:token", element: <ResetPassword /> },
   { path: "/verify-email", element: <VerifyEmail /> },
+  { path: "/jobs", element: <Jobs /> },
   {
     path: "/admin",
     element: (
