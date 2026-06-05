@@ -15,7 +15,7 @@ function ThemeToggle() {
   const label = theme === "dark" ? "Switch to light mode" : "Switch to dark mode";
 
   return (
-    <button className="dev-sidebar__theme" onClick={toggle} type="button" title={label}>
+    <button className="theme-toggle" onClick={toggle} type="button" title={label} aria-label={label}>
       {theme === "dark" ? <Sun size={16} strokeWidth={2} /> : <Moon size={16} strokeWidth={2} />}
     </button>
   );
