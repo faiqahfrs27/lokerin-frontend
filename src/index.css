@@ -1535,240 +1535,166 @@ textarea.ff-input {
 }
 
 /* ============================================================
-   DEV LAYOUT — Sidebar + main content
+   DEV LAYOUT 
    ============================================================ */
 
-.dev-layout {
+/* Width sidebar dev — lebih lebar dari default admin (240 → 260) */
+.admin-shell {
   display: grid;
   grid-template-columns: 260px 1fr;
   min-height: 100vh;
 }
 
-.dev-layout__main {
-  min-height: 100vh;
-  background: var(--bg);
+@media (max-width: 900px) {
+  .admin-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-side {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 250ms ease;
+    flex-direction: column !important;
+    overflow-y: auto;
+    padding: 18px 14px !important;
+  }
+
+  .admin-side--open {
+    transform: translateX(0);
+  }
+
+  .admin-nav {
+    flex-direction: column !important;
+  }
+
+  .admin-brand {
+    display: flex !important;
+  }
 }
 
-.dev-sidebar {
-  position: sticky;
-  top: 0;
-  height: 100vh;
-  background: var(--stone-900);
-  color: var(--stone-300);
-  padding: 24px 16px;
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid var(--stone-800);
+/* Close button (mobile only) */
+.admin-side__close {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--fg-3);
+  padding: 6px;
+  border-radius: 6px;
 }
 
-.dev-sidebar__brand {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 0 8px 28px;
+.admin-side__close:hover {
+  background: var(--surface-2);
+  color: var(--fg);
 }
 
-.dev-sidebar__brand-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 9px;
-  background: var(--brand-orange-500);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 800;
-  font-size: 18px;
-  font-family: var(--font-display);
+@media (max-width: 900px) {
+  .admin-side__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
-.dev-sidebar__brand-name {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 18px;
-  color: white;
-  letter-spacing: -0.015em;
-}
-
-.dev-sidebar__brand-tag {
-  margin-left: auto;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--brand-orange-400);
-  background: rgba(249, 115, 22, 0.12);
-  padding: 3px 8px;
-  border-radius: 999px;
-}
-
-.dev-sidebar__nav {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.dev-sidebar__link {
+.admin-side__header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  color: var(--stone-400);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: all 150ms;
+  justify-content: space-between;
+  margin-bottom: 18px;
 }
 
-.dev-sidebar__link:hover {
-  background: var(--stone-800);
-  color: var(--stone-100);
-}
-
-.dev-sidebar__link--active {
-  background: var(--brand-orange-500);
-  color: white;
-}
-
-.dev-sidebar__link--active:hover {
-  background: var(--brand-orange-600);
-  color: white;
-}
-
-.dev-sidebar__icon {
-  flex-shrink: 0;
-}
-
-.dev-sidebar__footer {
+.admin-side__footer {
   margin-top: auto;
   padding-top: 16px;
 }
 
-.dev-sidebar__theme {
-  width: 36px;
-  height: 36px;
+.admin-side__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.admin-side__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--brand), var(--brand-press));
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 50%;
-  background: var(--stone-800);
-  border: none;
-  cursor: pointer;
-  color: var(--stone-400);
-  font-family: inherit;
-  margin-bottom: 12px;
-  transition: all 150ms;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
 }
 
-.dev-sidebar__theme:hover {
-  background: var(--stone-700);
-  color: var(--stone-100);
+.admin-side__user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.dev-sidebar__nav-badge {
+.admin-side__user-email {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-3);
+}
+
+.soon-pill {
   font-family: var(--font-mono);
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   padding: 2px 6px;
-  border-radius: 999px;
-  background: var(--stone-800);
-  color: var(--stone-400);
+  border-radius: 9999px;
+  background: var(--surface-3);
+  color: var(--fg-3);
 }
 
-.dev-sidebar__link--active .dev-sidebar__nav-badge {
-  background: rgba(255, 255, 255, 0.2);
-  color: white;
-}
-
-.dev-sidebar__user {
+.side-link--disabled {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 10px 12px;
-  background: var(--stone-800);
-  border-radius: 10px;
-}
-
-.dev-sidebar__avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--brand-orange-400), var(--brand-orange-600));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-.dev-sidebar__user-info {
-  min-width: 0;
-  flex: 1;
-}
-
-.dev-sidebar__user-name {
-  font-size: 13px;
+  border-radius: var(--radius-md);
+  font-size: 13.5px;
   font-weight: 600;
-  color: var(--stone-100);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: var(--fg-4);
+  cursor: not-allowed;
 }
 
-.dev-sidebar__user-role {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--brand-orange-400);
+/* Dev page wrapper — main content padding */
+.dev-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 32px 56px;
 }
 
-.dev-sidebar__logout {
-  background: none;
-  border: none;
-  color: var(--stone-400);
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 6px;
-  font-family: inherit;
-  transition: all 150ms;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.dev-state {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 96px 32px;
+  text-align: center;
+  color: var(--fg-3);
+  font-size: 14px;
 }
-
-.dev-sidebar__logout:hover {
-  background: var(--stone-700);
-  color: var(--stone-100);
-}
-
-/* ============================================================
-   RESPONSIVE — mobile (≤ 768px)
-   ============================================================ */
 
 @media (max-width: 768px) {
-
-  /* Halaman dev — padding lebih kecil */
   .dev-page {
-    padding: 24px 16px;
-  }
-
-  .dev-hero {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-  }
-
-  .dev-hero__title {
-    font-size: 28px;
-  }
-
-  .dev-hero .dev-btn-primary {
-    width: 100%;
-    justify-content: center;
+    padding: 20px 16px 40px;
   }
 
   .dev-state {
@@ -1776,11 +1702,7 @@ textarea.ff-input {
   }
 }
 
-/* ============================================================
-   MOBILE TOPBAR & DRAWER STYLES
-   ============================================================ */
-
-/* Topbar — by default hidden, muncul cuma di mobile */
+/* Mobile topbar (cuma muncul di mobile) */
 .dev-topbar {
   display: none;
 }
@@ -1795,7 +1717,6 @@ textarea.ff-input {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 150ms;
 }
 
 .dev-topbar__menu:hover {
@@ -1810,79 +1731,11 @@ textarea.ff-input {
   letter-spacing: -0.015em;
 }
 
-/* Backdrop (overlay gelap di belakang drawer) */
 .dev-layout__backdrop {
   display: none;
 }
 
-/* Tombol close di sidebar — by default hidden */
-.dev-sidebar__close {
-  display: none;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--stone-400);
-  padding: 6px;
-  border-radius: 6px;
-  transition: all 150ms;
-}
-
-.dev-sidebar__close:hover {
-  background: var(--stone-800);
-  color: white;
-}
-
-/* Sidebar header (brand + close button row) */
-.dev-sidebar__header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-/* ============================================================
-   RESPONSIVE — sidebar jadi drawer di mobile (≤ 768px)
-   ============================================================ */
-
-@media (max-width: 768px) {
-
-  /* Layout — sidebar di-overlay, main full-width */
-  .dev-layout {
-    grid-template-columns: 1fr;
-  }
-
-  /* Sidebar — fixed di atas, slide dari kiri */
-  .dev-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 280px;
-    z-index: 50;
-    transform: translateX(-100%);
-    transition: transform 250ms ease;
-  }
-
-  .dev-sidebar--open {
-    transform: translateX(0);
-  }
-
-  /* Backdrop muncul pas sidebar open */
-  .dev-layout__backdrop {
-    display: block;
-    position: fixed;
-    inset: 0;
-    z-index: 40;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(2px);
-  }
-
-  /* Close button muncul di mobile */
-  .dev-sidebar__close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* Topbar muncul di mobile */
+@media (max-width: 900px) {
   .dev-topbar {
     display: flex;
     align-items: center;
@@ -1894,6 +1747,28 @@ textarea.ff-input {
     top: 0;
     z-index: 30;
   }
+}
+
+input,
+textarea,
+select {
+  color: var(--fg);
+  background-color: transparent;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--fg-4);
+  opacity: 1;
+}
+
+/* Browser autofill override (Chrome bikin background kuning bawaan) */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--fg);
+  -webkit-box-shadow: 0 0 0px 1000px var(--surface) inset;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 /* ============================================================
@@ -2067,3 +1942,39 @@ textarea.ff-input {
 .jobs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
 .empty { grid-column: 1 / -1; text-align: center; padding: 56px 24px; color: var(--fg-3); }
  
+  .dev-layout__backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 40;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(2px);
+}
+
+
+/* Theme toggle di sidebar — icon kecil di kiri bawah */
+.admin-side__theme-row {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.admin-side__theme-row .theme-toggle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--surface-2);
+  color: var(--fg-3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 150ms;
+}
+
+.admin-side__theme-row .theme-toggle:hover {
+  background: var(--surface-3);
+  color: var(--fg);
+}
+

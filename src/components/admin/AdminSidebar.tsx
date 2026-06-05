@@ -108,15 +108,15 @@ function Footer() {
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
 
-  const displayName = user?.company?.name ?? user?.email ?? "—"; //sementara nunggu naila benerin
-  const initial = displayName.charAt(0).toUpperCase(); //sementara nunggu naila benerin
+  const displayName = user?.company?.name ?? user?.email ?? "—";
+  const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <div className="admin-side__footer">
       <div className="admin-side__user">
         <div className="admin-side__avatar">{initial}</div>
         <div style={{ minWidth: 0, flex: 1 }}>
-          <div className="admin-side__user-name">{displayName}</div> {/*sementara nunggu naila benerin */}
+          <div className="admin-side__user-name">{displayName}</div>
           <div className="admin-side__user-email">{user?.email ?? ""}</div>
         </div>
       </div>

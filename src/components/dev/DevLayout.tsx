@@ -13,7 +13,7 @@ function DevLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="dev-layout">
+    <div className="admin-shell">
       <DevSidebar isMobileOpen={isMobileOpen} onClose={() => setMobileOpen(false)} />
       {isMobileOpen && (
         <div
@@ -22,7 +22,7 @@ function DevLayout() {
         />
       )}
 
-      <main className="dev-layout__main">
+      <main className="admin-main">
         <MobileTopBar onMenuClick={() => setMobileOpen(true)} />
         <Outlet />
       </main>

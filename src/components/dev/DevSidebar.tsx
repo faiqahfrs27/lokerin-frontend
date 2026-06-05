@@ -25,31 +25,51 @@ interface DevSidebarProps {
 
 const NAV_ITEMS: NavItem[] = [
   { to: "/dev/assessments", label: "Skill assessments", icon: FileQuestion },
-  { to: "/dev/subscription-plans", label: "Subscription plans", icon: CreditCard, badge: "Soon" },
-  { to: "/dev/payments", label: "Payment approvals", icon: CheckCircle, badge: "Soon" },
+  {
+    to: "/dev/subscription-plans",
+    label: "Subscription plans",
+    icon: CreditCard,
+  },
+  {
+    to: "/dev/payments",
+    label: "Payment approvals",
+    icon: CheckCircle,
+    badge: "Soon",
+  },
   { to: "/dev/subscribers", label: "Subscribers", icon: Users, badge: "Soon" },
 ];
 
 function DevSidebar({ isMobileOpen, onClose }: DevSidebarProps) {
   return (
-    <aside className={`dev-sidebar ${isMobileOpen ? "dev-sidebar--open" : ""}`}>
-      <SidebarHeader onClose={onClose} />
-      <SidebarNav />
-      <SidebarFooter />
+    <aside className={`admin-side ${isMobileOpen ? "admin-side--open" : ""}`}>
+      <Header onClose={onClose} />
+      <Nav />
+      <Footer />
     </aside>
   );
 }
 
-function SidebarHeader({ onClose }: { onClose: () => void }) {
+function Header({ onClose }: { onClose: () => void }) {
   return (
-    <div className="dev-sidebar__header">
-      <div className="dev-sidebar__brand">
-        <div className="dev-sidebar__brand-mark">L</div>
-        <span className="dev-sidebar__brand-name">lokerin</span>
-        <span className="dev-sidebar__brand-tag">DEV</span>
+    <div className="admin-side__header">
+      <div className="admin-brand">
+        <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden>
+          <rect x="2" y="2" width="60" height="60" rx="16" fill="#F97316" />
+          <path
+            d="M22 16 L22 44 L42 44"
+            stroke="white"
+            strokeWidth="6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            fill="none"
+          />
+          <circle cx="44" cy="20" r="5" fill="white" />
+        </svg>
+        <span>lokerin</span>
+        <span className="role-pill">DEV</span>
       </div>
       <button
-        className="dev-sidebar__close"
+        className="admin-side__close"
         onClick={onClose}
         type="button"
         aria-label="Tutup menu"
@@ -60,47 +80,80 @@ function SidebarHeader({ onClose }: { onClose: () => void }) {
   );
 }
 
-function SidebarNav() {
+function Nav() {
   return (
-    <nav className="dev-sidebar__nav">
-      {NAV_ITEMS.map((item) => (
-        <NavItemLink key={item.to} item={item} />
+    <nav className="admin-nav">
+      {NAV_ITEMS.map((it) => (
+        <NavItemLink key={it.to} item={it} />
       ))}
     </nav>
   );
 }
 
 function NavItemLink({ item }: { item: NavItem }) {
+  const disabled = !!item.badge;
+
+  if (disabled) {
+    return (
+      <span className="side-link side-link--disabled">
+        <item.icon size={18} strokeWidth={2} />
+        <span style={{ flex: 1 }}>{item.label}</span>
+        <span className="soon-pill">{item.badge}</span>
+      </span>
+    );
+  }
+
   return (
     <NavLink
       to={item.to}
       className={({ isActive }) =>
-        `dev-sidebar__link ${isActive ? "dev-sidebar__link--active" : ""}`
+        "side-link " + (isActive ? "side-link--active" : "")
       }
     >
-      <item.icon className="dev-sidebar__icon" size={18} strokeWidth={2} />
+      <item.icon size={18} strokeWidth={2} />
       <span style={{ flex: 1 }}>{item.label}</span>
-      {item.badge && <span className="dev-sidebar__nav-badge">{item.badge}</span>}
     </NavLink>
   );
 }
 
-function SidebarFooter() {
+function Footer() {
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
 
+  const displayName =
+    user?.profile?.fullName ?? user?.email?.split("@")[0] ?? "—";
+  const initial = displayName.charAt(0).toUpperCase();
+
   return (
-    <div className="dev-sidebar__footer">
-      <ThemeToggle />
-      <div className="dev-sidebar__user">
-        <div className="dev-sidebar__avatar">D</div>
-        <div className="dev-sidebar__user-info">
-          <div className="dev-sidebar__user-name">{user?.email ?? "Developer"}</div>
-          <div className="dev-sidebar__user-role">role · {user?.role}</div>
+    <div className="admin-side__footer">
+      <div className="admin-side__user">
+        <div className="admin-side__avatar">{initial}</div>
+        <div style={{ minWidth: 0, flex: 1 }}>
+          <div className="admin-side__user-name">{displayName}</div>
+          <div className="admin-side__user-email">role · {user?.role}</div>
         </div>
-        <button onClick={logout} className="dev-sidebar__logout" title="Logout">
-          <Power size={16} strokeWidth={2} />
-        </button>
+      </div>
+
+      <button
+        type="button"
+        className="btn btn-secondary"
+        style={{
+          width: "100%",
+          marginTop: 10,
+          fontSize: 12,
+          padding: "7px 12px",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: 6,
+        }}
+        onClick={() => logout()}
+      >
+        <Power size={13} /> Sign out
+      </button>
+
+      <div className="admin-side__theme-row">
+        <ThemeToggle />
       </div>
     </div>
   );

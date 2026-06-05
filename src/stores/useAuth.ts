@@ -11,7 +11,7 @@ interface UserProfile {
   latitude: number | null;
   longitude: number | null;
   photoUrl: string | null;
-}
+} 
 
 interface Company {
   id: string;
