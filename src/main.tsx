@@ -25,10 +25,12 @@ import UserRoute from "./components/common/UserRoute";
 import UserLayout from "./components/common/UserLayout";
 import DashboardOverview from "./components/common/DashboardOverview";
 import Jobs from "./pages/Jobs";
+import Home from "./pages/Home";
 
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
+  { path: "/", element: <Home /> },
   { path: "/register", element: <Register /> },
   { path: "/register/company", element: <RegisterCompany /> },
   { path: "/login", element: <Login /> },
