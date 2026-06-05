@@ -18,10 +18,9 @@ import ResetPassword from "./pages/ResetPassword";
 import AdminRoute from "./components/admin/AdminRoute";
 import AdminLayout from "./components/admin/AdminLayout";
 import Postings from "./pages/admin/Postings";
+import JobDetail from "./pages/admin/JobDetail";
+import Applicants from "./pages/admin/Applicants";
 import VerifyEmail from "./pages/VerifyEmail";
-import UserRoute from "./components/common/UserRoute";
-import UserLayout from "./components/common/UserLayout";
-import DashboardOverview from "./components/common/DashboardOverview";
 
 const queryClient = new QueryClient();
 
@@ -39,7 +38,11 @@ const router = createBrowserRouter([
         <AdminLayout />
       </AdminRoute>
     ),
-    children: [{ path: "postings", element: <Postings /> }],
+    children: [
+      { path: "postings", element: <Postings /> },
+      { path: "postings/:id", element: <JobDetail /> },
+      { path: "applicants", element: <Applicants /> },
+    ],
   },
   {
     path: "/dev",
@@ -52,22 +55,6 @@ const router = createBrowserRouter([
       { path: "assessments", element: <AssessmentList /> },
       { path: "assessments/:id", element: <AssessmentDetail /> },
       { path: "subscription-plans", element: <SubscriptionPlans /> },
-    ],
-  },
-  {
-    path: "/dashboard",
-    element: (
-      <UserRoute>
-        <UserLayout />
-      </UserRoute>
-    ),
-    children: [
-      { index: true, element: <DashboardOverview /> },
-      { path: "profile", element: <div>Profile — coming soon</div> },
-      { path: "applications", element: <div>Applications — coming soon</div> },
-      { path: "saved", element: <div>Saved Jobs — coming soon</div> },
-      { path: "assessments", element: <div>Assessments — coming soon</div> },
-      { path: "settings", element: <div>Settings — coming soon</div> },
     ],
   },
 ]);
