@@ -12,6 +12,7 @@ import AssessmentList from "./pages/dev/AssessmentList";
 import AssessmentDetail from "./pages/dev/AssessmentDetail";
 import DevRoute from "./components/dev/DevRoute";
 import DevLayout from "./components/dev/DevLayout";
+import SubscriptionPlans from "./pages/dev/SubscriptionPlans";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import AdminRoute from "./components/admin/AdminRoute";
@@ -50,6 +51,7 @@ const router = createBrowserRouter([
     children: [
       { path: "assessments", element: <AssessmentList /> },
       { path: "assessments/:id", element: <AssessmentDetail /> },
+      { path: "subscription-plans", element: <SubscriptionPlans /> },
     ],
   },
   {
