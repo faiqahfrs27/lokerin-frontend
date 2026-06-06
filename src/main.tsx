@@ -1,35 +1,34 @@
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-import "./index.css";
-import "./styles/admin.css";
-import { createBrowserRouter, RouterProvider } from "react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
-import Register from "./pages/Register";
-import RegisterCompany from "./pages/RegisterCompany";
-import Login from "./pages/Login";
-import AssessmentList from "./pages/dev/AssessmentList";
-import AssessmentDetail from "./pages/dev/AssessmentDetail";
-import DevRoute from "./components/dev/DevRoute";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import AdminLayout from "./components/admin/AdminLayout";
+import AdminRoute from "./components/admin/AdminRoute";
 import DevLayout from "./components/dev/DevLayout";
+import DevRoute from "./components/dev/DevRoute";
+import "./index.css";
+import Applicants from "./pages/admin/Applicants";
+import JobDetail from "./pages/admin/JobDetail";
+import Postings from "./pages/admin/Postings";
+import AssessmentDetail from "./pages/dev/AssessmentDetail";
+import AssessmentList from "./pages/dev/AssessmentList";
 import SubscriptionPlans from "./pages/dev/SubscriptionPlans";
 import ForgotPassword from "./pages/ForgotPassword";
-import ResetPassword from "./pages/ResetPassword";
-import AdminRoute from "./components/admin/AdminRoute";
-import AdminLayout from "./components/admin/AdminLayout";
-import Postings from "./pages/admin/Postings";
-import JobDetail from "./pages/admin/JobDetail";
-import Applicants from "./pages/admin/Applicants";
-import VerifyEmail from "./pages/VerifyEmail";
-import UserRoute from "./components/common/UserRoute";
-import UserLayout from "./components/common/UserLayout";
-import DashboardOverview from "./components/common/DashboardOverview";
+import Home from "./pages/Home";
 import Jobs from "./pages/Jobs";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import RegisterCompany from "./pages/RegisterCompany";
+import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
+import "./styles/admin.css";
 
 const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
+  { path: "/", element: <Home /> },
   { path: "/register", element: <Register /> },
   { path: "/register/company", element: <RegisterCompany /> },
   { path: "/login", element: <Login /> },
