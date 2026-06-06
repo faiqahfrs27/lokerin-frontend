@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   LogOut,
   Settings,
+  Trophy,
   User,
 } from "lucide-react";
 import { Link, Outlet, useLocation } from "react-router";
@@ -23,6 +24,7 @@ const NAV_ITEMS = [
   { to: "/dashboard/applications", label: "Applications", icon: FileText },
   { to: "/dashboard/saved", label: "Saved Jobs", icon: Bookmark },
   { to: "/dashboard/assessments", label: "Assessments", icon: BadgeCheck },
+  { to: "/dashboard/my-results", label: "My Results", icon: Trophy },
   { to: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 

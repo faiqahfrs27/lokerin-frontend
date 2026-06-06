@@ -27,6 +27,10 @@ import "./styles/admin.css";
 import UserRoute from "./components/common/UserRoute";
 import UserLayout from "./components/common/UserLayout";
 import DashboardOverview from "./components/common/DashboardOverview";
+import Assessments from "./pages/user/Assessments";
+import TakeAssessment from "./pages/user/TakeAssessment";
+import ResultPage from "./pages/user/ResultPage";
+import MyResults from "./pages/user/MyResults";
 
 const queryClient = new QueryClient();
 
@@ -51,7 +55,10 @@ const router = createBrowserRouter([
       { path: "profile", element: <div>Profile — coming soon</div> },
       { path: "applications", element: <div>Applications — coming soon</div> },
       { path: "saved", element: <div>Saved Jobs — coming soon</div> },
-      { path: "assessments", element: <div>Assessments — coming soon</div> },
+      { path: "assessments", element: <Assessments /> },
+      { path: "assessments/:id/take", element: <TakeAssessment /> },
+      { path: "results/:id", element: <ResultPage /> },
+      { path: "my-results", element: <MyResults /> },
       { path: "settings", element: <div>Settings — coming soon</div> },
     ],
   },
