@@ -6,13 +6,14 @@ import Navbar from "../components/common/Navbar";
 import JobCard from "../components/jobs/JobCard";
 import LocationBanner from "../components/home/LocationBanner";
 import { useGeolocation } from "../hooks/useGeolocation";
+import type { Job } from "../types/job.types";
 
-const SAMPLE_JOBS = [
-  { id: "1", title: "Frontend Engineer", company: "Tokopedia", city: "Jakarta", type: "Hybrid", salary: "Rp 15–25M", category: "Engineering", initial: "T", color: "#0D9488" },
-  { id: "2", title: "Product Designer", company: "Gojek", city: "Jakarta", type: "Remote", salary: "Rp 18–30M", category: "Design", initial: "G", color: "#7C3AED" },
-  { id: "3", title: "Data Analyst", company: "Shopee", city: "Jakarta", type: "On-site", salary: "Rp 12–20M", category: "Data", initial: "S", color: "#DC2626" },
-  { id: "4", title: "Backend Engineer", company: "Traveloka", city: "Bali", type: "Hybrid", salary: "Rp 20–35M", category: "Engineering", initial: "T", color: "#2563EB" },
-  { id: "5", title: "Product Manager", company: "Bukalapak", city: "Bandung", type: "Hybrid", salary: "Rp 25–40M", category: "Product", initial: "B", color: "#EA580C" },
+const SAMPLE_JOBS: Job[] = [
+  { id: "1", title: "Frontend Engineer", description: "", city: "Jakarta", salary: 20000000, deadline: "2026-07-01", isPublished: true, hasTest: false, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "1", categoryId: "1", category: { id: "1", name: "Engineering" }, company: { id: "1", name: "Tokopedia", logoUrl: null, city: "Jakarta" } },
+  { id: "2", title: "Product Designer", description: "", city: "Jakarta", salary: 25000000, deadline: "2026-07-15", isPublished: true, hasTest: true, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "2", categoryId: "2", category: { id: "2", name: "Design" }, company: { id: "2", name: "Gojek", logoUrl: null, city: "Jakarta" } },
+  { id: "3", title: "Data Analyst", description: "", city: "Jakarta", salary: 15000000, deadline: "2026-06-30", isPublished: true, hasTest: false, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "3", categoryId: "3", category: { id: "3", name: "Data" }, company: { id: "3", name: "Shopee", logoUrl: null, city: "Jakarta" } },
+  { id: "4", title: "Backend Engineer", description: "", city: "Bali", salary: 30000000, deadline: "2026-07-20", isPublished: true, hasTest: true, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "4", categoryId: "1", category: { id: "1", name: "Engineering" }, company: { id: "4", name: "Traveloka", logoUrl: null, city: "Bali" } },
+  { id: "5", title: "Product Manager", description: "", city: "Bandung", salary: 35000000, deadline: "2026-08-01", isPublished: true, hasTest: false, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "5", categoryId: "4", category: { id: "4", name: "Product" }, company: { id: "5", name: "Bukalapak", logoUrl: null, city: "Bandung" } },
 ];
 
 const SAMPLE_LOCATIONS = [
@@ -107,7 +108,7 @@ function Home() {
           <div className="latest-grid">
             {SAMPLE_JOBS.map((job) => (
               <Link key={job.id} to={`/jobs/${job.id}`} style={{ textDecoration: "none" }}>
-                <JobCard job={job} />
+                <JobCard key={job.id} job={job} />
               </Link>
             ))}
           </div>
