@@ -24,6 +24,9 @@ import RegisterCompany from "./pages/RegisterCompany";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import "./styles/admin.css";
+import UserRoute from "./components/common/UserRoute";
+import UserLayout from "./components/common/UserLayout";
+import DashboardOverview from "./components/common/DashboardOverview";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +39,22 @@ const router = createBrowserRouter([
   { path: "/reset-password/:token", element: <ResetPassword /> },
   { path: "/verify-email", element: <VerifyEmail /> },
   { path: "/jobs", element: <Jobs /> },
+  {
+    path: "/dashboard",
+    element: (
+      <UserRoute>
+        <UserLayout />
+      </UserRoute>
+    ),
+    children: [
+      { index: true, element: <DashboardOverview /> },
+      { path: "profile", element: <div>Profile — coming soon</div> },
+      { path: "applications", element: <div>Applications — coming soon</div> },
+      { path: "saved", element: <div>Saved Jobs — coming soon</div> },
+      { path: "assessments", element: <div>Assessments — coming soon</div> },
+      { path: "settings", element: <div>Settings — coming soon</div> },
+    ],
+  },
   {
     path: "/admin",
     element: (
