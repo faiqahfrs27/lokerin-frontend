@@ -26,7 +26,7 @@ export function useGoogleAuth() {
       } else if (data.user.role === "admin") {
         navigate("/admin/postings", { replace: true });
       } else {
-        navigate("/", { replace: true });
+        navigate("/dashboard", { replace: true });
       }
     },
     onError: (error: AxiosError<{ message: string }>) => {
