@@ -1,3 +1,4 @@
+import { useGoogleAuth } from "../hooks/useGoogleAuth";
 import { ArrowRight } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router";
@@ -14,6 +15,7 @@ import { fadeUp } from "../utils/AnimationStyle";
 function Register() {
   const navigate = useNavigate();
   const { form, onSubmit, isPending } = useRegister();
+  const { handleGoogleLogin, isPending: isGooglePending } = useGoogleAuth();
   const {
     register,
     handleSubmit,
@@ -135,7 +137,12 @@ function Register() {
             </div>
 
             <div style={fadeUp(450)} className="social-row">
-              <button type="button" className="social-btn">
+              <button
+                type="button"
+                className="social-btn"
+                onClick={() => handleGoogleLogin()}
+                disabled={isGooglePending || isPending}
+              >
                 <FcGoogle size={22} />
               </button>
               <button type="button" className="social-btn">
