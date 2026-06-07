@@ -7,14 +7,9 @@ import {
   type CreateJobValues,
 } from "../../schemas/createJobSchema";
 import { useUpdateJob } from "../../hooks/useUpdateJob";
+import { useJobCategories } from "../../hooks/useJobCategories";
 import type { Job } from "../../hooks/useJobs";
 
-
-const CATEGORIES = [
-  { id: "PASTE-UUID-KATEGORI-1", name: "Engineering" },
-  { id: "PASTE-UUID-KATEGORI-2", name: "Design" },
-  { id: "PASTE-UUID-KATEGORI-3", name: "Marketing" },
-];
 
 interface EditJobModalProps {
   job: Job;
@@ -22,6 +17,9 @@ interface EditJobModalProps {
 }
 
 function EditJobModal({ job, onClose }: EditJobModalProps) {
+  const { data: categoriesData, isLoading: isLoadingCategories } = useJobCategories();
+  const categories = categoriesData?.data ?? [];
+
   const form = useForm<CreateJobValues>({
     resolver: zodResolver(createJobSchema),
     defaultValues: {
@@ -93,9 +91,11 @@ function EditJobModal({ job, onClose }: EditJobModalProps) {
                 Category
                 <div className="input-wrap">
                   <Tag size={16} />
-                  <select {...register("categoryId")}>
-                    <option value="" disabled>Pick a category</option>
-                    {CATEGORIES.map((c) => (
+                  <select {...register("categoryId")} disabled={isLoadingCategories}>
+                    <option value="" disabled>
+                      {isLoadingCategories ? "Loading categories..." : "Pick a category"}
+                    </option>
+                    {categories.map((c) => (
                       <option key={c.id} value={c.id}>{c.name}</option>
                     ))}
                   </select>

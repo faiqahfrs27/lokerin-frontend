@@ -1,12 +1,7 @@
 import { X, MapPin, Calendar, Tag, Loader2 } from "lucide-react";
 import { useCreateJob } from "../../hooks/useCreateJob";
+import { useJobCategories } from "../../hooks/useJobCategories";
 
-
-const CATEGORIES = [
-  { id: "PASTE-UUID-KATEGORI-1", name: "Engineering" },
-  { id: "PASTE-UUID-KATEGORI-2", name: "Design" },
-  { id: "PASTE-UUID-KATEGORI-3", name: "Marketing" },
-];
 
 interface NewJobModalProps {
   onClose: () => void;
@@ -14,6 +9,8 @@ interface NewJobModalProps {
 
 function NewJobModal({ onClose }: NewJobModalProps) {
   const { form, onSubmit, isPending } = useCreateJob(onClose);
+  const { data: categoriesData, isLoading: isLoadingCategories } = useJobCategories();
+  const categories = categoriesData?.data ?? [];
   const {
     register,
     handleSubmit,
@@ -67,11 +64,15 @@ function NewJobModal({ onClose }: NewJobModalProps) {
                 Category
                 <div className="input-wrap">
                   <Tag size={16} />
-                  <select {...register("categoryId")} defaultValue="">
+                  <select
+                    {...register("categoryId")}
+                    defaultValue=""
+                    disabled={isLoadingCategories}
+                  >
                     <option value="" disabled>
-                      Pick a category
+                      {isLoadingCategories ? "Loading categories..." : "Pick a category"}
                     </option>
-                    {CATEGORIES.map((c) => (
+                    {categories.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
                       </option>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, ArrowRight } from "lucide-react";
+import { Search, ArrowRight, SlidersHorizontal } from "lucide-react";
 import { useApplicants } from "../../hooks/useApplicants";
 import type { ApplicantStatus } from "../../hooks/useApplicants";
 import ApplicantDetailDrawer from "../../components/admin/ApplicantDetailDrawer";
@@ -19,10 +19,23 @@ function Applicants() {
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  // Advanced filters
+  const [showAdvanced, setShowAdvanced] = useState(false);
+  const [minAge, setMinAge] = useState<string>("");
+  const [maxAge, setMaxAge] = useState<string>("");
+  const [minSalary, setMinSalary] = useState<string>("");
+  const [maxSalary, setMaxSalary] = useState<string>("");
+
   const statusParam = filter === "all" ? undefined : filter;
+  const parseNum = (s: string) => (s.trim() ? Number(s) : undefined);
+
   const { data, isLoading, isError, error } = useApplicants({
     status: statusParam,
     search: search.trim() || undefined,
+    minAge: parseNum(minAge),
+    maxAge: parseNum(maxAge),
+    minSalary: parseNum(minSalary),
+    maxSalary: parseNum(maxSalary),
   });
 
   const applicants = data?.data ?? [];
@@ -31,6 +44,15 @@ function Applicants() {
   const calcAge = (birthDate: string | null | undefined) => {
     if (!birthDate) return null;
     return Math.floor((Date.now() - new Date(birthDate).getTime()) / (1000 * 60 * 60 * 24 * 365.25));
+  };
+
+  const activeAdvancedCount = [minAge, maxAge, minSalary, maxSalary].filter((v) => v.trim()).length;
+
+  const clearAdvanced = () => {
+    setMinAge("");
+    setMaxAge("");
+    setMinSalary("");
+    setMaxSalary("");
   };
 
   return (
@@ -61,7 +83,137 @@ function Applicants() {
             </button>
           ))}
         </div>
+
+        <button
+          type="button"
+          className={"chip " + (showAdvanced || activeAdvancedCount > 0 ? "active" : "")}
+          onClick={() => setShowAdvanced((s) => !s)}
+          title="More filters"
+        >
+          <SlidersHorizontal size={12} /> Filters
+          {activeAdvancedCount > 0 && (
+            <span
+              style={{
+                marginLeft: 4,
+                background: "var(--brand)",
+                color: "white",
+                borderRadius: "999px",
+                fontSize: 10,
+                padding: "1px 6px",
+                fontWeight: 700,
+              }}
+            >
+              {activeAdvancedCount}
+            </span>
+          )}
+        </button>
       </div>
+
+      {showAdvanced && (
+        <div
+          style={{
+            display: "flex",
+            gap: 12,
+            marginBottom: 16,
+            padding: 14,
+            border: "1px solid var(--border-2, #D6D3D1)",
+            borderRadius: 12,
+            flexWrap: "wrap",
+            alignItems: "flex-end",
+            background: "var(--surface-2, #FAFAF9)",
+          }}
+        >
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <label style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg-3)", fontWeight: 700 }}>
+              Age range
+            </label>
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              <input
+                type="number"
+                min={15}
+                max={100}
+                placeholder="Min"
+                value={minAge}
+                onChange={(e) => setMinAge(e.target.value)}
+                style={{
+                  width: 70,
+                  padding: "6px 10px",
+                  border: "1px solid var(--border-2, #D6D3D1)",
+                  borderRadius: 8,
+                  fontSize: 13,
+                }}
+              />
+              <span style={{ color: "var(--fg-3)" }}>—</span>
+              <input
+                type="number"
+                min={15}
+                max={100}
+                placeholder="Max"
+                value={maxAge}
+                onChange={(e) => setMaxAge(e.target.value)}
+                style={{
+                  width: 70,
+                  padding: "6px 10px",
+                  border: "1px solid var(--border-2, #D6D3D1)",
+                  borderRadius: 8,
+                  fontSize: 13,
+                }}
+              />
+              <span style={{ fontSize: 12, color: "var(--fg-3)" }}>years</span>
+            </div>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <label style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--fg-3)", fontWeight: 700 }}>
+              Expected salary (Rp)
+            </label>
+            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+              <input
+                type="number"
+                min={0}
+                step={500000}
+                placeholder="Min"
+                value={minSalary}
+                onChange={(e) => setMinSalary(e.target.value)}
+                style={{
+                  width: 130,
+                  padding: "6px 10px",
+                  border: "1px solid var(--border-2, #D6D3D1)",
+                  borderRadius: 8,
+                  fontSize: 13,
+                }}
+              />
+              <span style={{ color: "var(--fg-3)" }}>—</span>
+              <input
+                type="number"
+                min={0}
+                step={500000}
+                placeholder="Max"
+                value={maxSalary}
+                onChange={(e) => setMaxSalary(e.target.value)}
+                style={{
+                  width: 130,
+                  padding: "6px 10px",
+                  border: "1px solid var(--border-2, #D6D3D1)",
+                  borderRadius: 8,
+                  fontSize: 13,
+                }}
+              />
+            </div>
+          </div>
+
+          {activeAdvancedCount > 0 && (
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={clearAdvanced}
+              style={{ marginLeft: "auto", fontSize: 12 }}
+            >
+              Clear filters
+            </button>
+          )}
+        </div>
+      )}
 
       <div className="table-card">
         <table className="tbl">
@@ -85,7 +237,7 @@ function Applicants() {
             {!isLoading && !isError && applicants.length === 0 && (
               <tr className="empty-row">
                 <td colSpan={6}>
-                  {search || filter !== "all"
+                  {search || filter !== "all" || activeAdvancedCount > 0
                     ? "No applicants match your filters."
                     : "No applicants yet. Once people apply, they'll show up here."}
                 </td>
