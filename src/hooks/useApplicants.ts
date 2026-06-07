@@ -37,6 +37,10 @@ interface UseApplicantsParams {
   status?: ApplicantStatus;
   search?: string;
   education?: string;
+  minAge?: number;
+  maxAge?: number;
+  minSalary?: number;
+  maxSalary?: number;
 }
 
 export function useApplicants(params: UseApplicantsParams = {}) {
