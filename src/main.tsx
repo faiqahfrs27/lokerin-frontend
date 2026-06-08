@@ -32,6 +32,8 @@ import TakeAssessment from "./pages/user/TakeAssessment";
 import ResultPage from "./pages/user/ResultPage";
 import MyResults from "./pages/user/MyResults";
 import ProfilePage from "./pages/Profile";
+import Tests from "./pages/admin/Tests";
+import TestDetail from "./pages/admin/TestDetail";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +76,8 @@ const router = createBrowserRouter([
       { path: "postings", element: <Postings /> },
       { path: "postings/:id", element: <JobDetail /> },
       { path: "applicants", element: <Applicants /> },
+      { path: "tests", element: <Tests /> },
+      { path: "tests/:id", element: <TestDetail /> },
     ],
   },
   {
