@@ -1,15 +1,15 @@
-import { NavLink } from "react-router";
 import {
-  Briefcase,
-  Home,
-  Users,
-  Calendar,
   BarChart3,
-  Settings,
-  Power,
+  Briefcase,
+  Building2,
+  Calendar,
   FileText,
+  Home,
+  Power,
+  Users,
   type LucideIcon,
 } from "lucide-react";
+import { NavLink } from "react-router";
 import { useAuth } from "../../stores/useAuth";
 
 interface NavItem {
@@ -36,7 +36,7 @@ const NAV_ITEMS: NavItem[] = [
     icon: BarChart3,
     badge: "Soon",
   },
-  { to: "/admin/settings", label: "Settings", icon: Settings, badge: "Soon" },
+  { to: "/admin/company-profile", label: "Company Profile", icon: Building2 },
 ];
 
 function AdminSidebar() {
