@@ -1,10 +1,11 @@
-import { Camera, KeyRound, Mail, Save, User } from "lucide-react";
+import { Camera, KeyRound, Mail, Save, User, BadgeCheck } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../stores/useAuth";
 import { useUpdateEmail } from "../hooks/profile/useUpdateEmail";
 import { useUpdatePassword } from "../hooks/profile/useUpdatePassword";
 import { useUpdatePhoto } from "../hooks/profile/useUpdatePhoto";
 import { useUpdateProfile } from "../hooks/profile/useUpdateProfile";
+import ProfileBadges from "../components/badge/ProfileBadges";
 
 function getInitials(name?: string | null) {
   if (!name) return "U";
@@ -269,6 +270,10 @@ function ProfilePage() {
 
       <SectionCard title="Profile photo" icon={Camera}>
         <PhotoSection />
+      </SectionCard>
+
+      <SectionCard title="Verified Skills" icon={BadgeCheck}>
+        <ProfileBadges />
       </SectionCard>
 
       <SectionCard title="Personal information" icon={User}>

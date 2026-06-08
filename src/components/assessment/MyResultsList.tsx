@@ -1,6 +1,7 @@
 import { Award, Calendar, ChevronRight, XCircle } from "lucide-react";
 import { Link } from "react-router";
 import type { AssessmentResult } from "../../schemas/userAssessmentSchema";
+import { getBadgeLevel } from "../../utils/badgeLevel";
 
 interface Props {
   results: AssessmentResult[];
@@ -32,6 +33,7 @@ function ResultRow({ result }: { result: AssessmentResult }) {
       <StatusIcon passed={result.passed} />
       <ResultInfo result={result} />
       <ResultScore score={result.score} passed={result.passed} />
+       {result.passed && <LevelBadge score={result.score} />}
       <ChevronRight size={16} color="var(--fg-4)" />
     </Link>
   );
@@ -118,6 +120,26 @@ function ResultScore({
         Score
       </p>
     </div>
+  );
+}
+
+function LevelBadge({ score }: { score: number | null }) {
+  const lvl = getBadgeLevel(score ?? 0);
+  return (
+    <span
+      style={{
+        fontSize: 10,
+        fontWeight: 700,
+        letterSpacing: "0.02em",
+        padding: "3px 8px",
+        borderRadius: "var(--radius-pill)",
+        background: lvl.iconBg,
+        color: "#fff",
+        flexShrink: 0,
+      }}
+    >
+      {lvl.label}
+    </span>
   );
 }
 

@@ -1,6 +1,7 @@
-import { Award, Download, FileCheck, XCircle } from "lucide-react";
+import { Medal, Download, FileCheck, XCircle } from "lucide-react";
 import { Link } from "react-router";
 import type { AssessmentResult } from "../../schemas/userAssessmentSchema";
+import { downloadCertificate } from "../../utils/downloadCertificate";
 
 interface Props {
   result: AssessmentResult;
@@ -10,11 +11,7 @@ function ResultDisplay({ result }: Props) {
   return (
     <div className="dashboard-content">
       <ResultHero result={result} />
-      {result.passed ? (
-        <PassedSection result={result} />
-      ) : (
-        <FailedSection />
-      )}
+      {result.passed ? <PassedSection result={result} /> : <FailedSection />}
       <ActionButtons />
     </div>
   );
@@ -98,7 +95,7 @@ function PassedSection({ result }: { result: AssessmentResult }) {
           marginBottom: 14,
         }}
       >
-        <Award size={36} strokeWidth={2} />
+        <Medal size={36} strokeWidth={2} />
       </div>
       <h2 className="t-h4" style={{ margin: 0, color: "var(--fg)" }}>
         Congratulations!
@@ -119,11 +116,17 @@ function PassedSection({ result }: { result: AssessmentResult }) {
 
 function CertificateButton({ certificateId }: { certificateId?: string }) {
   const isReady = !!certificateId;
+
+  const handleDownload = () => {
+    if (certificateId) downloadCertificate(certificateId);
+  };
+
   return (
     <button
       type="button"
       className="btn btn-primary"
       disabled={!isReady}
+      onClick={handleDownload}
       title={isReady ? "Download certificate" : "Certificate not ready yet"}
     >
       <Download size={14} />

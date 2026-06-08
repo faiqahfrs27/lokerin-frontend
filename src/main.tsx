@@ -35,6 +35,7 @@ import ProfilePage from "./pages/Profile";
 import Tests from "./pages/admin/Tests";
 import TestDetail from "./pages/admin/TestDetail";
 import TakeTest from "./pages/user/TakeTest";
+import VerifyCertificate from "./pages/VerifyCertificate";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +48,7 @@ const router = createBrowserRouter([
   { path: "/reset-password/:token", element: <ResetPassword /> },
   { path: "/verify-email", element: <VerifyEmail /> },
   { path: "/jobs", element: <Jobs /> },
+  { path: "/verify/:code", element: <VerifyCertificate /> },
   {
     path: "/jobs/:id/test",
     element: (
