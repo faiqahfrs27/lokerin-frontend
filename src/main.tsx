@@ -36,6 +36,8 @@ import Tests from "./pages/admin/Tests";
 import TestDetail from "./pages/admin/TestDetail";
 import TakeTest from "./pages/user/TakeTest";
 import VerifyCertificate from "./pages/VerifyCertificate";
+import NotFound from "./pages/NotFound";
+import JobDetailPage from "./pages/JobDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -49,6 +51,7 @@ const router = createBrowserRouter([
   { path: "/verify-email", element: <VerifyEmail /> },
   { path: "/jobs", element: <Jobs /> },
   { path: "/verify/:code", element: <VerifyCertificate /> },
+  { path: "/jobs/:jobId", element: <JobDetailPage/> },
   {
     path: "/jobs/:id/test",
     element: (
@@ -103,6 +106,10 @@ const router = createBrowserRouter([
       { path: "assessments/:id", element: <AssessmentDetail /> },
       { path: "subscription-plans", element: <SubscriptionPlans /> },
     ],
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 

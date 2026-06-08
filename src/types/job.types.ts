@@ -8,7 +8,7 @@ export interface Job {
   title: string;
   description: string;
   city: string | null;
-  salary: number | null;
+  salary: number | string | null;
   deadline: string | null;
   isPublished: boolean;
   hasTest: boolean;

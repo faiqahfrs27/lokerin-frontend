@@ -6,15 +6,7 @@ import Navbar from "../components/common/Navbar";
 import JobCard from "../components/jobs/JobCard";
 import LocationBanner from "../components/home/LocationBanner";
 import { useGeolocation } from "../hooks/useGeolocation";
-import type { Job } from "../types/job.types";
-
-const SAMPLE_JOBS: Job[] = [
-  { id: "1", title: "Frontend Engineer", description: "", city: "Jakarta", salary: 20000000, deadline: "2026-07-01", isPublished: true, hasTest: false, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "1", categoryId: "1", category: { id: "1", name: "Engineering" }, company: { id: "1", name: "Tokopedia", logoUrl: null, city: "Jakarta" } },
-  { id: "2", title: "Product Designer", description: "", city: "Jakarta", salary: 25000000, deadline: "2026-07-15", isPublished: true, hasTest: true, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "2", categoryId: "2", category: { id: "2", name: "Design" }, company: { id: "2", name: "Gojek", logoUrl: null, city: "Jakarta" } },
-  { id: "3", title: "Data Analyst", description: "", city: "Jakarta", salary: 15000000, deadline: "2026-06-30", isPublished: true, hasTest: false, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "3", categoryId: "3", category: { id: "3", name: "Data" }, company: { id: "3", name: "Shopee", logoUrl: null, city: "Jakarta" } },
-  { id: "4", title: "Backend Engineer", description: "", city: "Bali", salary: 30000000, deadline: "2026-07-20", isPublished: true, hasTest: true, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "4", categoryId: "1", category: { id: "1", name: "Engineering" }, company: { id: "4", name: "Traveloka", logoUrl: null, city: "Bali" } },
-  { id: "5", title: "Product Manager", description: "", city: "Bandung", salary: 35000000, deadline: "2026-08-01", isPublished: true, hasTest: false, bannerUrl: null, tags: null, createdAt: new Date().toISOString(), companyId: "5", categoryId: "4", category: { id: "4", name: "Product" }, company: { id: "5", name: "Bukalapak", logoUrl: null, city: "Bandung" } },
-];
+import { usePublicJobs } from "../hooks/jobs/usePublicJobs";
 
 const SAMPLE_LOCATIONS = [
   { city: "Jakarta", count: 1240 },
@@ -25,16 +17,21 @@ const SAMPLE_LOCATIONS = [
   { city: "Medan", count: 140 },
 ];
 
-const CATEGORIES = [
-  "Engineering", "Design", "Product", "Data", "Marketing",
-  "Finance", "HR", "Operations", "Sales", "Legal",
-];
+const CATEGORIES = ["Engineering", "Design", "Product", "Data", "Marketing", "Finance", "HR", "Operations", "Sales", "Legal"];
 
 function Home() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [locationInput, setLocationInput] = useState("");
   const { city, isLoading, isDenied, requestLocation } = useGeolocation();
+
+  const { data } = usePublicJobs({
+    limit: 5,
+    sortBy: "createdAt",
+    sortOrder: "desc",
+    ...(city && { city }),
+  });
+  const latestJobs = data?.data ?? [];
 
   const handleSearch = () => {
     const params = new URLSearchParams();
@@ -48,7 +45,6 @@ function Home() {
     <>
       <Navbar />
       <main>
-
         {/* HERO */}
         <section className="landing-hero">
           <div className="container">
@@ -58,27 +54,16 @@ function Home() {
                 Find your next <span className="orange-word">loker</span>.
               </h1>
               <p className="hero-sub">
-                Smart, location-based job discovery. Skill assessments with real certificates.
-                CV that lands the call back. Tanpa drama.
+                Smart, location-based job discovery. Skill assessments with real certificates. CV that lands the call back. Tanpa drama.
               </p>
               <div className="hero-search">
                 <div className="input-wrap" style={{ flex: 2 }}>
                   <Search size={18} />
-                  <input
-                    placeholder="Job title — try 'Frontend', 'Designer', 'PM'"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  />
+                  <input placeholder="Job title — try 'Frontend', 'Designer', 'PM'" value={search} onChange={(e) => setSearch(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
                 </div>
                 <div className="input-wrap" style={{ flex: 1 }}>
                   <MapPin size={18} />
-                  <input
-                    placeholder={city ?? "Jakarta, Bandung…"}
-                    value={locationInput}
-                    onChange={(e) => setLocationInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  />
+                  <input placeholder={city ?? "Jakarta, Bandung…"} value={locationInput} onChange={(e) => setLocationInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && handleSearch()} />
                 </div>
                 <button className="btn btn-primary btn-hero" onClick={handleSearch}>
                   Search <ArrowRight size={16} />
@@ -106,11 +91,10 @@ function Home() {
             </Link>
           </div>
           <div className="latest-grid">
-            {SAMPLE_JOBS.map((job) => (
-              <Link key={job.id} to={`/jobs/${job.id}`} style={{ textDecoration: "none" }}>
-                <JobCard key={job.id} job={job} />
-              </Link>
-            ))}
+            {latestJobs.length > 0
+              ? latestJobs.map((job) => <JobCard key={job.id} job={job} />)
+              : <p style={{ color: "var(--fg-3)", fontSize: "var(--fs-sm)" }}>No jobs available yet.</p>
+            }
           </div>
         </section>
 
@@ -143,9 +127,7 @@ function Home() {
           <h2 className="t-h3" style={{ margin: "8px 0 18px" }}>By category</h2>
           <div className="cat-row">
             {CATEGORIES.map((cat) => (
-              <button key={cat} className="chip" onClick={() => navigate(`/jobs?category=${cat}`)}>
-                {cat}
-              </button>
+              <button key={cat} className="chip" onClick={() => navigate(`/jobs?category=${cat}`)}>{cat}</button>
             ))}
           </div>
         </section>
@@ -165,7 +147,6 @@ function Home() {
             </Link>
           </div>
         </section>
-
       </main>
       <Footer />
     </>
