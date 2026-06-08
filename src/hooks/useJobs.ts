@@ -13,6 +13,7 @@ export type Job = {
   hasTest: boolean;
   tags: unknown;
   category?: { id: string; name: string } | null;
+  _count?: { applications: number };
 };
 
 export type JobsResponse = {
@@ -25,6 +26,8 @@ interface UseJobsParams {
   limit?: number;
   isPublished?: string;
   search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
 }
 
 export function useJobs(params: UseJobsParams = {}) {

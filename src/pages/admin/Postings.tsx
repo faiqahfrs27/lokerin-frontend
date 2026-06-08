@@ -8,6 +8,7 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  Search,
 } from "lucide-react";
 import NewJobModal from "../../components/admin/NewJobModal";
 import EditJobModal from "../../components/admin/EditJobModal";
@@ -25,11 +26,17 @@ function Postings() {
   const [openCreate, setOpenCreate] = useState(false);
   const [editJob, setEditJob] = useState<Job | null>(null);
   const [deleteJob, setDeleteJob] = useState<Job | null>(null);
+  const [search, setSearch] = useState("");
+  const [sortBy, setSortBy] = useState<"createdAt" | "title">("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
 
   const isPublishedParam =
     filter === "live" ? "true" : filter === "draft" ? "false" : undefined;
   const { data, isLoading, isError, error } = useJobs({
     isPublished: isPublishedParam,
+    search: search || undefined,
+    sortBy,
+    sortOrder,
   });
 
   const togglePublish = useTogglePublish();
@@ -45,14 +52,52 @@ function Postings() {
         <div>
           <span className="kicker">Postings</span>
           <h1>Job postings</h1>
-          <p className="sub">{total} total · {liveCount} live</p>
+          <p className="sub">
+            {total} total · {liveCount} live
+          </p>
         </div>
-        <button type="button" className="btn btn-primary" onClick={() => setOpenCreate(true)}>
+        <button
+          type="button"
+          className="btn btn-primary"
+          onClick={() => setOpenCreate(true)}
+        >
           <Plus size={14} /> Post a job
         </button>
       </div>
 
-      <div className="hstack" style={{ gap: 8, marginBottom: 16, flexWrap: "wrap" }}>
+      <div
+        className="hstack"
+        style={{ gap: 8, marginBottom: 12, flexWrap: "wrap" }}
+      >
+        <div className="input-wrap" style={{ flex: 1, minWidth: 200 }}>
+          <Search size={16} />
+          <input
+            placeholder="Search by job title..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <div className="input-wrap" style={{ minWidth: 180 }}>
+          <select
+            value={`${sortBy}-${sortOrder}`}
+            onChange={(e) => {
+              const [sb, so] = e.target.value.split("-");
+              setSortBy(sb as "createdAt" | "title");
+              setSortOrder(so as "asc" | "desc");
+            }}
+          >
+            <option value="createdAt-desc">Newest first</option>
+            <option value="createdAt-asc">Oldest first</option>
+            <option value="title-asc">Title A→Z</option>
+            <option value="title-desc">Title Z→A</option>
+          </select>
+        </div>
+      </div>
+
+      <div
+        className="hstack"
+        style={{ gap: 8, marginBottom: 16, flexWrap: "wrap" }}
+      >
         {(["all", "live", "draft"] as const).map((f) => (
           <button
             key={f}
@@ -72,6 +117,7 @@ function Postings() {
               <th>Job</th>
               <th>City</th>
               <th>Status</th>
+              <th>Applicants</th>
               <th>Posted</th>
               <th>Deadline</th>
               <th style={{ textAlign: "right" }}>Actions</th>
@@ -79,22 +125,28 @@ function Postings() {
           </thead>
           <tbody>
             {isLoading && (
-              <tr className="empty-row"><td colSpan={6}>Loading...</td></tr>
+              <tr className="empty-row">
+                <td colSpan={7}>Loading...</td>
+              </tr>
             )}
             {isError && (
               <tr className="empty-row">
-                <td colSpan={6}>
-                  Couldn't load jobs. {(error as { message?: string })?.message ?? ""}
+                <td colSpan={7}>
+                  Couldn't load jobs.{" "}
+                  {(error as { message?: string })?.message ?? ""}
                 </td>
               </tr>
             )}
             {!isLoading && !isError && jobs.length === 0 && (
               <tr className="empty-row">
-                <td colSpan={6}>No jobs yet. Click "Post a job" to create your first.</td>
+                <td colSpan={7}>
+                  No jobs yet. Click "Post a job" to create your first.
+                </td>
               </tr>
             )}
             {jobs.map((p) => {
-              const togglePending = togglePublish.isPending && togglePublish.variables === p.id;
+              const togglePending =
+                togglePublish.isPending && togglePublish.variables === p.id;
               return (
                 <tr key={p.id}>
                   <td>
@@ -103,15 +155,31 @@ function Postings() {
                   </td>
                   <td>{p.city}</td>
                   <td>
-                    <span className={"badge " + (p.isPublished ? "badge-success" : "badge-stone")}>
+                    <span
+                      className={
+                        "badge " +
+                        (p.isPublished ? "badge-success" : "badge-stone")
+                      }
+                    >
                       <span className="dot" />
                       {p.isPublished ? "Live" : "Draft"}
                     </span>
                   </td>
-                  <td className="role-meta">{new Date(p.createdAt).toLocaleDateString("id-ID")}</td>
-                  <td className="role-meta">{new Date(p.deadline).toLocaleDateString("id-ID")}</td>
+                  <td>{p._count?.applications ?? 0}</td>
+                  <td className="role-meta">
+                    {new Date(p.createdAt).toLocaleDateString("id-ID")}
+                  </td>
+                  <td className="role-meta">
+                    {new Date(p.deadline).toLocaleDateString("id-ID")}
+                  </td>
                   <td>
-                    <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 4,
+                        justifyContent: "flex-end",
+                      }}
+                    >
                       <button
                         type="button"
                         className="btn btn-ghost"
@@ -141,7 +209,10 @@ function Postings() {
                         type="button"
                         className="btn btn-ghost"
                         title="Delete"
-                        style={{ padding: "6px 8px", color: "var(--danger-600, #DC2626)" }}
+                        style={{
+                          padding: "6px 8px",
+                          color: "var(--danger-600, #DC2626)",
+                        }}
                         onClick={() => setDeleteJob(p)}
                       >
                         <Trash2 size={14} />
@@ -164,7 +235,9 @@ function Postings() {
       </div>
 
       {openCreate && <NewJobModal onClose={() => setOpenCreate(false)} />}
-      {editJob && (<EditJobModal job={editJob} onClose={() => setEditJob(null)} />)}
+      {editJob && (
+        <EditJobModal job={editJob} onClose={() => setEditJob(null)} />
+      )}
       {deleteJob && (
         <ConfirmModal
           title={`Delete "${deleteJob.title}"?`}
