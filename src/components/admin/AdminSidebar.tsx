@@ -7,6 +7,7 @@ import {
   BarChart3,
   Settings,
   Power,
+  FileText,
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "../../stores/useAuth";
@@ -22,6 +23,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/admin/overview", label: "Overview", icon: Home, badge: "Soon" },
   { to: "/admin/postings", label: "Job postings", icon: Briefcase },
   { to: "/admin/applicants", label: "Applicants", icon: Users },
+  { to: "/admin/tests", label: "Tests", icon: FileText },
   {
     to: "/admin/interviews",
     label: "Interviews",
