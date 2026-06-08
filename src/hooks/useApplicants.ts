@@ -22,7 +22,14 @@ export type Applicant = {
       address: string | null;
     } | null;
   };
-  job: { id: string; title: string };
+  job: { id: string; title: string; hasTest: boolean; city?: string | null };
+  testAttempt: {
+    id: string;
+    score: number;
+    passed: boolean;
+    attemptedAt: string;
+    test: { passingScore: number };
+  } | null;
 };
 
 export type ApplicantsResponse = {

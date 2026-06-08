@@ -21,7 +21,10 @@ interface ApplicantDetailDrawerProps {
   onClose: () => void;
 }
 
-function ApplicantDetailDrawer({ applicantId, onClose }: ApplicantDetailDrawerProps) {
+function ApplicantDetailDrawer({
+  applicantId,
+  onClose,
+}: ApplicantDetailDrawerProps) {
   const { data: applicant, isLoading, isError } = useApplicant(applicantId);
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
@@ -66,22 +69,46 @@ function ApplicantDetailDrawer({ applicantId, onClose }: ApplicantDetailDrawerPr
           <div className="drawer-head">
             <div>
               <span className="kicker">Applicant</span>
-              <h2 style={{ margin: "6px 0 0", fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 800 }}>
+              <h2
+                style={{
+                  margin: "6px 0 0",
+                  fontFamily: "var(--font-display)",
+                  fontSize: 18,
+                  fontWeight: 800,
+                }}
+              >
                 Loading...
               </h2>
             </div>
-            <button type="button" className="btn btn-ghost btn-icon" onClick={onClose} aria-label="Close">
+            <button
+              type="button"
+              className="btn btn-ghost btn-icon"
+              onClick={onClose}
+              aria-label="Close"
+            >
               <X size={18} />
             </button>
           </div>
           <div className="drawer-body">
             {isLoading && (
-              <div style={{ textAlign: "center", padding: 40, color: "var(--fg-3)" }}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: 40,
+                  color: "var(--fg-3)",
+                }}
+              >
                 Loading applicant details...
               </div>
             )}
             {isError && (
-              <div style={{ textAlign: "center", padding: 40, color: "var(--danger-600)" }}>
+              <div
+                style={{
+                  textAlign: "center",
+                  padding: 40,
+                  color: "var(--danger-600)",
+                }}
+              >
                 Couldn't load applicant data.
               </div>
             )}
@@ -100,11 +127,23 @@ function ApplicantDetailDrawer({ applicantId, onClose }: ApplicantDetailDrawerPr
         <div className="drawer-head">
           <div>
             <span className="kicker">Applicant</span>
-            <h2 style={{ margin: "6px 0 0", fontFamily: "var(--font-display)", fontSize: 18, fontWeight: 800 }}>
+            <h2
+              style={{
+                margin: "6px 0 0",
+                fontFamily: "var(--font-display)",
+                fontSize: 18,
+                fontWeight: 800,
+              }}
+            >
               {profile?.fullName ?? applicant.user.email}
             </h2>
           </div>
-          <button type="button" className="btn btn-ghost btn-icon" onClick={onClose} aria-label="Close">
+          <button
+            type="button"
+            className="btn btn-ghost btn-icon"
+            onClick={onClose}
+            aria-label="Close"
+          >
             <X size={18} />
           </button>
         </div>
@@ -175,8 +214,9 @@ function ApplicantDetailDrawer({ applicantId, onClose }: ApplicantDetailDrawerPr
 
           <div className="drawer-section">
             <div className="drawer-section__label">CV Document</div>
-            
-              <a href={applicant.cvUrl}
+
+            <a
+              href={applicant.cvUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="btn btn-secondary"
@@ -187,6 +227,62 @@ function ApplicantDetailDrawer({ applicantId, onClose }: ApplicantDetailDrawerPr
               <Eye size={14} />
             </a>
           </div>
+
+          {applicant.job.hasTest && (
+            <div className="drawer-section">
+              <div className="drawer-section__label">Pre-Selection Test</div>
+              {applicant.testAttempt ? (
+                <div
+                  style={{
+                    padding: 12,
+                    background: applicant.testAttempt.passed
+                      ? "var(--success-50, #F0FDF4)"
+                      : "var(--danger-50, #FEF2F2)",
+                    color: applicant.testAttempt.passed
+                      ? "var(--success-700, #15803D)"
+                      : "var(--danger-700, #B91C1C)",
+                    borderRadius: 8,
+                    fontSize: 13.5,
+                  }}
+                >
+                  <div
+                    style={{ display: "flex", alignItems: "center", gap: 8 }}
+                  >
+                    {applicant.testAttempt.passed ? (
+                      <Check size={14} />
+                    ) : (
+                      <XCircle size={14} />
+                    )}
+                    <strong>
+                      {applicant.testAttempt.passed ? "Passed" : "Not passed"}
+                    </strong>
+                    <span style={{ marginLeft: "auto", fontWeight: 700 }}>
+                      {applicant.testAttempt.score} / 100
+                    </span>
+                  </div>
+                  <div style={{ marginTop: 6, fontSize: 12, opacity: 0.85 }}>
+                    Passing score: {applicant.testAttempt.test.passingScore} ·
+                    Submitted:{" "}
+                    {new Date(
+                      applicant.testAttempt.attemptedAt,
+                    ).toLocaleDateString("id-ID")}
+                  </div>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    padding: 12,
+                    background: "var(--surface-2, #FAFAF9)",
+                    color: "var(--fg-3)",
+                    borderRadius: 8,
+                    fontSize: 13,
+                  }}
+                >
+                  Applicant hasn't taken the pre-selection test yet.
+                </div>
+              )}
+            </div>
+          )}
 
           {applicant.status === "rejected" && applicant.rejectionReason && (
             <div className="drawer-section">
@@ -245,9 +341,14 @@ function ApplicantDetailDrawer({ applicantId, onClose }: ApplicantDetailDrawerPr
                 className="btn btn-primary"
                 disabled={!rejectReason.trim() || updateStatus.isPending}
                 onClick={handleRejectSubmit}
-                style={{ background: "var(--danger-600, #DC2626)", color: "white" }}
+                style={{
+                  background: "var(--danger-600, #DC2626)",
+                  color: "white",
+                }}
               >
-                {updateStatus.isPending && <Loader2 size={14} className="animate-spin" />}
+                {updateStatus.isPending && (
+                  <Loader2 size={14} className="animate-spin" />
+                )}
                 Reject Applicant
               </button>
             </>
@@ -257,7 +358,9 @@ function ApplicantDetailDrawer({ applicantId, onClose }: ApplicantDetailDrawerPr
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => handleStatusUpdate("reviewed")}
-                disabled={updateStatus.isPending || applicant.status === "reviewed"}
+                disabled={
+                  updateStatus.isPending || applicant.status === "reviewed"
+                }
               >
                 <Eye size={14} /> Mark Reviewed
               </button>
@@ -266,8 +369,13 @@ function ApplicantDetailDrawer({ applicantId, onClose }: ApplicantDetailDrawerPr
                 type="button"
                 className="btn btn-secondary"
                 onClick={() => handleStatusUpdate("rejected")}
-                disabled={updateStatus.isPending || applicant.status === "rejected"}
-                style={{ color: "var(--danger-600, #DC2626)", borderColor: "var(--danger-200, #FECACA)" }}
+                disabled={
+                  updateStatus.isPending || applicant.status === "rejected"
+                }
+                style={{
+                  color: "var(--danger-600, #DC2626)",
+                  borderColor: "var(--danger-200, #FECACA)",
+                }}
               >
                 <XCircle size={14} /> Reject
               </button>
@@ -275,9 +383,13 @@ function ApplicantDetailDrawer({ applicantId, onClose }: ApplicantDetailDrawerPr
                 type="button"
                 className="btn btn-primary"
                 onClick={() => handleStatusUpdate("accepted")}
-                disabled={updateStatus.isPending || applicant.status === "accepted"}
+                disabled={
+                  updateStatus.isPending || applicant.status === "accepted"
+                }
               >
-                {updateStatus.isPending && <Loader2 size={14} className="animate-spin" />}
+                {updateStatus.isPending && (
+                  <Loader2 size={14} className="animate-spin" />
+                )}
                 <Check size={14} /> Accept
               </button>
             </>
