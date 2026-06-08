@@ -38,6 +38,7 @@ import TakeTest from "./pages/user/TakeTest";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import NotFound from "./pages/NotFound";
 import JobDetailPage from "./pages/JobDetailPage";
+import CompanyProfile from "./pages/admin/CompanyProfile";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const router = createBrowserRouter([
       { path: "applicants", element: <Applicants /> },
       { path: "tests", element: <Tests /> },
       { path: "tests/:id", element: <TestDetail /> },
+      { path: "company-profile", element: <CompanyProfile /> },
     ],
   },
   {
