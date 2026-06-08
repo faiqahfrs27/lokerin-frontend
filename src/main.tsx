@@ -48,7 +48,7 @@ const router = createBrowserRouter([
   { path: "/verify-email", element: <VerifyEmail /> },
   { path: "/jobs", element: <Jobs /> },
   {
-    path: "/jobs/:jobId/test",
+    path: "/jobs/:id/test",
     element: (
       <UserRoute>
         <TakeTest />

@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { CheckCircle2, XCircle, Loader2 } from "lucide-react";
-import {
-  useTestForJob,
-  type UserTest,
-} from "../../hooks/useTestForJob";
+import { useTestForJob, type UserTest } from "../../hooks/useTestForJob";
 import {
   useSubmitAttempt,
   type AttemptResult,
 } from "../../hooks/useSubmitAttempt";
 
 function TakeTest() {
-  const { jobId } = useParams<{ jobId: string }>();
+  const { id: jobId } = useParams<{ id: string }>();
   const { data: test, isLoading, isError } = useTestForJob(jobId);
 
   if (isLoading) return <StateMessage text="Loading test..." />;
@@ -84,9 +81,7 @@ function ActiveTest({ test }: { test: UserTest }) {
                     type="radio"
                     name={q.id}
                     checked={answers[q.id] === optIdx}
-                    onChange={() =>
-                      setAnswers({ ...answers, [q.id]: optIdx })
-                    }
+                    onChange={() => setAnswers({ ...answers, [q.id]: optIdx })}
                   />
                   {opt}
                 </label>
@@ -107,9 +102,7 @@ function ActiveTest({ test }: { test: UserTest }) {
         Submit test
       </button>
       {!allAnswered && (
-        <p
-          style={{ color: "var(--ink-soft)", marginTop: 8, fontSize: 13 }}
-        >
+        <p style={{ color: "var(--ink-soft)", marginTop: 8, fontSize: 13 }}>
           Answer all {test.questions.length} questions to submit.
         </p>
       )}
@@ -158,9 +151,7 @@ function ResultView({
         onClick={onBack}
         style={{ marginTop: 24 }}
       >
-        {result.passed
-          ? "Back to jobs (you can now apply!)"
-          : "Back to jobs"}
+        {result.passed ? "Back to jobs (you can now apply!)" : "Back to jobs"}
       </button>
     </div>
   );
