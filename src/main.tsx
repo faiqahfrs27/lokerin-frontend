@@ -31,6 +31,7 @@ import Assessments from "./pages/user/Assessments";
 import TakeAssessment from "./pages/user/TakeAssessment";
 import ResultPage from "./pages/user/ResultPage";
 import MyResults from "./pages/user/MyResults";
+import ProfilePage from "./pages/Profile";
 import Tests from "./pages/admin/Tests";
 import TestDetail from "./pages/admin/TestDetail";
 
@@ -54,7 +55,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <DashboardOverview /> },
-      { path: "profile", element: <div>Profile — coming soon</div> },
+      { path: "profile", element: <ProfilePage/> },
       { path: "applications", element: <div>Applications — coming soon</div> },
       { path: "saved", element: <div>Saved Jobs — coming soon</div> },
       { path: "assessments", element: <Assessments /> },
