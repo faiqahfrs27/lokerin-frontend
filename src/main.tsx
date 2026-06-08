@@ -35,6 +35,7 @@ import ProfilePage from "./pages/Profile";
 import Tests from "./pages/admin/Tests";
 import TestDetail from "./pages/admin/TestDetail";
 import TakeTest from "./pages/user/TakeTest";
+import Interviews from "./pages/admin/Interviews";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import NotFound from "./pages/NotFound";
 import JobDetailPage from "./pages/JobDetailPage";
@@ -94,6 +95,7 @@ const router = createBrowserRouter([
       { path: "tests", element: <Tests /> },
       { path: "tests/:id", element: <TestDetail /> },
       { path: "company-profile", element: <CompanyProfile /> },
+      { path: "interviews", element: <Interviews /> },
     ],
   },
   {

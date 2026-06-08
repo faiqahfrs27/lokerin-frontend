@@ -28,7 +28,6 @@ const NAV_ITEMS: NavItem[] = [
     to: "/admin/interviews",
     label: "Interviews",
     icon: Calendar,
-    badge: "Soon",
   },
   {
     to: "/admin/analytics",
