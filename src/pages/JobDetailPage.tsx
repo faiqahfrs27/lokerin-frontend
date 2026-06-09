@@ -17,6 +17,7 @@ import Navbar from "../components/common/Navbar";
 import ShareButtons from "../components/jobs/ShareButtons";
 import { useJobDetail } from "../hooks/jobs/useJobDetail";
 import { useAuth } from "../stores/useAuth";
+import ApplyModal from "../components/jobs/ApplyModal";
 
 function formatSalary(salary: number | string | null) {
   if (!salary) return null;
@@ -65,6 +66,7 @@ function JobDetailPage() {
   const user = useAuth((s) => s.user);
   const { data: job, isLoading, isError } = useJobDetail(jobId);
   const [saved, setSaved] = useState(false);
+  const [showApply, setShowApply] = useState(false);
 
   if (isLoading)
     return (
@@ -116,7 +118,7 @@ function JobDetailPage() {
       navigate("/verify-email");
       return;
     }
-    alert("Apply feature coming soon!");
+    setShowApply(true);
   };
 
   return (
@@ -481,6 +483,14 @@ function JobDetailPage() {
         </div>
       </main>
       <Footer />
+      {showApply && (
+        <ApplyModal
+          jobId={job.id}
+          jobTitle={job.title}
+          hasTest={job.hasTest}
+          onClose={() => setShowApply(false)}
+        />
+      )}
     </>
   );
 }
