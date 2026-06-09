@@ -9,6 +9,7 @@ import {
   Trophy,
   User,
 } from "lucide-react";
+import { useState } from "react";
 import { Link, Outlet, useLocation } from "react-router";
 import ThemeToggle from "../register/ThemeToggle";
 import { useAuth } from "../../stores/useAuth";
@@ -28,10 +29,37 @@ const NAV_ITEMS = [
   { to: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
+function LogoutModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, background: "var(--overlay)", backdropFilter: "blur(2px)" }}>
+      <div className="card" style={{ width: "100%", maxWidth: 400, overflow: "hidden" }}>
+        <div style={{ padding: "24px 24px 0" }}>
+          <div style={{ width: 48, height: 48, borderRadius: "50%", background: "var(--danger-bg)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+            <LogOut size={20} style={{ color: "var(--danger-fg)" }} />
+          </div>
+          <h2 style={{ margin: "0 0 8px", fontSize: "var(--fs-lg)", fontWeight: "var(--fw-bold)" }}>Sign out?</h2>
+          <p style={{ margin: 0, fontSize: "var(--fs-sm)", color: "var(--fg-3)" }}>
+            You'll need to sign in again to access your dashboard.
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: 10, padding: 24 }}>
+          <button className="btn btn-secondary" style={{ flex: 1 }} onClick={onCancel}>
+            Cancel
+          </button>
+          <button className="btn btn-danger" style={{ flex: 1 }} onClick={onConfirm}>
+            Sign out
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function UserLayout() {
   const location = useLocation();
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const displayName = user?.profile?.fullName ?? user?.email ?? "User";
   const photoUrl = user?.profile?.photoUrl;
@@ -85,7 +113,7 @@ function UserLayout() {
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "0 4px" }}>
-            <button className="dashboard-logout" onClick={logout} style={{ width: "auto" }}>
+            <button className="dashboard-logout" onClick={() => setShowLogoutModal(true)} style={{ width: "auto" }}>
               <LogOut size={16} strokeWidth={1.75} />
               Sign out
             </button>
@@ -98,6 +126,14 @@ function UserLayout() {
       <main className="dashboard-main">
         <Outlet />
       </main>
+
+      {/* Logout modal */}
+      {showLogoutModal && (
+        <LogoutModal
+          onConfirm={() => { setShowLogoutModal(false); logout(); }}
+          onCancel={() => setShowLogoutModal(false)}
+        />
+      )}
     </div>
   );
 }
