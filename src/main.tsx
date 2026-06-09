@@ -40,6 +40,8 @@ import VerifyCertificate from "./pages/VerifyCertificate";
 import NotFound from "./pages/NotFound";
 import JobDetailPage from "./pages/JobDetailPage";
 import CompanyProfile from "./pages/admin/CompanyProfile";
+import Applications from "./pages/Applications";
+import ApplicationDetail from "./pages/ApplicationDetail";
 
 const queryClient = new QueryClient();
 
@@ -53,7 +55,7 @@ const router = createBrowserRouter([
   { path: "/verify-email", element: <VerifyEmail /> },
   { path: "/jobs", element: <Jobs /> },
   { path: "/verify/:code", element: <VerifyCertificate /> },
-  { path: "/jobs/:jobId", element: <JobDetailPage/> },
+  { path: "/jobs/:jobId", element: <JobDetailPage /> },
   {
     path: "/jobs/:id/test",
     element: (
@@ -72,7 +74,8 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <DashboardOverview /> },
       { path: "profile", element: <ProfilePage /> },
-      { path: "applications", element: <div>Applications — coming soon</div> },
+      { path: "applications", element: <Applications /> },
+      { path: "applications/:id", element: <ApplicationDetail /> },
       { path: "saved", element: <div>Saved Jobs — coming soon</div> },
       { path: "assessments", element: <Assessments /> },
       { path: "assessments/:id/take", element: <TakeAssessment /> },
