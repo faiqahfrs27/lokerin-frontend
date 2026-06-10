@@ -28,6 +28,7 @@ interface UseJobsParams {
   search?: string;
   sortBy?: string;
   sortOrder?: "asc" | "desc";
+  categoryId?: string;
 }
 
 export function useJobs(params: UseJobsParams = {}) {

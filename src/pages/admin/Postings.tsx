@@ -15,6 +15,7 @@ import EditJobModal from "../../components/admin/EditJobModal";
 import ConfirmModal from "../../components/admin/ConfirmModal";
 import { useJobs } from "../../hooks/useJobs";
 import type { Job } from "../../hooks/useJobs";
+import { useJobCategories } from "../../hooks/useJobCategories";
 import { useDeleteJob } from "../../hooks/useDeleteJob";
 import { useTogglePublish } from "../../hooks/useTogglePublish";
 
@@ -29,6 +30,9 @@ function Postings() {
   const [search, setSearch] = useState("");
   const [sortBy, setSortBy] = useState<"createdAt" | "title">("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [categoryId, setCategoryId] = useState("");
+  const { data: categoriesData } = useJobCategories();
+  const categories = categoriesData?.data ?? [];
 
   const isPublishedParam =
     filter === "live" ? "true" : filter === "draft" ? "false" : undefined;
@@ -37,6 +41,7 @@ function Postings() {
     search: search || undefined,
     sortBy,
     sortOrder,
+    categoryId: categoryId || undefined,
   });
 
   const togglePublish = useTogglePublish();
@@ -76,6 +81,19 @@ function Postings() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
+          <div className="input-wrap" style={{ minWidth: 160 }}>
+            <select
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+            >
+              <option value="">All categories</option>
+              {categories.map((c: { id: string; name: string }) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="input-wrap" style={{ minWidth: 180 }}>
           <select
