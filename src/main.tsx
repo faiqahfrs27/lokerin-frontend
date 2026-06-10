@@ -42,6 +42,10 @@ import JobDetailPage from "./pages/JobDetailPage";
 import CompanyProfile from "./pages/admin/CompanyProfile";
 import Applications from "./pages/Applications";
 import ApplicationDetail from "./pages/ApplicationDetail";
+import Payments from "./pages/dev/Payment";
+import Subscribe from "./pages/user/Subscribe";
+import SubscriptionStatus from "./pages/user/SubscriptionStatus";
+import Pricing from "./pages/Pricing";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +57,7 @@ const router = createBrowserRouter([
   { path: "/forgot-password", element: <ForgotPassword /> },
   { path: "/reset-password/:token", element: <ResetPassword /> },
   { path: "/verify-email", element: <VerifyEmail /> },
+  { path: "/pricing", element: <Pricing /> },
   { path: "/jobs", element: <Jobs /> },
   { path: "/verify/:code", element: <VerifyCertificate /> },
   { path: "/jobs/:jobId", element: <JobDetailPage /> },
@@ -77,6 +82,8 @@ const router = createBrowserRouter([
       { path: "applications", element: <Applications /> },
       { path: "applications/:id", element: <ApplicationDetail /> },
       { path: "saved", element: <div>Saved Jobs — coming soon</div> },
+      { path: "subscribe", element: <Subscribe /> },
+      { path: "subscription", element: <SubscriptionStatus /> },
       { path: "assessments", element: <Assessments /> },
       { path: "assessments/:id/take", element: <TakeAssessment /> },
       { path: "results/:id", element: <ResultPage /> },
@@ -112,6 +119,7 @@ const router = createBrowserRouter([
       { path: "assessments", element: <AssessmentList /> },
       { path: "assessments/:id", element: <AssessmentDetail /> },
       { path: "subscription-plans", element: <SubscriptionPlans /> },
+      { path: "payments", element: <Payments /> }, 
     ],
   },
   {
