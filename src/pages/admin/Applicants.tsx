@@ -3,6 +3,7 @@ import { Search, ArrowRight, SlidersHorizontal } from "lucide-react";
 import { useApplicants } from "../../hooks/useApplicants";
 import type { ApplicantStatus } from "../../hooks/useApplicants";
 import ApplicantDetailDrawer from "../../components/admin/ApplicantDetailDrawer";
+import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 
 type Filter = "all" | ApplicantStatus;
 
@@ -17,6 +18,7 @@ const FILTERS: { id: Filter; label: string }[] = [
 function Applicants() {
   const [filter, setFilter] = useState<Filter>("all");
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebouncedValue(search, 400);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   // Advanced filters
@@ -31,7 +33,7 @@ function Applicants() {
 
   const { data, isLoading, isError, error } = useApplicants({
     status: statusParam,
-    search: search.trim() || undefined,
+    search: debouncedSearch.trim() || undefined,
     minAge: parseNum(minAge),
     maxAge: parseNum(maxAge),
     minSalary: parseNum(minSalary),
