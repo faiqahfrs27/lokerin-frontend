@@ -18,6 +18,7 @@ import type { Job } from "../../hooks/useJobs";
 import { useJobCategories } from "../../hooks/useJobCategories";
 import { useDeleteJob } from "../../hooks/useDeleteJob";
 import { useTogglePublish } from "../../hooks/useTogglePublish";
+import { useDebouncedValue } from "../../hooks/useDebouncedValue";
 
 type Filter = "all" | "live" | "draft";
 
@@ -28,6 +29,7 @@ function Postings() {
   const [editJob, setEditJob] = useState<Job | null>(null);
   const [deleteJob, setDeleteJob] = useState<Job | null>(null);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebouncedValue(search, 400);
   const [sortBy, setSortBy] = useState<"createdAt" | "title">("createdAt");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
   const [categoryId, setCategoryId] = useState("");
@@ -38,7 +40,7 @@ function Postings() {
     filter === "live" ? "true" : filter === "draft" ? "false" : undefined;
   const { data, isLoading, isError, error } = useJobs({
     isPublished: isPublishedParam,
-    search: search || undefined,
+    search: debouncedSearch || undefined,
     sortBy,
     sortOrder,
     categoryId: categoryId || undefined,
