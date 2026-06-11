@@ -17,6 +17,12 @@ export type UserTest = {
   durationMinutes: number;
   job: { id: string; title: string; isPublished: boolean };
   questions: UserTestQuestion[];
+  myAttempt: {
+    id: string;
+    score: number;
+    passed: boolean;
+    attemptedAt: string;
+  } | null;
 };
 
 export function useTestForJob(jobId: string | undefined) {

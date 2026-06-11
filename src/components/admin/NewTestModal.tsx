@@ -9,8 +9,8 @@ interface NewTestModalProps {
 function NewTestModal({ onClose }: NewTestModalProps) {
   const { form, onSubmit, isPending } = useCreateTest(() => onClose());
   const { data: jobsData, isLoading: isLoadingJobs } = useJobs({ limit: 100 });
-  const jobs = (jobsData?.data ?? []).filter((j) => !j.hasTest);
-
+  const jobs = jobsData?.data ?? [];
+  
   const {
     register,
     handleSubmit,
