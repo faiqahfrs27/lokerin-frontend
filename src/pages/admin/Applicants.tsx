@@ -3,7 +3,7 @@ import { Search, ArrowRight, SlidersHorizontal } from "lucide-react";
 import { useApplicants } from "../../hooks/useApplicants";
 import type { ApplicantStatus } from "../../hooks/useApplicants";
 import ApplicantDetailDrawer from "../../components/admin/ApplicantDetailDrawer";
-import { useDebouncedValue } from "../../hooks/useDebouncedValue";
+import { useDebouncedValue } from "../../hooks/search/useDebouncedValue";
 
 type Filter = "all" | ApplicantStatus;
 
