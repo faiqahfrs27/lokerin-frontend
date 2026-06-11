@@ -1,16 +1,28 @@
-import { ArrowLeft, Trophy } from "lucide-react";
+import { ArrowLeft, Lock, Trophy } from "lucide-react";
 import { Link } from "react-router";
 import { usePublishedAssessments } from "../../hooks/useUserAssessments";
+import { useAssessmentUsage } from "../../hooks/useAssessments";
+import { useMySubscription } from "../../hooks/useSubscription";
 import type { PublishedAssessment } from "../../schemas/userAssessmentSchema";
 import UserAssessmentCard from "../../components/assessment/UserAssessmentCard";
 
 function Assessments() {
   const { data: assessments, isLoading, error } = usePublishedAssessments();
+  const { data: sub, isLoading: subLoading } = useMySubscription();
+  const { data: usage, isLoading: usageLoading } = useAssessmentUsage();
+
+  const isLoading2 = isLoading || subLoading || usageLoading;
 
   return (
     <div className="dashboard-content">
       <PageHeader />
-      <PageBody assessments={assessments} isLoading={isLoading} error={error} />
+      <PageBody
+        assessments={assessments}
+        isLoading={isLoading2}
+        error={error}
+        sub={sub}
+        usage={usage}
+      />
     </div>
   );
 }
@@ -18,29 +30,14 @@ function Assessments() {
 function PageHeader() {
   return (
     <div style={{ marginBottom: 32 }}>
-      <Link
-        to="/dashboard"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: 6,
-          fontSize: 13,
-          color: "var(--fg-3)",
-          textDecoration: "none",
-          marginBottom: 12,
-        }}
-      >
+      <Link to="/dashboard" style={{ display: "inline-flex",
+        alignItems: "center", gap: 6, fontSize: 13,
+        color: "var(--fg-3)", textDecoration: "none", marginBottom: 12 }}>
         <ArrowLeft size={14} /> Back to dashboard
       </Link>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-          gap: 16,
-          flexWrap: "wrap",
-        }}
-      ><div>
+      <div style={{ display: "flex", justifyContent: "space-between",
+        alignItems: "flex-end", gap: 16, flexWrap: "wrap" }}>
+        <div>
           <p className="t-kicker">Skill assessment</p>
           <h1 className="t-h3" style={{ margin: "8px 0 4px" }}>
             Test your skills
@@ -49,11 +46,8 @@ function PageHeader() {
             Pick an assessment, complete it within the time limit, and earn a badge.
           </p>
         </div>
-        <Link
-          to="/dashboard/my-results"
-          className="btn btn-secondary"
-          style={{ textDecoration: "none", flexShrink: 0 }}
-        >
+        <Link to="/dashboard/my-results" className="btn btn-secondary"
+          style={{ textDecoration: "none", flexShrink: 0 }}>
           <Trophy size={14} /> View my results
         </Link>
       </div>
@@ -65,54 +59,119 @@ function PageBody({
   assessments,
   isLoading,
   error,
+  sub,
+  usage,
 }: {
   assessments?: PublishedAssessment[];
   isLoading: boolean;
   error: unknown;
+  sub?: { status: string } | null;
+  usage?: { count: number; limit: number | null; canTake: boolean; reason: string } | null;
 }) {
-  if (isLoading) {
-    return <div className="dev-state">Loading assessments...</div>;
+  if (isLoading) return <div className="dev-state">Loading assessments...</div>;
+  if (error) return <div className="dev-state">Failed to load assessments.</div>;
+
+  // Guard: belum subscribe
+  if (!sub || sub.status !== "active") {
+    return <SubscribeGate />;
   }
 
-  if (error) {
-    return <div className="dev-state">Failed to load assessments.</div>;
+  // Guard: Standard udah limit
+  if (usage && !usage.canTake && usage.reason === "limit_reached") {
+    return <LimitReachedGate usage={usage} />;
   }
 
-  if (!assessments || assessments.length === 0) {
-    return <EmptyState />;
-  }
+  if (!assessments || assessments.length === 0) return <EmptyState />;
 
-  return <AssessmentGrid assessments={assessments} />;
+  return <AssessmentGrid assessments={assessments} usage={usage} />;
 }
 
-function AssessmentGrid({ assessments }: { assessments: PublishedAssessment[] }) {
+function SubscribeGate() {
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-        gap: 16,
-      }}
-    >
-      {assessments.map((a) => (
-        <UserAssessmentCard key={a.id} assessment={a} />
-      ))}
+    <div style={{ border: "1.5px dashed var(--border-2)", borderRadius: 14,
+      padding: "64px 20px", textAlign: "center" }}>
+      <div style={{ width: 48, height: 48, borderRadius: "50%",
+        background: "var(--brand-soft)", color: "var(--brand)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        margin: "0 auto 16px" }}>
+        <Lock size={20} />
+      </div>
+      <p style={{ fontWeight: 700, fontSize: 16, margin: "0 0 8px",
+        color: "var(--fg)" }}>
+        Subscription required
+      </p>
+      <p style={{ color: "var(--fg-3)", fontSize: 14, margin: "0 0 20px" }}>
+        Subscribe to Standard or Professional to access skill assessments.
+      </p>
+      <Link to="/dashboard/subscribe" className="btn btn-primary"
+        style={{ textDecoration: "none", display: "inline-flex" }}>
+        View Plans
+      </Link>
+    </div>
+  );
+}
+
+function LimitReachedGate({
+  usage,
+}: {
+  usage: { count: number; limit: number | null };
+}) {
+  return (
+    <div style={{ border: "1.5px dashed var(--border-2)", borderRadius: 14,
+      padding: "64px 20px", textAlign: "center" }}>
+      <div style={{ width: 48, height: 48, borderRadius: "50%",
+        background: "var(--brand-soft)", color: "var(--brand)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        margin: "0 auto 16px" }}>
+        <Lock size={20} />
+      </div>
+      <p style={{ fontWeight: 700, fontSize: 16, margin: "0 0 8px",
+        color: "var(--fg)" }}>
+        Assessment limit reached
+      </p>
+      <p style={{ color: "var(--fg-3)", fontSize: 14, margin: "0 0 20px" }}>
+        You've used {usage.count}/{usage.limit} assessments this subscription cycle.
+        Upgrade to Professional for unlimited access.
+      </p>
+      <Link to="/pricing" className="btn btn-primary"
+        style={{ textDecoration: "none", display: "inline-flex" }}>
+        Upgrade to Professional
+      </Link>
+    </div>
+  );
+}
+
+function AssessmentGrid({
+  assessments,
+  usage,
+}: {
+  assessments: PublishedAssessment[];
+  usage?: { count: number; limit: number | null; canTake: boolean } | null;
+}) {
+  return (
+    <div>
+      {usage && usage.limit !== null && (
+        <div style={{ marginBottom: 16, padding: "10px 16px",
+          borderRadius: 10, background: "var(--brand-soft)",
+          fontSize: 13, color: "var(--brand)", fontWeight: 600 }}>
+          {usage.count}/{usage.limit} assessments used this cycle
+        </div>
+      )}
+      <div style={{ display: "grid",
+        gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+        {assessments.map((a) => (
+          <UserAssessmentCard key={a.id} assessment={a} />
+        ))}
+      </div>
     </div>
   );
 }
 
 function EmptyState() {
   return (
-    <div
-      style={{
-        border: "1.5px dashed var(--border-2)",
-        borderRadius: 14,
-        padding: "64px 20px",
-        textAlign: "center",
-        color: "var(--fg-3)",
-        fontSize: 14,
-      }}
-    >
+    <div style={{ border: "1.5px dashed var(--border-2)", borderRadius: 14,
+      padding: "64px 20px", textAlign: "center",
+      color: "var(--fg-3)", fontSize: 14 }}>
       No assessments available yet. Check back soon!
     </div>
   );

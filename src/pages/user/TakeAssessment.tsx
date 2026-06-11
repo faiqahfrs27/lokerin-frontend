@@ -6,6 +6,8 @@ import {
   useStartAttempt,
   useSubmitAnswers,
 } from "../../hooks/useUserAssessments";
+import { useAssessmentUsage } from "../../hooks/useAssessments";
+import { useMySubscription } from "../../hooks/useSubscription";
 import type {
   AttemptStart,
   PublishedAssessment,
@@ -17,10 +19,28 @@ import TakeAttemptUI, {
 function TakeAssessment() {
   const { id: assessmentId } = useParams<{ id: string }>();
   const { data: assessments, isLoading } = usePublishedAssessments();
-  const assessment = assessments?.find((a) => a.id === assessmentId);
+  const { data: sub, isLoading: subLoading } = useMySubscription();
+  const { data: usage, isLoading: usageLoading } = useAssessmentUsage();
+  const navigate = useNavigate();
 
-  if (isLoading) return <LoadingState />;
+  const assessment = assessments?.find((a) => a.id === assessmentId);
+  const allLoading = isLoading || subLoading || usageLoading;
+
+  // Guard: redirect kalau belum subscribe atau limit reached
+  useEffect(() => {
+    if (allLoading) return;
+    if (!sub || sub.status !== "active") {
+      navigate("/pricing", { replace: true });
+      return;
+    }
+    if (usage && !usage.canTake) {
+      navigate("/dashboard/assessments", { replace: true });
+    }
+  }, [allLoading, sub, usage, navigate]);
+
+  if (allLoading) return <LoadingState />;
   if (!assessment) return <NotFoundState />;
+
   return <ActiveAttempt assessment={assessment} />;
 }
 
@@ -28,7 +48,6 @@ function ActiveAttempt({ assessment }: { assessment: PublishedAssessment }) {
   const navigate = useNavigate();
   const startMutation = useStartAttempt();
   const submitMutation = useSubmitAnswers();
-
   const [attemptData, setAttemptData] = useState<AttemptStart | null>(null);
   const [answers, setAnswers] = useState<AnswerMap>({});
 

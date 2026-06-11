@@ -11,6 +11,7 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useState } from "react";
+import React from "react";
 import { Link, Outlet, useLocation } from "react-router";
 import ThemeToggle from "../register/ThemeToggle";
 import { useAuth } from "../../stores/useAuth";
@@ -180,13 +181,17 @@ function UserLayout() {
             if (to === "/dashboard/subscribe") return null;
 
             const isAssessments = to === "/dashboard/assessments";
-            const isActive = location.pathname === to;
+            const isActive =
+              location.pathname === to ||
+              (to === "/dashboard/assessments" &&
+                location.pathname.startsWith("/dashboard/assessments")) ||
+              (to === "/dashboard/my-results" &&
+                location.pathname.startsWith("/dashboard/results"));
 
             return (
-              <>
+              <React.Fragment key={to}>
                 {isAssessments && (
                   <SmartSubscriptionLink
-                    key="subscription"
                     isActive={
                       location.pathname === "/dashboard/subscribe" ||
                       location.pathname === "/dashboard/subscription"
@@ -194,7 +199,6 @@ function UserLayout() {
                   />
                 )}
                 <Link
-                  key={to}
                   to={to}
                   className={`dashboard-nav-item${isActive ? " active" : ""}`}
                   style={{ textDecoration: "none" }}
@@ -208,7 +212,7 @@ function UserLayout() {
                     />
                   )}
                 </Link>
-              </>
+              </React.Fragment>
             );
           })}
         </nav>

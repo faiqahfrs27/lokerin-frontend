@@ -11,3 +11,23 @@ export function useAssessments() {
     },
   });
 }
+
+// Check assessment usage for current subscription cycle
+export interface UsageData {
+  count: number;
+  limit: number | null;
+  canTake: boolean;
+  reason: "ok" | "unlimited" | "no_subscription" | "limit_reached";
+}
+
+export function useAssessmentUsage() {
+  return useQuery({
+    queryKey: ["assessment-usage"],
+    queryFn: async () => {
+      const res = await axiosInstance.get<UsageData>(
+        "/assessment-results/usage",
+      );
+      return res.data;
+    },
+  });
+}
