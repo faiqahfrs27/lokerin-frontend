@@ -9,6 +9,12 @@ export interface ApplicationDetail {
   status: "pending" | "reviewed" | "accepted" | "rejected";
   appliedAt: string;
   rejectionReason: string | null;
+  interview: {
+    id: string;
+    scheduledAt: string;
+    location: string | null;
+    notes: string | null;
+  } | null;
   job: {
     id: string;
     title: string;

@@ -1,4 +1,4 @@
-import { ArrowLeft, Briefcase, Building2, Calendar, ExternalLink, MapPin } from "lucide-react";
+import { ArrowLeft, Briefcase, Building2, Calendar, Clock, ExternalLink, MapPin } from "lucide-react";
 import { Link, useParams } from "react-router";
 import { useApplicationDetail } from "../hooks/jobs/useApplicationDetail";
 
@@ -11,6 +11,10 @@ const STATUS_MAP = {
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+}
+
+function formatDateTime(date: string) {
+  return new Date(date).toLocaleString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
 function ApplicationDetail() {
@@ -55,6 +59,45 @@ function ApplicationDetail() {
           </div>
         )}
       </div>
+
+      {/* Interview schedule — hanya muncul kalau accepted dan ada interview */}
+      {app.status === "accepted" && app.interview && (
+        <div className="card card-pad" style={{ marginBottom: 20, border: "1px solid var(--success-500)" }}>
+          <h3 style={{ margin: "0 0 16px", fontSize: "var(--fs-base)", fontWeight: "var(--fw-semibold)", color: "var(--success-fg)", display: "flex", alignItems: "center", gap: 8 }}>
+            🗓️ Interview Schedule
+          </h3>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: "var(--fs-sm)" }}>
+              <Clock size={16} style={{ color: "var(--fg-3)" }} />
+              <span style={{ color: "var(--fg-3)" }}>Date & time</span>
+              <span style={{ color: "var(--fg)", fontWeight: "var(--fw-medium)" }}>
+                {formatDateTime(app.interview.scheduledAt)}
+              </span>
+            </div>
+            {app.interview.location && (
+              <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: "var(--fs-sm)" }}>
+                <MapPin size={16} style={{ color: "var(--fg-3)" }} />
+                <span style={{ color: "var(--fg-3)" }}>Location</span>
+                <span style={{ color: "var(--fg)", fontWeight: "var(--fw-medium)" }}>{app.interview.location}</span>
+              </div>
+            )}
+            {app.interview.notes && (
+              <div style={{ padding: "10px 14px", background: "var(--surface-2)", borderRadius: "var(--radius-md)", fontSize: "var(--fs-sm)", color: "var(--fg-2)" }}>
+                <strong>Notes:</strong> {app.interview.notes}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Accepted but no interview yet */}
+      {app.status === "accepted" && !app.interview && (
+        <div className="card card-pad" style={{ marginBottom: 20, background: "var(--success-bg)" }}>
+          <p style={{ margin: 0, fontSize: "var(--fs-sm)", color: "var(--success-fg)" }}>
+            🎉 You've been accepted! Interview schedule will be sent soon.
+          </p>
+        </div>
+      )}
 
       {/* Application info */}
       <div className="card card-pad" style={{ marginBottom: 20 }}>
