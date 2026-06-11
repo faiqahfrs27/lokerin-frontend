@@ -46,6 +46,8 @@ import Payments from "./pages/dev/Payment";
 import Subscribe from "./pages/user/Subscribe";
 import SubscriptionStatus from "./pages/user/SubscriptionStatus";
 import Pricing from "./pages/Pricing";
+import Companies from "./pages/Companies";
+import CompanyDetailPage from "./pages/CompanyDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,8 @@ const router = createBrowserRouter([
   { path: "/jobs", element: <Jobs /> },
   { path: "/verify/:code", element: <VerifyCertificate /> },
   { path: "/jobs/:jobId", element: <JobDetailPage /> },
+  { path: "/companies", element: <Companies /> },
+  { path: "/companies/:id", element: <CompanyDetailPage /> },
   {
     path: "/jobs/:id/test",
     element: (
@@ -119,7 +123,7 @@ const router = createBrowserRouter([
       { path: "assessments", element: <AssessmentList /> },
       { path: "assessments/:id", element: <AssessmentDetail /> },
       { path: "subscription-plans", element: <SubscriptionPlans /> },
-      { path: "payments", element: <Payments /> }, 
+      { path: "payments", element: <Payments /> },
     ],
   },
   {

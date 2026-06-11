@@ -18,7 +18,7 @@ import type { Job } from "../../hooks/useJobs";
 import { useJobCategories } from "../../hooks/useJobCategories";
 import { useDeleteJob } from "../../hooks/useDeleteJob";
 import { useTogglePublish } from "../../hooks/useTogglePublish";
-import { useDebouncedValue } from "../../hooks/useDebouncedValue";
+import { useDebouncedValue } from "../../hooks/search/useDebouncedValue";
 
 type Filter = "all" | "live" | "draft";
 

@@ -7,6 +7,7 @@ import JobCard from "../components/jobs/JobCard";
 import LocationBanner from "../components/home/LocationBanner";
 import { useGeolocation } from "../hooks/useGeolocation";
 import { usePublicJobs } from "../hooks/jobs/usePublicJobs";
+import { useDebouncedValue } from "../hooks/search/useDebouncedValue";
 
 const CATEGORIES = ["All", "Engineering", "Design", "Data", "Product", "Marketing", "Finance", "HR", "Operations", "Sales"];
 
@@ -18,19 +19,24 @@ const SORT_MAP: Record<string, { sortBy: string; sortOrder: string }> = {
 };
 
 function Jobs() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const { city, isLoading: isLocLoading, isDenied, requestLocation } = useGeolocation();
 
   const [q, setQ] = useState(searchParams.get("q") ?? "");
   const [cityInput, setCityInput] = useState(searchParams.get("city") ?? "");
+  const debouncedQ = useDebouncedValue(q, 500);
+  const debouncedCity = useDebouncedValue(cityInput, 500);
+
   const [cat, setCat] = useState(searchParams.get("category") ?? "All");
   const [sort, setSort] = useState("Newest");
   const [page, setPage] = useState(1);
   const [saved, setSaved] = useState<string[]>([]);
 
-  // Apply geolocation as default city
+  // Apply geolocation sebagai default city
   useEffect(() => {
-    if (city && !searchParams.get("city")) setCityInput(city);
+    if (city && !searchParams.get("city") && !cityInput) {
+      setCityInput(city);
+    }
   }, [city]);
 
   const { sortBy, sortOrder } = SORT_MAP[sort];
@@ -38,23 +44,14 @@ function Jobs() {
   const { data, isLoading, isFetching } = usePublicJobs({
     page,
     limit: 12,
-    search: searchParams.get("q") ?? undefined,
-    city: searchParams.get("city") ?? undefined,
+    search: debouncedQ || undefined,
+    city: debouncedCity || undefined,
     sortBy,
     sortOrder,
   });
 
   const jobs = data?.data ?? [];
   const meta = data?.meta;
-
-  const applySearch = () => {
-    const params = new URLSearchParams();
-    if (q) params.set("q", q);
-    if (cityInput) params.set("city", cityInput);
-    if (cat !== "All") params.set("category", cat);
-    setSearchParams(params);
-    setPage(1);
-  };
 
   return (
     <>
@@ -71,7 +68,7 @@ function Jobs() {
           </div>
           <div className="hstack" style={{ gap: 8 }}>
             <span className="t-small muted hide-mobile">Sort</span>
-            <select className="sort-select" value={sort} onChange={(e) => setSort(e.target.value)}>
+            <select className="sort-select" value={sort} onChange={(e) => { setSort(e.target.value); setPage(1); }}>
               {Object.keys(SORT_MAP).map((s) => <option key={s}>{s}</option>)}
             </select>
           </div>
@@ -81,15 +78,20 @@ function Jobs() {
         <div className="filter-bar">
           <div className="input-wrap" style={{ flex: 2 }}>
             <Search size={18} />
-            <input placeholder="Title or company" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => e.key === "Enter" && applySearch()} />
+            <input
+              placeholder="Title or company"
+              value={q}
+              onChange={(e) => { setQ(e.target.value); setPage(1); }}
+            />
           </div>
           <div className="input-wrap" style={{ flex: 1 }}>
             <MapPin size={18} />
-            <input placeholder={city ?? "Location"} value={cityInput} onChange={(e) => setCityInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && applySearch()} />
+            <input
+              placeholder={city ?? "Location"}
+              value={cityInput}
+              onChange={(e) => { setCityInput(e.target.value); setPage(1); }}
+            />
           </div>
-          <button className="btn btn-primary" onClick={applySearch}>
-            Search <ArrowRight size={14} />
-          </button>
         </div>
 
         {/* Location banner */}
