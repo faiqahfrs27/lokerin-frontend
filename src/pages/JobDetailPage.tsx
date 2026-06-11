@@ -18,6 +18,7 @@ import ShareButtons from "../components/jobs/ShareButtons";
 import { useJobDetail } from "../hooks/jobs/useJobDetail";
 import { useAuth } from "../stores/useAuth";
 import ApplyModal from "../components/jobs/ApplyModal";
+import { useTestForJob } from "../hooks/useTestForJob";
 
 function formatSalary(salary: number | string | null) {
   if (!salary) return null;
@@ -67,6 +68,12 @@ function JobDetailPage() {
   const { data: job, isLoading, isError } = useJobDetail(jobId);
   const [saved, setSaved] = useState(false);
   const [showApply, setShowApply] = useState(false);
+
+  const { data: testData } = useTestForJob(
+    user && job?.hasTest ? jobId : undefined,
+  );
+  const myAttempt = testData?.myAttempt ?? null;
+  const hasPassedTest = myAttempt?.passed === true;
 
   if (isLoading)
     return (
@@ -348,18 +355,86 @@ function JobDetailPage() {
             }}
           >
             <div className="card card-pad">
-              <button
-                className="btn btn-primary"
-                style={{
-                  width: "100%",
-                  marginBottom: 10,
-                  padding: "14px",
-                  fontSize: 15,
-                }}
-                onClick={handleApply}
-              >
-                Apply now
-              </button>
+              {job.hasTest && !hasPassedTest ? (
+                <>
+                  {myAttempt ? (
+                    <div
+                      style={{
+                        padding: 12,
+                        background: "var(--danger-bg)",
+                        color: "var(--danger-fg)",
+                        borderRadius: "var(--radius-md)",
+                        marginBottom: 10,
+                        fontSize: 13,
+                      }}
+                    >
+                      ⚠️ You scored {myAttempt.score}/100 (need{" "}
+                      {testData?.passingScore ?? 75}). You can retake the test.
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        padding: 12,
+                        background: "var(--warning-bg)",
+                        color: "var(--warning-fg)",
+                        borderRadius: "var(--radius-md)",
+                        marginBottom: 10,
+                        fontSize: 13,
+                      }}
+                    >
+                      🎯 This job requires a pre-selection test. Complete it
+                      first to unlock Apply.
+                    </div>
+                  )}
+                  <Link
+                    to={`/jobs/${jobId}/test`}
+                    className="btn btn-primary"
+                    style={{
+                      width: "100%",
+                      marginBottom: 10,
+                      padding: "14px",
+                      fontSize: 15,
+                      textDecoration: "none",
+                      display: "block",
+                      textAlign: "center",
+                    }}
+                  >
+                    {myAttempt
+                      ? "Retake Pre-Selection Test"
+                      : "Take Pre-Selection Test"}
+                  </Link>
+                </>
+              ) : (
+                <>
+                  {hasPassedTest && myAttempt && (
+                    <div
+                      style={{
+                        padding: 8,
+                        background: "var(--success-bg)",
+                        color: "var(--success-fg)",
+                        borderRadius: "var(--radius-md)",
+                        marginBottom: 10,
+                        fontSize: 13,
+                        textAlign: "center",
+                      }}
+                    >
+                      ✓ Pre-selection test passed ({myAttempt.score}/100)
+                    </div>
+                  )}
+                  <button
+                    className="btn btn-primary"
+                    style={{
+                      width: "100%",
+                      marginBottom: 10,
+                      padding: "14px",
+                      fontSize: 15,
+                    }}
+                    onClick={handleApply}
+                  >
+                    Apply now
+                  </button>
+                </>
+              )}
               <button
                 className="btn btn-secondary"
                 style={{
@@ -488,6 +563,7 @@ function JobDetailPage() {
           jobId={job.id}
           jobTitle={job.title}
           hasTest={job.hasTest}
+          testAttemptId={myAttempt?.id}
           onClose={() => setShowApply(false)}
         />
       )}
