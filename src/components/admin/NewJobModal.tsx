@@ -1,7 +1,8 @@
-import { X, MapPin, Calendar, Tag, Loader2 } from "lucide-react";
+import { X, MapPin, Calendar, Tag, Loader2, Plus } from "lucide-react";
+import { useState } from "react";
 import { useCreateJob } from "../../hooks/useCreateJob";
+import { useCreateJobCategory } from "../../hooks/useCreateJobCategory";
 import { useJobCategories } from "../../hooks/useJobCategories";
-
 
 interface NewJobModalProps {
   onClose: () => void;
@@ -9,13 +10,30 @@ interface NewJobModalProps {
 
 function NewJobModal({ onClose }: NewJobModalProps) {
   const { form, onSubmit, isPending } = useCreateJob(onClose);
-  const { data: categoriesData, isLoading: isLoadingCategories } = useJobCategories();
+  const { data: categoriesData, isLoading: isLoadingCategories } =
+    useJobCategories();
   const categories = categoriesData?.data ?? [];
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = form;
+
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const createCategoryMutation = useCreateJobCategory();
+  const watchedCategoryId = form.watch("categoryId");
+  const isAddingNew = watchedCategoryId === "__new__";
+
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) return;
+    try {
+      const created = await createCategoryMutation.mutateAsync({
+        name: newCategoryName.trim(),
+      });
+      form.setValue("categoryId", created.id);
+      setNewCategoryName("");
+    } catch {}
+  };
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
@@ -70,17 +88,54 @@ function NewJobModal({ onClose }: NewJobModalProps) {
                     disabled={isLoadingCategories}
                   >
                     <option value="" disabled>
-                      {isLoadingCategories ? "Loading categories..." : "Pick a category"}
+                      {isLoadingCategories
+                        ? "Loading categories..."
+                        : "Pick a category"}
                     </option>
                     {categories.map((c) => (
                       <option key={c.id} value={c.id}>
                         {c.name}
                       </option>
                     ))}
+                    <option value="__new__">+ Add new category</option>
                   </select>
                 </div>
-                {errors.categoryId && (
+                {errors.categoryId && !isAddingNew && (
                   <span className="ff-err">{errors.categoryId.message}</span>
+                )}
+                {isAddingNew && (
+                  <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                    <div className="input-wrap" style={{ flex: 1 }}>
+                      <input
+                        type="text"
+                        value={newCategoryName}
+                        onChange={(e) => setNewCategoryName(e.target.value)}
+                        placeholder="e.g. Cybersecurity"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            handleAddCategory();
+                          }
+                        }}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      onClick={handleAddCategory}
+                      disabled={
+                        createCategoryMutation.isPending ||
+                        !newCategoryName.trim()
+                      }
+                    >
+                      {createCategoryMutation.isPending ? (
+                        <Loader2 size={14} className="animate-spin" />
+                      ) : (
+                        <Plus size={14} />
+                      )}
+                      Add
+                    </button>
+                  </div>
                 )}
               </label>
 
