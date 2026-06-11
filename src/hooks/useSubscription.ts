@@ -90,3 +90,18 @@ export function useSubscribe() {
       toast.error(getErrorMessage(err, "Failed to submit payment")),
   });
 }
+
+// USER: create Xendit invoice for payment
+export function useCreateXenditInvoice() {
+  return useMutation({
+    mutationFn: async (planId: string) => {
+      const res = await axiosInstance.post<{ invoiceUrl: string }>(
+        "/xendit/invoice",
+        { planId },
+      );
+      return res.data;
+    },
+    onError: (err) =>
+      toast.error(getErrorMessage(err, "Failed to create payment invoice")),
+  });
+}
