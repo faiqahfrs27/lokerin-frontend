@@ -223,9 +223,21 @@ function ApplicantDetailDrawer({
               style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
             >
               <FileText size={14} />
-              <span>Preview CV</span>
+              <span>Open in new tab</span>
               <Eye size={14} />
             </a>
+            <iframe
+              src={applicant.cvUrl}
+              title="CV Preview"
+              style={{
+                width: "100%",
+                height: 480,
+                marginTop: 12,
+                border: "1px solid var(--border-1)",
+                borderRadius: 8,
+                background: "white",
+              }}
+            />
           </div>
 
           {applicant.job.hasTest && (
