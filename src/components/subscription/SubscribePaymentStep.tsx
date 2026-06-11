@@ -1,10 +1,11 @@
+import { Building2, Zap } from "lucide-react";
+import { useState } from "react";
+import { useCreateXenditInvoice } from "../../hooks/useSubscription";
 import type { SubscriptionPlan } from "../../schemas/subscriptionPlanSchema";
+import { ManualBody } from "./ManualPaymentBody";
+import { XenditBody } from "./XenditPaymentBody";
 
-const BANK_INFO = {
-  bank: "BCA",
-  account: "1234567890",
-  name: "PT Lokerin Indonesia",
-};
+type PaymentMethod = "manual" | "xendit";
 
 export function PaymentStep({
   plan,
@@ -21,105 +22,130 @@ export function PaymentStep({
   onSubmit: () => void;
   isPending: boolean;
 }) {
+  const [method, setMethod] = useState<PaymentMethod>("xendit");
+  const { mutate: createInvoice, isPending: xenditPending } =
+    useCreateXenditInvoice();
+
+  const handleXendit = () => {
+    createInvoice(plan.id, {
+      onSuccess: (data) => {
+        window.location.href = data.invoiceUrl;
+      },
+    });
+  };
+
   return (
     <div style={{ maxWidth: 480 }}>
-      <BankInfo plan={plan} />
-      <ProofUpload proof={proof} onChange={onProofChange} />
-      <ActionButtons
-        onBack={onBack}
-        onSubmit={onSubmit}
-        disabled={!proof || isPending}
-        isPending={isPending}
-      />
-    </div>
-  );
-}
-
-function BankInfo({ plan }: { plan: SubscriptionPlan }) {
-  return (
-    <div className="card card-pad" style={{ marginBottom: 16 }}>
-      <p className="t-kicker" style={{ marginBottom: 12 }}>Transfer Details</p>
-      <InfoRow label="Bank" value={BANK_INFO.bank} />
-      <InfoRow label="Account number" value={BANK_INFO.account} />
-      <InfoRow label="Account name" value={BANK_INFO.name} />
-      <InfoRow
-        label="Amount"
-        value={`Rp ${plan.price.toLocaleString("id-ID")}`}
-        highlight
-      />
-    </div>
-  );
-}
-
-function InfoRow({
-  label,
-  value,
-  highlight,
-}: {
-  label: string;
-  value: string;
-  highlight?: boolean;
-}) {
-  return (
-    <div style={{ display: "flex", justifyContent: "space-between",
-      padding: "8px 0", borderBottom: "1px solid var(--border)" }}>
-      <span style={{ fontSize: 13, color: "var(--fg-3)" }}>{label}</span>
-      <span style={{ fontSize: 13, fontWeight: highlight ? 800 : 600,
-        color: highlight ? "var(--brand)" : "var(--fg)" }}>
-        {value}
-      </span>
-    </div>
-  );
-}
-
-function ProofUpload({
-  proof,
-  onChange,
-}: {
-  proof: File | null;
-  onChange: (f: File | null) => void;
-}) {
-  return (
-    <div className="card card-pad" style={{ marginBottom: 16 }}>
-      <p className="t-kicker" style={{ marginBottom: 12 }}>Upload Payment Proof</p>
-      <div className="ff">
-        <label className="ff-label">Transfer receipt (JPG, PNG · Max 2MB)</label>
-        <div className="ff-input">
-          <input
-            type="file"
-            accept=".jpg,.jpeg,.png"
-            onChange={(e) => onChange(e.target.files?.[0] ?? null)}
+      <PlanSummary plan={plan} />
+      <p style={{ fontSize: 12, fontWeight: 700, letterSpacing: ".06em",
+        textTransform: "uppercase", color: "var(--fg-3)", marginBottom: 12 }}>
+        Payment Method
+      </p>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+        <MethodCard
+          id="manual"
+          selected={method === "manual"}
+          onSelect={() => setMethod("manual")}
+          icon={<Building2 size={18} />}
+          title="Manual Transfer"
+          desc="Transfer to bank account, upload proof"
+        >
+          <ManualBody
+            plan={plan}
+            proof={proof}
+            onProofChange={onProofChange}
+            onBack={onBack}
+            onSubmit={onSubmit}
+            isPending={isPending}
           />
-        </div>
+        </MethodCard>
+        <MethodCard
+          id="xendit"
+          selected={method === "xendit"}
+          onSelect={() => setMethod("xendit")}
+          icon={<Zap size={18} />}
+          title="Pay with Xendit"
+          desc="Instant payment, subscription activated immediately"
+        >
+          <XenditBody
+            onBack={onBack}
+            onPay={handleXendit}
+            isPending={xenditPending}
+          />
+        </MethodCard>
       </div>
-      {proof && (
-        <p style={{ margin: "8px 0 0", fontSize: 12, color: "var(--success-fg)" }}>
-          ✓ {proof.name} selected
-        </p>
+    </div>
+  );
+}
+
+function PlanSummary({ plan }: { plan: SubscriptionPlan }) {
+  return (
+    <div className="card card-pad"
+      style={{ display: "flex", justifyContent: "space-between",
+        alignItems: "center", marginBottom: 20 }}>
+      <div>
+        <p style={{ margin: 0, fontWeight: 700, fontSize: 15 }}>{plan.name}</p>
+        <p style={{ margin: 0, fontSize: 12, color: "var(--fg-3)" }}>per month</p>
+      </div>
+      <p style={{ margin: 0, fontSize: 22, fontWeight: 800, color: "var(--brand)" }}>
+        Rp {plan.price.toLocaleString("id-ID")}
+      </p>
+    </div>
+  );
+}
+
+function RadioDot({ selected }: { selected: boolean }) {
+  return (
+    <div style={{ width: 18, height: 18, borderRadius: "50%", flexShrink: 0,
+      border: `2px solid ${selected ? "var(--brand)" : "var(--fg-3)"}`,
+      background: selected ? "var(--brand)" : "transparent",
+      display: "grid", placeItems: "center" }}>
+      {selected && (
+        <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#fff" }} />
       )}
     </div>
   );
 }
 
-function ActionButtons({
-  onBack,
-  onSubmit,
-  disabled,
-  isPending,
+function MethodCard({
+  selected,
+  onSelect,
+  icon,
+  title,
+  desc,
+  children,
 }: {
-  onBack: () => void;
-  onSubmit: () => void;
-  disabled: boolean;
-  isPending: boolean;
+  id: string;
+  selected: boolean;
+  onSelect: () => void;
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  children: React.ReactNode;
 }) {
   return (
-    <div style={{ display: "flex", gap: 10 }}>
-      <button className="btn btn-secondary" onClick={onBack} disabled={isPending}>
-        Back
-      </button>
-      <button className="btn btn-primary" onClick={onSubmit} disabled={disabled}>
-        {isPending ? "Submitting..." : "Submit Payment"}
-      </button>
+    <div onClick={onSelect} className="card card-pad"
+      style={{ cursor: "pointer",
+        border: selected ? "1.5px solid var(--brand)" : "1.5px solid var(--border)",
+        background: selected ? "var(--brand-soft)" : undefined }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+        <RadioDot selected={selected} />
+        <div style={{ width: 36, height: 36, borderRadius: 8,
+          background: "var(--brand-soft)", color: "var(--brand)",
+          display: "grid", placeItems: "center", flexShrink: 0 }}>
+          {icon}
+        </div>
+        <div>
+          <p style={{ margin: 0, fontSize: 14, fontWeight: 700 }}>{title}</p>
+          <p style={{ margin: 0, fontSize: 12, color: "var(--fg-3)" }}>{desc}</p>
+        </div>
+      </div>
+      {selected && (
+        <div style={{ marginTop: 16, paddingTop: 16,
+          borderTop: "1px solid var(--border)" }}>
+          {children}
+        </div>
+      )}
     </div>
   );
 }
