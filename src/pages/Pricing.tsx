@@ -3,8 +3,8 @@ import { Link } from "react-router";
 import Footer from "../components/common/Footer";
 import Navbar from "../components/common/Navbar";
 import { useSubscriptionPlans } from "../hooks/useSubscriptionPlans";
-import { useAuth } from "../stores/useAuth";
 import type { SubscriptionPlan } from "../schemas/subscriptionPlanSchema";
+import { useAuth } from "../stores/useAuth";
 
 type AuthUser = { id: string } | null;
 
@@ -101,7 +101,7 @@ function PlanGrid({
         gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
       }}
     >
-      <StarterCard user={user} />
+      
       {plans.map((plan) => (
         <PaidPlanCard key={plan.id} plan={plan} user={user} />
       ))}
@@ -109,36 +109,6 @@ function PlanGrid({
   );
 }
 
-function StarterCard({ user }: { user: AuthUser }) {
-  const to = user ? "/dashboard" : "/register";
-  return (
-    <div
-      className="card card-pad"
-      style={{ display: "flex", flexDirection: "column", gap: 20 }}
-    >
-      <PlanHeader name="Starter" price={0} isFree />
-      <FeatureList
-        features={[
-          "Browse all jobs",
-          "Apply to 5 jobs/month",
-          "Basic CV templates",
-          "Skill assessment (1/month)",
-        ]}
-      />
-      <Link
-        to={to}
-        className="btn btn-secondary"
-        style={{
-          textDecoration: "none",
-          textAlign: "center",
-          marginTop: "auto",
-        }}
-      >
-        Continue free
-      </Link>
-    </div>
-  );
-}
 
 function PaidPlanCard({
   plan,

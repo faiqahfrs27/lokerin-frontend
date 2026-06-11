@@ -48,6 +48,7 @@ import SubscriptionStatus from "./pages/user/SubscriptionStatus";
 import Pricing from "./pages/Pricing";
 import Companies from "./pages/Companies";
 import CompanyDetailPage from "./pages/CompanyDetailPage";
+import CvGenerator from "./pages/user/CvGenerator";
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const router = createBrowserRouter([
       { path: "assessments/:id/take", element: <TakeAssessment /> },
       { path: "results/:id", element: <ResultPage /> },
       { path: "my-results", element: <MyResults /> },
+      { path: "cv-generator", element: <CvGenerator /> },
       { path: "settings", element: <div>Settings — coming soon</div> },
     ],
   },
