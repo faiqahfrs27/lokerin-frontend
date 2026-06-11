@@ -1,7 +1,7 @@
 import { useGoogleAuth } from "../hooks/useGoogleAuth";
 import { ArrowRight } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import AppMockup from "../components/register/AppMockup";
 import FormField from "../components/register/FormField";
 import OrangeButton from "../components/register/OrangeButton";
@@ -18,6 +18,8 @@ function Login() {
     handleSubmit,
     formState: { errors },
   } = form;
+  const location = useLocation();
+  const isUnauthorized = location.state?.unauthorized;
 
   return (
     <div className="auth-page">
@@ -33,6 +35,21 @@ function Login() {
             noValidate
             className="auth-form"
           >
+            {isUnauthorized && (
+              <div
+                style={{
+                  padding: "10px 14px",
+                  background: "var(--danger-bg)",
+                  borderRadius: "var(--radius-md)",
+                  fontSize: "var(--fs-sm)",
+                  color: "var(--danger-fg)",
+                  fontWeight: "var(--fw-medium)",
+                }}
+              >
+                🔒 Please sign in to access this page.
+              </div>
+            )}
+
             <div style={fadeUp(0)} className="auth-head">
               <h1 className="t-h2 auth-h">Welcome back</h1>
               <p className="auth-sub">Sign in to your Lokerin account.</p>

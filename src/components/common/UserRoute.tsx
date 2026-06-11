@@ -13,15 +13,20 @@ function UserRoute({ children }: UserRouteProps) {
     return (
       <Navigate
         to="/login"
-        state={{ from: location.pathname }}
+        state={{ from: location.pathname, unauthorized: true }}
         replace
       />
     );
+  }
+  
+  if (!user.isVerified) {
+    return <Navigate to="/" state={{ unverified: true }} replace />;
   }
 
   if (user.role !== "user") {
     return <Navigate to="/" replace />;
   }
+
 
   return <>{children}</>;
 }
