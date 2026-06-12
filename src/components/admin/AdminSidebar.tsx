@@ -27,7 +27,7 @@ const NAV_ITEMS: NavItem[] = [
   { to: "/admin/applicants", label: "Applicants", icon: Users },
   { to: "/admin/tests", label: "Tests", icon: FileText },
   { to: "/admin/interviews", label: "Interviews", icon: Calendar},
-  { to: "/admin/analytics", label: "Analytics", icon: BarChart3, badge: "Soon" },
+  { to: "/admin/analytics", label: "Analytics", icon: BarChart3},
   { to: "/admin/company-profile", label: "Company Profile", icon: Building2 },
 ];
 

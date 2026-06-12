@@ -12,6 +12,7 @@ import "./index.css";
 import Applicants from "./pages/admin/Applicants";
 import JobDetail from "./pages/admin/JobDetail";
 import Postings from "./pages/admin/Postings";
+import Analytics from "./pages/admin/Analytics";
 import AssessmentDetail from "./pages/dev/AssessmentDetail";
 import AssessmentList from "./pages/dev/AssessmentList";
 import SubscriptionPlans from "./pages/dev/SubscriptionPlans";
@@ -112,6 +113,7 @@ const router = createBrowserRouter([
       { path: "tests/:id", element: <TestDetail /> },
       { path: "company-profile", element: <CompanyProfile /> },
       { path: "interviews", element: <Interviews /> },
+      { path: "analytics", element: <Analytics /> },
     ],
   },
   {
