@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, Loader, MapPin, Search } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, Loader, MapPin, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router";
 import Footer from "../components/common/Footer";
@@ -18,6 +18,12 @@ const SORT_MAP: Record<string, { sortBy: string; sortOrder: string }> = {
   "Deadline soon": { sortBy: "deadline", sortOrder: "asc" },
 };
 
+const DATE_FILTERS = ["All time", "Last 7 days", "Last 30 days", "Custom range"];
+
+function toISODate(date: Date) {
+  return date.toISOString().split("T")[0];
+}
+
 function Jobs() {
   const [searchParams] = useSearchParams();
   const { city, isLoading: isLocLoading, isDenied, requestLocation } = useGeolocation();
@@ -32,6 +38,11 @@ function Jobs() {
   const [page, setPage] = useState(1);
   const [saved, setSaved] = useState<string[]>([]);
 
+  // Date filter
+  const [dateFilter, setDateFilter] = useState("All time");
+  const [customFrom, setCustomFrom] = useState("");
+  const [customTo, setCustomTo] = useState("");
+
   // Apply geolocation sebagai default city
   useEffect(() => {
     if (city && !searchParams.get("city") && !cityInput) {
@@ -41,6 +52,23 @@ function Jobs() {
 
   const { sortBy, sortOrder } = SORT_MAP[sort];
 
+  // Hitung dateFrom/dateTo berdasarkan dateFilter
+  let dateFrom: string | undefined;
+  let dateTo: string | undefined;
+
+  if (dateFilter === "Last 7 days") {
+    const from = new Date();
+    from.setDate(from.getDate() - 7);
+    dateFrom = toISODate(from);
+  } else if (dateFilter === "Last 30 days") {
+    const from = new Date();
+    from.setDate(from.getDate() - 30);
+    dateFrom = toISODate(from);
+  } else if (dateFilter === "Custom range") {
+    dateFrom = customFrom || undefined;
+    dateTo = customTo || undefined;
+  }
+
   const { data, isLoading, isFetching } = usePublicJobs({
     page,
     limit: 12,
@@ -48,6 +76,8 @@ function Jobs() {
     city: debouncedCity || undefined,
     sortBy,
     sortOrder,
+    dateFrom,
+    dateTo,
   });
 
   const jobs = data?.data ?? [];
@@ -92,6 +122,40 @@ function Jobs() {
               onChange={(e) => { setCityInput(e.target.value); setPage(1); }}
             />
           </div>
+        </div>
+
+        {/* Date filter row */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginBottom: 16 }}>
+          <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "var(--fs-sm)", color: "var(--fg-3)" }}>
+            <Calendar size={14} /> Posted
+          </span>
+          <select
+            className="sort-select"
+            value={dateFilter}
+            onChange={(e) => { setDateFilter(e.target.value); setPage(1); }}
+          >
+            {DATE_FILTERS.map((d) => <option key={d}>{d}</option>)}
+          </select>
+
+          {dateFilter === "Custom range" && (
+            <>
+              <div className="input-wrap" style={{ maxWidth: 160 }}>
+                <input
+                  type="date"
+                  value={customFrom}
+                  onChange={(e) => { setCustomFrom(e.target.value); setPage(1); }}
+                />
+              </div>
+              <span style={{ color: "var(--fg-3)", fontSize: "var(--fs-sm)" }}>to</span>
+              <div className="input-wrap" style={{ maxWidth: 160 }}>
+                <input
+                  type="date"
+                  value={customTo}
+                  onChange={(e) => { setCustomTo(e.target.value); setPage(1); }}
+                />
+              </div>
+            </>
+          )}
         </div>
 
         {/* Location banner */}
