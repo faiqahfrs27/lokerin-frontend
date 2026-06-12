@@ -1,13 +1,26 @@
 import { Calendar, Loader2, MapPin, Users, X } from "lucide-react";
 import { useApplicants } from "../../hooks/useApplicants";
 import { useCreateInterview } from "../../hooks/useInterviews";
+import { useEffect } from "react";
 
 interface NewInterviewModalProps {
   onClose: () => void;
+  preselectedApplicationId?: string;
+  preselectedLabel?: string;
 }
 
-function NewInterviewModal({ onClose }: NewInterviewModalProps) {
+function NewInterviewModal({
+  onClose,
+  preselectedApplicationId,
+  preselectedLabel,
+}: NewInterviewModalProps) {
   const { form, onSubmit, isPending } = useCreateInterview(onClose);
+
+  useEffect(() => {
+    if (preselectedApplicationId) {
+      form.setValue("applicationId", preselectedApplicationId);
+    }
+  }, [preselectedApplicationId, form]);
   const { data: applicantsData, isLoading: isLoadingApplicants } =
     useApplicants({ status: "accepted", limit: 100 });
 
@@ -50,36 +63,58 @@ function NewInterviewModal({ onClose }: NewInterviewModalProps) {
             <div className="form-grid">
               <label className="span-2">
                 Applicant
-                <div className="input-wrap">
-                  <Users size={16} />
-                  <select
-                    {...register("applicationId")}
-                    defaultValue=""
-                    disabled={isLoadingApplicants}
+                {preselectedApplicationId ? (
+                  <div
+                    style={{
+                      padding: "10px 12px",
+                      borderRadius: 8,
+                      border: "1px solid var(--border-1)",
+                      background: "var(--surface-2)",
+                      fontSize: 14,
+                      fontWeight: 600,
+                    }}
                   >
-                    <option value="" disabled>
-                      {isLoadingApplicants
-                        ? "Loading applicants..."
-                        : "Select an accepted applicant"}
-                    </option>
-                    {applicants.map((a) => (
-                      <option key={a.id} value={a.id}>
-                        {a.user.profile?.fullName ?? a.user.email} —{" "}
-                        {a.job.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                    {preselectedLabel ?? "Selected applicant"}
+                    <input type="hidden" {...register("applicationId")} />
+                  </div>
+                ) : (
+                  <>
+                    <div className="input-wrap">
+                      <Users size={16} />
+                      <select
+                        {...register("applicationId")}
+                        defaultValue=""
+                        disabled={isLoadingApplicants}
+                      >
+                        <option value="" disabled>
+                          {isLoadingApplicants
+                            ? "Loading applicants..."
+                            : "Select an accepted applicant"}
+                        </option>
+                        {applicants.map((a) => (
+                          <option key={a.id} value={a.id}>
+                            {a.user.profile?.fullName ?? a.user.email} —{" "}
+                            {a.job.title}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    {!isLoadingApplicants && applicants.length === 0 && (
+                      <span
+                        style={{
+                          color: "var(--fg-3)",
+                          fontSize: 12,
+                          marginTop: 4,
+                        }}
+                      >
+                        No accepted applicants yet. Accept some applicants first
+                        via /admin/applicants.
+                      </span>
+                    )}
+                  </>
+                )}
                 {errors.applicationId && (
                   <span className="ff-err">{errors.applicationId.message}</span>
-                )}
-                {!isLoadingApplicants && applicants.length === 0 && (
-                  <span
-                    style={{ color: "var(--fg-3)", fontSize: 12, marginTop: 4 }}
-                  >
-                    No accepted applicants yet. Accept some applicants first
-                    via /admin/applicants.
-                  </span>
                 )}
               </label>
 
@@ -87,10 +122,7 @@ function NewInterviewModal({ onClose }: NewInterviewModalProps) {
                 Scheduled at
                 <div className="input-wrap">
                   <Calendar size={16} />
-                  <input
-                    type="datetime-local"
-                    {...register("scheduledAt")}
-                  />
+                  <input type="datetime-local" {...register("scheduledAt")} />
                 </div>
                 {errors.scheduledAt && (
                   <span className="ff-err">{errors.scheduledAt.message}</span>

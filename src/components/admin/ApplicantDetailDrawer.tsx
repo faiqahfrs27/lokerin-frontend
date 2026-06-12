@@ -15,6 +15,7 @@ import {
 import { useApplicant } from "../../hooks/useApplicant";
 import { useUpdateApplicantStatus } from "../../hooks/useUpdateApplicantStatus";
 import type { ApplicantStatus } from "../../hooks/useApplicants";
+import NewInterviewModal from "./NewInterviewModal";
 
 interface ApplicantDetailDrawerProps {
   applicantId: string;
@@ -28,6 +29,7 @@ function ApplicantDetailDrawer({
   const { data: applicant, isLoading, isError } = useApplicant(applicantId);
   const [showRejectForm, setShowRejectForm] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
+  const [showInterviewModal, setShowInterviewModal] = useState(false);
 
   const updateStatus = useUpdateApplicantStatus(applicantId, () => {
     setShowRejectForm(false);
@@ -312,6 +314,66 @@ function ApplicantDetailDrawer({
               </div>
             </div>
           )}
+          {applicant.status === "accepted" && (
+            <div className="drawer-section">
+              <div className="drawer-section__label">Interview</div>
+              {applicant.interview ? (
+                <div
+                  style={{
+                    padding: 12,
+                    borderRadius: 8,
+                    background: "var(--success-bg, #F0FDF4)",
+                    color: "var(--success-fg, #15803D)",
+                    fontSize: 13.5,
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      marginBottom: 6,
+                    }}
+                  >
+                    <Calendar size={14} />
+                    <strong>Scheduled</strong>
+                  </div>
+                  <div>
+                    {new Date(applicant.interview.scheduledAt).toLocaleString(
+                      "id-ID",
+                      { dateStyle: "full", timeStyle: "short" },
+                    )}
+                  </div>
+                  {applicant.interview.location && (
+                    <div style={{ marginTop: 4, opacity: 0.85 }}>
+                      📍 {applicant.interview.location}
+                    </div>
+                  )}
+                  {applicant.interview.notes && (
+                    <div style={{ marginTop: 4, opacity: 0.85, fontSize: 12 }}>
+                      {applicant.interview.notes}
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8,
+                  }}
+                  onClick={() => setShowInterviewModal(true)}
+                >
+                  <Calendar size={14} />
+                  Schedule Interview
+                </button>
+              )}
+            </div>
+          )}
 
           {showRejectForm && (
             <div className="drawer-section">
@@ -405,6 +467,15 @@ function ApplicantDetailDrawer({
                 <Check size={14} /> Accept
               </button>
             </>
+          )}
+          {showInterviewModal && (
+            <NewInterviewModal
+              onClose={() => setShowInterviewModal(false)}
+              preselectedApplicationId={applicant.id}
+              preselectedLabel={`${
+                applicant.user.profile?.fullName ?? applicant.user.email
+              } — ${applicant.job.title}`}
+            />
           )}
         </div>
       </div>

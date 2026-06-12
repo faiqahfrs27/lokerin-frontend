@@ -30,6 +30,12 @@ export type Applicant = {
     attemptedAt: string;
     test: { passingScore: number };
   } | null;
+  interview?: {
+    id: string;
+    scheduledAt: string;
+    location: string | null;
+    notes: string | null;
+  } | null;
 };
 
 export type ApplicantsResponse = {
