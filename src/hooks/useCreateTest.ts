@@ -20,6 +20,7 @@ export function useCreateTest(onSuccess?: (id: string) => void) {
       description: "",
       passingScore: "75",
       durationMinutes: "30",
+      allowRetake: true,
     },
   });
 
@@ -31,6 +32,7 @@ export function useCreateTest(onSuccess?: (id: string) => void) {
         description: payload.description || undefined,
         passingScore: Number(payload.passingScore),
         durationMinutes: Number(payload.durationMinutes),
+        allowRetake: payload.allowRetake,
       });
       return res.data;
     },

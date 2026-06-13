@@ -15,6 +15,7 @@ export type UserTest = {
   description: string | null;
   passingScore: number;
   durationMinutes: number;
+  allowRetake: boolean;
   job: { id: string; title: string; isPublished: boolean };
   questions: UserTestQuestion[];
   myAttempt: {

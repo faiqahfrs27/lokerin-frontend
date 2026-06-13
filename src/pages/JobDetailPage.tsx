@@ -356,54 +356,73 @@ function JobDetailPage() {
           >
             <div className="card card-pad">
               {job.hasTest && !hasPassedTest ? (
-                <>
-                  {myAttempt ? (
-                    <div
-                      style={{
-                        padding: 12,
-                        background: "var(--danger-bg)",
-                        color: "var(--danger-fg)",
-                        borderRadius: "var(--radius-md)",
-                        marginBottom: 10,
-                        fontSize: 13,
-                      }}
-                    >
-                      ⚠️ You scored {myAttempt.score}/100 (need{" "}
-                      {testData?.passingScore ?? 75}). You can retake the test.
-                    </div>
-                  ) : (
-                    <div
-                      style={{
-                        padding: 12,
-                        background: "var(--warning-bg)",
-                        color: "var(--warning-fg)",
-                        borderRadius: "var(--radius-md)",
-                        marginBottom: 10,
-                        fontSize: 13,
-                      }}
-                    >
-                      🎯 This job requires a pre-selection test. Complete it
-                      first to unlock Apply.
-                    </div>
-                  )}
-                  <Link
-                    to={`/jobs/${jobId}/test`}
-                    className="btn btn-primary"
+                myAttempt && testData?.allowRetake === false ? (
+                  <div
                     style={{
-                      width: "100%",
+                      padding: 12,
+                      background: "var(--danger-bg)",
+                      color: "var(--danger-fg)",
+                      borderRadius: "var(--radius-md)",
                       marginBottom: 10,
-                      padding: "14px",
-                      fontSize: 15,
-                      textDecoration: "none",
-                      display: "block",
-                      textAlign: "center",
+                      fontSize: 13,
                     }}
                   >
-                    {myAttempt
-                      ? "Retake Pre-Selection Test"
-                      : "Take Pre-Selection Test"}
-                  </Link>
-                </>
+                    ❌ You scored {myAttempt.score}/100 (need{" "}
+                    {testData?.passingScore ?? 75}). This test doesn't allow
+                    retakes. You cannot apply to this job.
+                  </div>
+                ) : (
+                  <>
+                    {myAttempt ? (
+                      <div
+                        style={{
+                          padding: 12,
+                          background: "var(--danger-bg)",
+                          color: "var(--danger-fg)",
+                          borderRadius: "var(--radius-md)",
+                          marginBottom: 10,
+                          fontSize: 13,
+                        }}
+                      >
+                        ⚠️ You scored {myAttempt.score}/100 (need{" "}
+                        {testData?.passingScore ?? 75}). You can retake the
+                        test.
+                      </div>
+                    ) : (
+                      <div
+                        style={{
+                          padding: 12,
+                          background: "var(--warning-bg)",
+                          color: "var(--warning-fg)",
+                          borderRadius: "var(--radius-md)",
+                          marginBottom: 10,
+                          fontSize: 13,
+                        }}
+                      >
+                        🎯 This job requires a pre-selection test.
+                        {testData?.allowRetake === false &&
+                          " You have only one attempt."}
+                      </div>
+                    )}
+                    <Link
+                      to={`/jobs/${jobId}/test`}
+                      className="btn btn-primary"
+                      style={{
+                        width: "100%",
+                        marginBottom: 10,
+                        padding: "14px",
+                        fontSize: 15,
+                        textDecoration: "none",
+                        display: "block",
+                        textAlign: "center",
+                      }}
+                    >
+                      {myAttempt
+                        ? "Retake Pre-Selection Test"
+                        : "Take Pre-Selection Test"}
+                    </Link>
+                  </>
+                )
               ) : (
                 <>
                   {hasPassedTest && myAttempt && (

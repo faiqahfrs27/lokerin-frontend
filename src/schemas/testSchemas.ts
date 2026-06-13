@@ -4,6 +4,7 @@ export const createTestSchema = z.object({
   jobId: z.string().uuid("Pick a job"),
   title: z.string().min(3, "Title min 3 characters"),
   description: z.string().optional(),
+  allowRetake: z.boolean(),
   passingScore: z
     .string()
     .regex(/^\d+$/, "Must be a number")

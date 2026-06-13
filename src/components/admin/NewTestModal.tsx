@@ -10,7 +10,7 @@ function NewTestModal({ onClose }: NewTestModalProps) {
   const { form, onSubmit, isPending } = useCreateTest(() => onClose());
   const { data: jobsData, isLoading: isLoadingJobs } = useJobs({ limit: 100 });
   const jobs = jobsData?.data ?? [];
-  
+
   const {
     register,
     handleSubmit,
@@ -112,6 +112,21 @@ function NewTestModal({ onClose }: NewTestModalProps) {
                 {errors.passingScore && (
                   <span className="ff-err">{errors.passingScore.message}</span>
                 )}
+              </label>
+
+              <label
+                className="span-2"
+                style={{ display: "flex", alignItems: "center", gap: 10 }}
+              >
+                <input
+                  type="checkbox"
+                  {...register("allowRetake")}
+                  defaultChecked
+                  style={{ width: 16, height: 16 }}
+                />
+                <span style={{ fontSize: 14 }}>
+                  Allow retake — applicants can retry if they fail
+                </span>
               </label>
 
               <label>
