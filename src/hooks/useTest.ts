@@ -8,6 +8,7 @@ export type TestQuestion = {
   correctIndex: number;
   order: number;
   createdAt: string;
+  allowRetake: boolean;
 };
 
 export type TestDetail = {
@@ -21,6 +22,7 @@ export type TestDetail = {
   job: { id: string; title: string };
   questions: TestQuestion[];
   _count: { attempts: number };
+  allowRetake: boolean;
 };
 
 export function useTest(id: string | undefined) {
