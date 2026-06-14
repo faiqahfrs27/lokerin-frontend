@@ -1,6 +1,7 @@
 import {
   BadgeCheck,
   Bookmark,
+  CalendarDays,
   ChevronRight,
   FileText,
   LayoutDashboard,
@@ -31,6 +32,7 @@ const NAV_ITEMS = [
   { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
   { to: "/dashboard/profile", label: "My Profile", icon: User },
   { to: "/dashboard/applications", label: "Applications", icon: FileText },
+  { to: "/dashboard/my-interviews", label: "My Interviews", icon: CalendarDays },
   { to: "/dashboard/saved", label: "Saved Jobs", icon: Bookmark },
   { to: "/dashboard/subscribe", label: "Subscription", icon: CreditCard },
   { to: "/dashboard/assessments", label: "Assessments", icon: BadgeCheck },
