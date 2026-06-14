@@ -14,3 +14,9 @@ export const createInterviewSchema = z.object({
 });
 
 export type CreateInterviewValues = z.infer<typeof createInterviewSchema>;
+
+export const updateInterviewSchema = createInterviewSchema.omit({
+  applicationId: true,
+});
+
+export type UpdateInterviewValues = z.infer<typeof updateInterviewSchema>;
