@@ -50,6 +50,7 @@ import Pricing from "./pages/Pricing";
 import Companies from "./pages/Companies";
 import CompanyDetailPage from "./pages/CompanyDetailPage";
 import CvGenerator from "./pages/user/CvGenerator";
+import MyInterviews from "./pages/user/MyInterviews";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +97,7 @@ const router = createBrowserRouter([
       { path: "my-results", element: <MyResults /> },
       { path: "cv-generator", element: <CvGenerator /> },
       { path: "settings", element: <div>Settings — coming soon</div> },
+      { path: "my-interviews", element: <MyInterviews /> },
     ],
   },
   {
