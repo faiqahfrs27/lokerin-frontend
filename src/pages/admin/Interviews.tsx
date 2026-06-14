@@ -1,6 +1,7 @@
-import { Calendar, Plus, Trash2 } from "lucide-react";
+import { Calendar, Pencil, Plus, Trash2 } from "lucide-react";
 import { useState } from "react";
 import ConfirmModal from "../../components/admin/ConfirmModal";
+import EditInterviewModal from "../../components/admin/EditInterviewModal";
 import NewInterviewModal from "../../components/admin/NewInterviewModal";
 import {
   useDeleteInterview,
@@ -10,6 +11,7 @@ import {
 
 function Interviews() {
   const [openCreate, setOpenCreate] = useState(false);
+  const [editInterview, setEditInterview] = useState<Interview | null>(null);
   const [deleteInterview, setDeleteInterview] = useState<Interview | null>(
     null,
   );
@@ -139,14 +141,30 @@ function Interviews() {
                   </td>
                   <td>{it.location ?? "—"}</td>
                   <td style={{ textAlign: "right" }}>
-                    <button
-                      type="button"
-                      className="btn btn-ghost btn-icon"
-                      onClick={() => setDeleteInterview(it)}
-                      title="Cancel interview"
+                    <div
+                      style={{
+                        display: "inline-flex",
+                        gap: 4,
+                        justifyContent: "flex-end",
+                      }}
                     >
-                      <Trash2 size={14} />
-                    </button>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-icon"
+                        onClick={() => setEditInterview(it)}
+                        title="Reschedule interview"
+                      >
+                        <Pencil size={14} />
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-icon"
+                        onClick={() => setDeleteInterview(it)}
+                        title="Cancel interview"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
@@ -157,6 +175,13 @@ function Interviews() {
 
       {openCreate && (
         <NewInterviewModal onClose={() => setOpenCreate(false)} />
+      )}
+
+      {editInterview && (
+        <EditInterviewModal
+          interview={editInterview}
+          onClose={() => setEditInterview(null)}
+        />
       )}
 
       {deleteInterview && (
