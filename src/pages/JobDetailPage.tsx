@@ -19,6 +19,8 @@ import { useJobDetail } from "../hooks/jobs/useJobDetail";
 import { useAuth } from "../stores/useAuth";
 import ApplyModal from "../components/jobs/ApplyModal";
 import { useTestForJob } from "../hooks/useTestForJob";
+import { usePublicJobs } from "../hooks/jobs/usePublicJobs";
+import JobCard from "../components/jobs/JobCard";
 
 function formatSalary(salary: number | string | null) {
   if (!salary) return null;
@@ -62,7 +64,6 @@ function getColor(str: string) {
 
 function JobDetailPage() {
   const { jobId } = useParams<{ jobId: string }>();
-  console.log("jobId:", jobId);
   const navigate = useNavigate();
   const user = useAuth((s) => s.user);
   const { data: job, isLoading, isError } = useJobDetail(jobId);
@@ -74,6 +75,14 @@ function JobDetailPage() {
   );
   const myAttempt = testData?.myAttempt ?? null;
   const hasPassedTest = myAttempt?.passed === true;
+
+  // Related jobs — pekerjaan lain dari perusahaan yang sama
+  const { data: relatedData } = usePublicJobs({
+    companyId: job?.companyId,
+    excludeJobId: job?.id,
+    limit: 3,
+  });
+  const relatedJobs = relatedData?.data ?? [];
 
   if (isLoading)
     return (
@@ -323,7 +332,7 @@ function JobDetailPage() {
             {job.tags &&
               Array.isArray(job.tags) &&
               (job.tags as string[]).length > 0 && (
-                <div className="card card-pad">
+                <div className="card card-pad" style={{ marginBottom: 24 }}>
                   <h2
                     style={{
                       margin: "0 0 12px",
@@ -342,6 +351,26 @@ function JobDetailPage() {
                   </div>
                 </div>
               )}
+
+            {/* Related jobs */}
+            {relatedJobs.length > 0 && (
+              <div className="card card-pad">
+                <h2
+                  style={{
+                    margin: "0 0 16px",
+                    fontSize: "var(--fs-lg)",
+                    fontWeight: "var(--fw-semibold)",
+                  }}
+                >
+                  More jobs from {companyName}
+                </h2>
+                <div style={{ display: "grid", gap: 12 }}>
+                  {relatedJobs.map((j) => (
+                    <JobCard key={j.id} job={j} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}

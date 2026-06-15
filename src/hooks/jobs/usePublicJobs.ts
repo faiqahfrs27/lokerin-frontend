@@ -9,6 +9,8 @@ interface UsePublicJobsParams {
   search?: string;
   city?: string;
   categoryId?: string;
+  companyId?: string;
+  excludeJobId?: string;
   sortBy?: string;
   sortOrder?: string;
   dateFrom?: string;
@@ -22,10 +24,12 @@ export function usePublicJobs(params: UsePublicJobsParams = {}) {
   if (params.search) query.set("search", params.search);
   if (params.city) query.set("city", params.city);
   if (params.categoryId) query.set("categoryId", params.categoryId);
+  if (params.companyId) query.set("companyId", params.companyId);
+  if (params.excludeJobId) query.set("excludeJobId", params.excludeJobId);
   if (params.sortBy) query.set("sortBy", params.sortBy);
   if (params.sortOrder) query.set("sortOrder", params.sortOrder);
-  if (params.dateFrom) query.set("dateFrom", params.dateFrom); 
-  if (params.dateTo) query.set("dateTo", params.dateTo);  
+  if (params.dateFrom) query.set("dateFrom", params.dateFrom);
+  if (params.dateTo) query.set("dateTo", params.dateTo);
 
   return useQuery<JobsResponse>({
     queryKey: ["public-jobs", params],
