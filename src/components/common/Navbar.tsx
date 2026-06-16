@@ -19,7 +19,7 @@ function Navbar() {
   const user = useAuth((s) => s.user);
 
   const links = user
-    ? [...NAV_LINKS, { to: "/dashboard", label: "My applications" }]
+    ? [...NAV_LINKS, { to: "/dashboard/applications", label: "My applications" }]
     : NAV_LINKS;
 
   return (
