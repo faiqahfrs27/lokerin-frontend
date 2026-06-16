@@ -144,13 +144,15 @@ function Home() {
         <section className="container section">
           <div className="section-head">
             <div>
-              <span className="kicker">Fresh today</span>
+              <span className="kicker">
+                {city ? `Near ${city}` : "Fresh today"}
+              </span>
               <h2 className="t-h3" style={{ margin: "8px 0 0" }}>
-                Latest jobs
+                {city ? `Jobs in ${city}` : "Latest jobs"}
               </h2>
             </div>
             <Link
-              to="/jobs"
+              to={city ? `/jobs?city=${city}` : "/jobs"}
               className="btn btn-ghost"
               style={{ textDecoration: "none" }}
             >

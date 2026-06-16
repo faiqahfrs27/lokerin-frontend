@@ -1776,7 +1776,7 @@ input:-webkit-autofill:focus {
    ============================================================ */
  
 .landing-hero {
-  padding: 72px 0 80px;
+  padding: 72px 0 48px;
   position: relative;
   overflow: hidden;
 }
@@ -1821,10 +1821,17 @@ input:-webkit-autofill:focus {
 .loc-banner-dot.loading { background: var(--brand); animation: pulse 1.2s ease-in-out infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
  
-.section { padding: 56px 0; }
+.section { padding: 40px 0; }
 .section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
  
 .latest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+
+.latest-grid .card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
  
 .loc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
 .loc-card { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; text-align: left; cursor: pointer; transition: all 200ms var(--ease-out); font-family: inherit; }
