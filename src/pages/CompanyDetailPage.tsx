@@ -5,6 +5,7 @@ import Footer from "../components/common/Footer";
 import Navbar from "../components/common/Navbar";
 import { usePublicCompanyDetail } from "../hooks/company/usePublicCompanyDetail";
 import type { CompanyJob } from "../types/company.types";
+import { CompanyReviewSection } from "../components/company/CompanyReviewSection";
 
 const COMPANY_COLORS = ["#0D9488", "#7C3AED", "#DC2626", "#2563EB", "#EA580C"];
 function getColor(str: string) {
@@ -93,7 +94,7 @@ function JobItem({ job }: { job: CompanyJob }) {
 function CompanyDetailPage() {
   const { id } = useParams<{ id: string }>();
   const { data: company, isLoading, isError } = usePublicCompanyDetail(id);
-  const [tab, setTab] = useState<"about" | "jobs">("jobs");
+  const [tab, setTab] = useState<"about" | "jobs" | "reviews">("jobs");
 
   if (isLoading)
     return (
@@ -264,7 +265,7 @@ function CompanyDetailPage() {
             paddingBottom: 0,
           }}
         >
-          {(["jobs", "about"] as const).map((t) => (
+          {(["jobs", "about", "reviews"] as const).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -288,7 +289,9 @@ function CompanyDetailPage() {
             >
               {t === "jobs"
                 ? `Open positions (${company.jobs.length})`
-                : "About"}
+                : t === "about"
+                  ? "About"
+                  : "Reviews"}
             </button>
           ))}
         </div>
@@ -327,6 +330,7 @@ function CompanyDetailPage() {
             )}
           </div>
         )}
+        {tab === "reviews" && <CompanyReviewSection companyId={company.id} />}
       </main>
       <Footer />
     </>
