@@ -2,6 +2,7 @@ import { Medal, Download, FileCheck, XCircle } from "lucide-react";
 import { Link } from "react-router";
 import type { AssessmentResult } from "../../schemas/userAssessmentSchema";
 import { downloadCertificate } from "../../utils/downloadCertificate";
+import { ShareCertificateButton } from "./ShareCertificateButton";
 
 interface Props {
   result: AssessmentResult;
@@ -109,12 +110,21 @@ function PassedSection({ result }: { result: AssessmentResult }) {
       >
         You've earned a badge and your certificate is being prepared.
       </p>
-      <CertificateButton certificateId={result.certificate?.id} />
+      <CertificateButton
+        certificateId={result.certificate?.id}
+        certificateCode={result.certificate?.code}
+      />{" "}
     </div>
   );
 }
 
-function CertificateButton({ certificateId }: { certificateId?: string }) {
+function CertificateButton({
+  certificateId,
+  certificateCode,
+}: {
+  certificateId?: string;
+  certificateCode?: string;
+}) {
   const isReady = !!certificateId;
 
   const handleDownload = () => {
@@ -122,16 +132,21 @@ function CertificateButton({ certificateId }: { certificateId?: string }) {
   };
 
   return (
-    <button
-      type="button"
-      className="btn btn-primary"
-      disabled={!isReady}
-      onClick={handleDownload}
-      title={isReady ? "Download certificate" : "Certificate not ready yet"}
-    >
-      <Download size={14} />
-      {isReady ? "Download certificate" : "Certificate coming soon"}
-    </button>
+    <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+      <button
+        type="button"
+        className="btn btn-primary"
+        disabled={!isReady}
+        onClick={handleDownload}
+        title={isReady ? "Download certificate" : "Certificate not ready yet"}
+      >
+        <Download size={14} />
+        {isReady ? "Download certificate" : "Certificate coming soon"}
+      </button>
+      {isReady && certificateCode && (
+        <ShareCertificateButton code={certificateCode} />
+      )}
+    </div>
   );
 }
 
