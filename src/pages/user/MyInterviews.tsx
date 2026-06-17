@@ -1,10 +1,10 @@
 import { Building2, Calendar, MapPin, ChevronRight } from "lucide-react";
 import { Link } from "react-router";
+import Spinner from "../../components/common/Spinner";
 import {
   useMyInterviews,
   type MyInterview,
 } from "../../hooks/useMyInterviews";
-import Spinner from "../../components/common/Spinner";
 
 type ColumnKey = "today" | "thisWeek" | "upcoming" | "past";
 
@@ -186,7 +186,7 @@ function KanbanColumn({
         display: "flex",
         flexDirection: "column",
         gap: 10,
-        minHeight: 320,
+        minHeight: 120,
       }}
     >
       <div

@@ -95,6 +95,16 @@ function NewTestModal({ onClose }: NewTestModalProps) {
                     {...register("description")}
                     placeholder="Short context about the test..."
                     rows={3}
+                    style={{
+                      outline: "none",
+                      border: "none",
+                      background: "transparent",
+                      resize: "vertical",
+                      width: "100%",
+                      fontFamily: "inherit",
+                      fontSize: "inherit",
+                      color: "inherit",
+                    }}
                   />
                 </div>
               </label>
@@ -114,21 +124,6 @@ function NewTestModal({ onClose }: NewTestModalProps) {
                 )}
               </label>
 
-              <label
-                className="span-2"
-                style={{ display: "flex", alignItems: "center", gap: 10 }}
-              >
-                <input
-                  type="checkbox"
-                  {...register("allowRetake")}
-                  defaultChecked
-                  style={{ width: 16, height: 16 }}
-                />
-                <span style={{ fontSize: 14 }}>
-                  Allow retake — applicants can retry if they fail
-                </span>
-              </label>
-
               <label>
                 Duration (minutes)
                 <div className="input-wrap">
@@ -144,6 +139,46 @@ function NewTestModal({ onClose }: NewTestModalProps) {
                     {errors.durationMinutes.message}
                   </span>
                 )}
+              </label>
+
+              <label
+                className="span-2"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 12,
+                  padding: "12px 14px",
+                  background: "var(--surface-2)",
+                  borderRadius: 10,
+                  border: "1px solid var(--border-1)",
+                  cursor: "pointer",
+                }}
+              >
+                <input
+                  type="checkbox"
+                  {...register("allowRetake")}
+                  defaultChecked
+                  style={{
+                    width: 18,
+                    height: 18,
+                    accentColor: "var(--brand, #F97316)",
+                    cursor: "pointer",
+                  }}
+                />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: 14 }}>
+                    Allow retake
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 12,
+                      color: "var(--fg-3)",
+                      marginTop: 2,
+                    }}
+                  >
+                    Applicants can retry the test if they fail
+                  </div>
+                </div>
               </label>
             </div>
           </div>
