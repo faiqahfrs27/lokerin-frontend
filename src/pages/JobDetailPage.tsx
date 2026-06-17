@@ -21,6 +21,11 @@ import ApplyModal from "../components/jobs/ApplyModal";
 import { useTestForJob } from "../hooks/useTestForJob";
 import { usePublicJobs } from "../hooks/jobs/usePublicJobs";
 import JobCard from "../components/jobs/JobCard";
+import {
+  useSavedJobs,
+  useSaveJob,
+  useUnsaveJob,
+} from "../hooks/jobs/useSavedJobs";
 
 function formatSalary(salary: number | string | null) {
   if (!salary) return null;
@@ -67,7 +72,10 @@ function JobDetailPage() {
   const navigate = useNavigate();
   const user = useAuth((s) => s.user);
   const { data: job, isLoading, isError } = useJobDetail(jobId);
-  const [saved, setSaved] = useState(false);
+  const { data: savedJobs } = useSavedJobs();
+  const { mutate: saveJob } = useSaveJob();
+  const { mutate: unsaveJob } = useUnsaveJob();
+  const isSaved = savedJobs?.some((s) => s.jobId === job?.id) ?? false;
   const [showApply, setShowApply] = useState(false);
 
   const { data: testData } = useTestForJob(
@@ -492,14 +500,20 @@ function JobDetailPage() {
                   justifyContent: "center",
                   gap: 8,
                 }}
-                onClick={() => setSaved(!saved)}
+                onClick={() => {
+                  if (!user) {
+                    navigate("/login");
+                    return;
+                  }
+                  isSaved ? unsaveJob(job.id) : saveJob(job.id);
+                }}
               >
-                {saved ? (
+                {isSaved ? (
                   <BookmarkCheck size={16} style={{ color: "var(--brand)" }} />
                 ) : (
                   <Bookmark size={16} />
                 )}
-                {saved ? "Saved" : "Save job"}
+                {isSaved ? "Saved" : "Save job"}
               </button>
             </div>
 

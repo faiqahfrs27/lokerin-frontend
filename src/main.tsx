@@ -52,6 +52,7 @@ import Companies from "./pages/Companies";
 import CompanyDetailPage from "./pages/CompanyDetailPage";
 import CvGenerator from "./pages/user/CvGenerator";
 import MyInterviews from "./pages/user/MyInterviews";
+import SavedJobs from "./pages/SavedJobs";
 
 const queryClient = new QueryClient();
 
@@ -89,7 +90,7 @@ const router = createBrowserRouter([
       { path: "profile", element: <ProfilePage /> },
       { path: "applications", element: <Applications /> },
       { path: "applications/:id", element: <ApplicationDetail /> },
-      { path: "saved", element: <div>Saved Jobs — coming soon</div> },
+      { path: "saved", element: <SavedJobs /> },
       { path: "subscribe", element: <Subscribe /> },
       { path: "subscription", element: <SubscriptionStatus /> },
       { path: "assessments", element: <Assessments /> },
