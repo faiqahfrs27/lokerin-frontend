@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import { Plus, ArrowRight, Trash2, FileText } from "lucide-react";
 import NewTestModal from "../../components/admin/NewTestModal";
 import ConfirmModal from "../../components/admin/ConfirmModal";
+import Spinner from "../../components/common/Spinner";
 import { useTests } from "../../hooks/useTests";
 import type { TestListItem } from "../../hooks/useTests";
 import { useDeleteTest } from "../../hooks/useDeleteTest";
@@ -50,7 +51,9 @@ function Tests() {
           <tbody>
             {isLoading && (
               <tr className="empty-row">
-                <td colSpan={6}>Loading...</td>
+                <td colSpan={6}>
+                  <Spinner text="Loading tests..." />
+                </td>
               </tr>
             )}
             {isError && (

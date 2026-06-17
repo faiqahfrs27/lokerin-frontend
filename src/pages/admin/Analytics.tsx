@@ -11,6 +11,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import Spinner from "../../components/common/Spinner";
 import { useAnalytics } from "../../hooks/useAnalytics";
 
 const COLORS = ["#F97316", "#0EA5E9", "#10B981", "#A855F7", "#F59E0B", "#EF4444"];
@@ -105,11 +106,7 @@ function Analytics() {
   const { data, isLoading, isError, error } = useAnalytics();
 
   if (isLoading) {
-    return (
-      <div style={{ padding: 40, textAlign: "center", color: "var(--fg-3)" }}>
-        Loading analytics...
-      </div>
-    );
+    return <Spinner text="Loading analytics..." fullPage />;
   }
   if (isError || !data) {
     return (

@@ -4,6 +4,7 @@ import {
   useMyInterviews,
   type MyInterview,
 } from "../../hooks/useMyInterviews";
+import Spinner from "../../components/common/Spinner";
 
 type ColumnKey = "today" | "thisWeek" | "upcoming" | "past";
 
@@ -258,9 +259,7 @@ function MyInterviews() {
         </p>
       </div>
 
-      {isLoading && (
-        <p style={{ color: "var(--fg-3)" }}>Loading interviews...</p>
-      )}
+      {isLoading && <Spinner text="Loading interviews..." />}
       {isError && (
         <p style={{ color: "var(--danger-fg)" }}>
           Couldn't load interviews. Please try again.

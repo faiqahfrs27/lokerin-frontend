@@ -3,6 +3,7 @@ import { useState } from "react";
 import ConfirmModal from "../../components/admin/ConfirmModal";
 import EditInterviewModal from "../../components/admin/EditInterviewModal";
 import NewInterviewModal from "../../components/admin/NewInterviewModal";
+import Spinner from "../../components/common/Spinner";
 import {
   useDeleteInterview,
   useInterviews,
@@ -58,7 +59,9 @@ function Interviews() {
           <tbody>
             {isLoading && (
               <tr className="empty-row">
-                <td colSpan={5}>Loading...</td>
+                <td colSpan={5}>
+                  <Spinner text="Loading interviews..." />
+                </td>
               </tr>
             )}
             {isError && (
