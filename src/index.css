@@ -1771,6 +1771,8 @@ input:-webkit-autofill:focus {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+
+
 /* ============================================================
    HOME / LANDING PAGE
    ============================================================ */
@@ -2140,3 +2142,76 @@ input:-webkit-autofill:focus {
 .ProseMirror ol { padding-left: 20px; list-style: decimal; }
 .ProseMirror strong { font-weight: 700; }
 .ProseMirror em { font-style: italic; }
+
+
+/* ============================================================
+   SUBSCRIBERS PAGE
+   ============================================================ */
+.stat-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+@media (max-width: 700px) {
+  .stat-card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.subscriber-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.subscriber-search {
+  margin-left: auto;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 12px;
+  font-size: 12px;
+  color: var(--fg);
+  width: 220px;
+}
+.subscriber-row-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr 1fr 24px;
+  padding: 14px 18px;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.subscriber-meta {
+  display: contents;
+}
+.subscriber-history-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  padding: 9px 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+@media (max-width: 700px) {
+  .subscriber-search {
+    width: 100%;
+    margin-left: 0;
+  }
+  .subscriber-row-grid {
+    grid-template-columns: 1fr 24px;
+    grid-template-rows: auto auto;
+    row-gap: 10px;
+  }
+  .subscriber-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    grid-column: 1 / 2;
+  }
+  .subscriber-history-grid {
+    grid-template-columns: 1fr 1fr;
+    row-gap: 4px;
+  }
+}

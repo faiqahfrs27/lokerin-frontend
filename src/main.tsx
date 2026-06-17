@@ -44,6 +44,7 @@ import CompanyProfile from "./pages/admin/CompanyProfile";
 import Applications from "./pages/Applications";
 import ApplicationDetail from "./pages/ApplicationDetail";
 import Payments from "./pages/dev/Payment";
+import Subscribers from "./pages/dev/Subscribers";
 import Subscribe from "./pages/user/Subscribe";
 import SubscriptionStatus from "./pages/user/SubscriptionStatus";
 import Pricing from "./pages/Pricing";
@@ -130,6 +131,7 @@ const router = createBrowserRouter([
       { path: "assessments/:id", element: <AssessmentDetail /> },
       { path: "subscription-plans", element: <SubscriptionPlans /> },
       { path: "payments", element: <Payments /> },
+      { path: "subscribers", element: <Subscribers /> },
     ],
   },
   {
