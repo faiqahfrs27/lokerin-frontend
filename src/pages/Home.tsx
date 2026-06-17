@@ -7,6 +7,12 @@ import JobCard from "../components/jobs/JobCard";
 import LocationBanner from "../components/home/LocationBanner";
 import { useGeolocation } from "../hooks/useGeolocation";
 import { usePublicJobs } from "../hooks/jobs/usePublicJobs";
+import { useAuth } from "../stores/useAuth";
+import {
+  useSavedJobs,
+  useSaveJob,
+  useUnsaveJob,
+} from "../hooks/jobs/useSavedJobs";
 
 const SAMPLE_LOCATIONS = [
   { city: "Jakarta", count: 1240 },
@@ -37,6 +43,12 @@ function Home() {
   const { city, isLoading, isDenied, requestLocation } = useGeolocation();
   const location = useLocation();
   const isUnverified = location.state?.unverified;
+
+  const user = useAuth((s) => s.user);
+  const { data: savedJobs } = useSavedJobs();
+  const { mutate: saveJob } = useSaveJob();
+  const { mutate: unsaveJob } = useUnsaveJob();
+  const savedJobIds = savedJobs?.map((s) => s.jobId) ?? [];
 
   const { data } = usePublicJobs({
     limit: 5,
@@ -161,7 +173,22 @@ function Home() {
           </div>
           <div className="latest-grid">
             {latestJobs.length > 0 ? (
-              latestJobs.map((job) => <JobCard key={job.id} job={job} />)
+              latestJobs.map((job) => (
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  saved={savedJobIds.includes(job.id)}
+                  onSave={(j) => {
+                    if (!user) {
+                      navigate("/login");
+                      return;
+                    }
+                    savedJobIds.includes(j.id)
+                      ? unsaveJob(j.id)
+                      : saveJob(j.id);
+                  }}
+                />
+              ))
             ) : (
               <p style={{ color: "var(--fg-3)", fontSize: "var(--fs-sm)" }}>
                 No jobs available yet.
