@@ -74,8 +74,12 @@ function Postings() {
       </div>
 
       <div
-        className="hstack"
-        style={{ gap: 8, marginBottom: 12, flexWrap: "wrap" }}
+        style={{
+          display: "flex",
+          gap: 10,
+          marginBottom: 12,
+          flexWrap: "wrap",
+        }}
       >
         <div className="input-wrap" style={{ flex: 1, minWidth: 200 }}>
           <Search size={16} />
@@ -84,20 +88,22 @@ function Postings() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <div className="input-wrap" style={{ minWidth: 160 }}>
-            <select
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
-            >
-              <option value="">All categories</option>
-              {categories.map((c: { id: string; name: string }) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
+
+        <div className="input-wrap" style={{ minWidth: 180 }}>
+          <select
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+          >
+            <option value="">All categories</option>
+            {categories.map((c: { id: string; name: string }) => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <div className="input-wrap" style={{ minWidth: 180 }}>
           <select
             value={`${sortBy}-${sortOrder}`}

@@ -228,18 +228,6 @@ function ApplicantDetailDrawer({
               <span>Open in new tab</span>
               <Eye size={14} />
             </a>
-            <iframe
-              src={applicant.cvUrl}
-              title="CV Preview"
-              style={{
-                width: "100%",
-                height: 480,
-                marginTop: 12,
-                border: "1px solid var(--border-1)",
-                borderRadius: 8,
-                background: "white",
-              }}
-            />
           </div>
 
           {applicant.job.hasTest && (

@@ -4,7 +4,6 @@ import {
   Building2,
   Calendar,
   FileText,
-  Home,
   LogOut,
   Menu,
   Power,
@@ -24,7 +23,6 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: "/admin/overview", label: "Overview", icon: Home, badge: "Soon" },
   { to: "/admin/postings", label: "Job postings", icon: Briefcase },
   { to: "/admin/applicants", label: "Applicants", icon: Users },
   { to: "/admin/tests", label: "Tests", icon: FileText },
@@ -117,7 +115,6 @@ function AdminSidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  // Auto-close drawer when navigating to a new page
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
