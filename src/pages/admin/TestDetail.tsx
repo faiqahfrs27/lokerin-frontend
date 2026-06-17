@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router";
 import { ArrowLeft, Loader2, Trash2, Plus, Check } from "lucide-react";
+import Spinner from "../../components/common/Spinner";
 import { useTest } from "../../hooks/useTest";
 import { useAddQuestion } from "../../hooks/useAddQuestion";
 import { useDeleteQuestion } from "../../hooks/useDeleteQuestion";
@@ -10,7 +11,7 @@ function TestDetail() {
   const { data: test, isLoading, isError } = useTest(id);
 
   if (isLoading) {
-    return <div className="empty-row">Loading...</div>;
+    return <Spinner text="Loading test..." />;
   }
   if (isError || !test) {
     return <div className="empty-row">Test not found.</div>;

@@ -13,6 +13,7 @@ import {
 import NewJobModal from "../../components/admin/NewJobModal";
 import EditJobModal from "../../components/admin/EditJobModal";
 import ConfirmModal from "../../components/admin/ConfirmModal";
+import Spinner from "../../components/common/Spinner";
 import { useJobs } from "../../hooks/useJobs";
 import type { Job } from "../../hooks/useJobs";
 import { useJobCategories } from "../../hooks/useJobCategories";
@@ -146,7 +147,9 @@ function Postings() {
           <tbody>
             {isLoading && (
               <tr className="empty-row">
-                <td colSpan={7}>Loading...</td>
+                <td colSpan={7}>
+                  <Spinner text="Loading jobs..." />
+                </td>
               </tr>
             )}
             {isError && (
@@ -209,7 +212,7 @@ function Postings() {
                         onClick={() => togglePublish.mutate(p.id)}
                       >
                         {togglePending ? (
-                          <Loader2 size={14} className="animate-spin" />
+                          <Loader2 size={14} className="spin" />
                         ) : p.isPublished ? (
                           <EyeOff size={14} />
                         ) : (

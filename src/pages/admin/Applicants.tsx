@@ -3,6 +3,7 @@ import { Search, ArrowRight, SlidersHorizontal } from "lucide-react";
 import { useApplicants } from "../../hooks/useApplicants";
 import type { ApplicantStatus } from "../../hooks/useApplicants";
 import ApplicantDetailDrawer from "../../components/admin/ApplicantDetailDrawer";
+import Spinner from "../../components/common/Spinner";
 import { useDebouncedValue } from "../../hooks/search/useDebouncedValue";
 
 type Filter = "all" | ApplicantStatus;
@@ -21,7 +22,6 @@ function Applicants() {
   const debouncedSearch = useDebouncedValue(search, 400);
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
-  // Advanced filters
   const [showAdvanced, setShowAdvanced] = useState(false);
   const [minAge, setMinAge] = useState<string>("");
   const [maxAge, setMaxAge] = useState<string>("");
@@ -230,7 +230,13 @@ function Applicants() {
             </tr>
           </thead>
           <tbody>
-            {isLoading && (<tr className="empty-row"><td colSpan={6}>Loading...</td></tr>)}
+            {isLoading && (
+              <tr className="empty-row">
+                <td colSpan={6}>
+                  <Spinner text="Loading applicants..." />
+                </td>
+              </tr>
+            )}
             {isError && (
               <tr className="empty-row">
                 <td colSpan={6}>Couldn't load applicants. {(error as { message?: string })?.message ?? ""}</td>
