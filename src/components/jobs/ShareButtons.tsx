@@ -8,7 +8,10 @@ interface ShareButtonsProps {
 
 function ShareButtons({ title, url }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
-  const text = encodeURIComponent(`Check out this job: ${title}`);
+  const [customMessage, setCustomMessage] = useState("");
+
+  const message = customMessage.trim() || `Check out this job: ${title}`;
+  const text = encodeURIComponent(message);
   const encodedUrl = encodeURIComponent(url);
 
   const platforms = [
@@ -26,6 +29,23 @@ function ShareButtons({ title, url }: ShareButtonsProps) {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+      {/* Custom message input */}
+      <div className="ff">
+        <label className="ff-label" style={{ fontSize: "var(--fs-xs)" }}>
+          Add a message <span style={{ color: "var(--fg-4)", fontWeight: 400 }}>(optional)</span>
+        </label>
+        <div className="ff-input">
+          <input
+            placeholder={`Check out this job: ${title}`}
+            value={customMessage}
+            onChange={(e) => setCustomMessage(e.target.value)}
+            maxLength={200}
+            style={{ fontSize: "var(--fs-sm)" }}
+          />
+        </div>
+      </div>
+
+      {/* Platform buttons */}
       <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
         {platforms.map(({ label, icon: Icon, href, color }) => (
           <a
@@ -40,6 +60,8 @@ function ShareButtons({ title, url }: ShareButtonsProps) {
           </a>
         ))}
       </div>
+
+      {/* Copy link */}
       <button className="btn btn-secondary" style={{ fontSize: 13 }} onClick={copyLink}>
         {copied ? "✓ Link copied!" : "Copy link"}
       </button>
