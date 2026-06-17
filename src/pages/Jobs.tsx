@@ -6,21 +6,22 @@ import {
   MapPin,
   Search,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router";
+import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 import Footer from "../components/common/Footer";
 import Navbar from "../components/common/Navbar";
-import JobCard from "../components/jobs/JobCard";
 import LocationBanner from "../components/home/LocationBanner";
-import { useGeolocation } from "../hooks/useGeolocation";
+import JobCard from "../components/jobs/JobCard";
 import { usePublicJobs } from "../hooks/jobs/usePublicJobs";
-import { useDebouncedValue } from "../hooks/search/useDebouncedValue";
-import { useAuth } from "../stores/useAuth";
 import {
   useSavedJobs,
   useSaveJob,
   useUnsaveJob,
 } from "../hooks/jobs/useSavedJobs";
+import { useDebouncedValue } from "../hooks/search/useDebouncedValue";
+import { useGeolocation } from "../hooks/useGeolocation";
+import { useAuth } from "../stores/useAuth";
 
 const CATEGORIES = [
   "All",
@@ -55,7 +56,6 @@ function toISODate(date: Date) {
 
 function Jobs() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const {
     city,
     isLoading: isLocLoading,
@@ -63,19 +63,37 @@ function Jobs() {
     requestLocation,
   } = useGeolocation();
 
-  const [q, setQ] = useState(searchParams.get("q") ?? "");
-  const [cityInput, setCityInput] = useState(searchParams.get("city") ?? "");
-  const debouncedQ = useDebouncedValue(q, 500);
-  const debouncedCity = useDebouncedValue(cityInput, 500);
-
-  const [cat, setCat] = useState(searchParams.get("category") ?? "All");
-  const [sort, setSort] = useState("Newest");
-  const [page, setPage] = useState(1);
+  const [q, setQ] = useQueryState("q", parseAsString.withDefault(""));
+  const [cityInput, setCityInput] = useQueryState(
+    "city",
+    parseAsString.withDefault(""),
+  );
+  const [cat, setCat] = useQueryState(
+    "category",
+    parseAsString.withDefault("All"),
+  );
+  const [sort, setSort] = useQueryState(
+    "sort",
+    parseAsString.withDefault("Newest"),
+  );
+  const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
 
   // Date filter
-  const [dateFilter, setDateFilter] = useState("All time");
-  const [customFrom, setCustomFrom] = useState("");
-  const [customTo, setCustomTo] = useState("");
+  const [dateFilter, setDateFilter] = useQueryState(
+    "date",
+    parseAsString.withDefault("All time"),
+  );
+  const [customFrom, setCustomFrom] = useQueryState(
+    "from",
+    parseAsString.withDefault(""),
+  );
+  const [customTo, setCustomTo] = useQueryState(
+    "to",
+    parseAsString.withDefault(""),
+  );
+
+  const debouncedQ = useDebouncedValue(q, 500);
+  const debouncedCity = useDebouncedValue(cityInput, 500);
 
   // Saved jobs
   const user = useAuth((s) => s.user);
@@ -86,12 +104,12 @@ function Jobs() {
 
   // Apply geolocation sebagai default city
   useEffect(() => {
-    if (city && !searchParams.get("city") && !cityInput) {
+    if (city && !cityInput) {
       setCityInput(city);
     }
   }, [city]);
 
-  const { sortBy, sortOrder } = SORT_MAP[sort];
+  const { sortBy, sortOrder } = SORT_MAP[sort] ?? SORT_MAP["Newest"];
 
   // Hitung dateFrom/dateTo berdasarkan dateFilter
   let dateFrom: string | undefined;

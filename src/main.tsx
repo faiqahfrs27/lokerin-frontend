@@ -53,6 +53,7 @@ import CompanyDetailPage from "./pages/CompanyDetailPage";
 import CvGenerator from "./pages/user/CvGenerator";
 import MyInterviews from "./pages/user/MyInterviews";
 import SavedJobs from "./pages/SavedJobs";
+import { NuqsAdapter } from "nuqs/adapters/react-router/v7";
 
 const queryClient = new QueryClient();
 
@@ -145,7 +146,9 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
+        <NuqsAdapter>
+          <RouterProvider router={router} />
+        </NuqsAdapter>
         <Toaster />
       </QueryClientProvider>
     </GoogleOAuthProvider>
