@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
 import { axiosInstance } from "../lib/axios";
 import type { Payment, MySubscription } from "../schemas/subscriptionSchema";
+import type { Subscriber, SubscriberStats } from "../schemas/subscriberSchema";
 
 const PAYMENTS_KEY = ["payments"];
 
@@ -103,5 +104,31 @@ export function useCreateXenditInvoice() {
     },
     onError: (err) =>
       toast.error(getErrorMessage(err, "Failed to create payment invoice")),
+  });
+}
+
+// DEV: get all subscribers with payment history
+export function useSubscribers() {
+  return useQuery({
+    queryKey: ["subscribers"],
+    queryFn: async () => {
+      const res = await axiosInstance.get<Subscriber[]>(
+        "/subscriptions/subscribers",
+      );
+      return res.data;
+    },
+  });
+}
+
+// DEV: get subscriber stats
+export function useSubscriberStats() {
+  return useQuery({
+    queryKey: ["subscriber-stats"],
+    queryFn: async () => {
+      const res = await axiosInstance.get<SubscriberStats>(
+        "/subscriptions/subscribers/stats",
+      );
+      return res.data;
+    },
   });
 }
