@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useAuth } from "../../stores/useAuth";
 import {
   useCompanyReviews,
@@ -8,18 +9,21 @@ import {
 } from "../../hooks/company/useCompanyReviews";
 import { ReviewList } from "./ReviewList";
 import { ReviewForm } from "./ReviewForm";
+import Spinner from "../common/Spinner";
 import type { CreateReviewData } from "../../schemas/companyReviewSchema";
-import Spinner from "../../components/common/Spinner";
 
 export function CompanyReviewSection({ companyId }: { companyId: string }) {
   const user = useAuth((s) => s.user);
   const [showForm, setShowForm] = useState(false);
+  const [page, setPage] = useState(1);
 
-  const { data: reviews, isLoading } = useCompanyReviews(companyId);
+  const { data: reviewsRes, isLoading } = useCompanyReviews(companyId, page);
   const { data: eligibility } = useReviewEligibility(
     user ? companyId : undefined,
   );
-  const { data: myReview } = useMyCompanyReview(user ? companyId : undefined);
+  const { data: myReview } = useMyCompanyReview(
+    user ? companyId : undefined,
+  );
   const { mutate: createReview, isPending } = useCreateReview(companyId);
 
   const handleSubmit = (data: CreateReviewData) => {
@@ -43,8 +47,42 @@ export function CompanyReviewSection({ companyId }: { companyId: string }) {
       {isLoading ? (
         <Spinner text="Loading reviews..." />
       ) : (
-        <ReviewList reviews={reviews ?? []} />
+        <>
+          <ReviewList reviews={reviewsRes?.data ?? []} />
+          <ReviewPagination
+            page={page}
+            totalPages={reviewsRes?.meta.totalPages ?? 1}
+            onPageChange={setPage}
+          />
+        </>
       )}
+    </div>
+  );
+}
+
+function ReviewPagination({
+  page,
+  totalPages,
+  onPageChange,
+}: {
+  page: number;
+  totalPages: number;
+  onPageChange: (p: number) => void;
+}) {
+  return (
+    <div style={{ display: "flex", justifyContent: "center",
+      alignItems: "center", gap: 8, marginTop: 24 }}>
+      <button className="btn btn-secondary btn-icon" disabled={page === 1}
+        onClick={() => onPageChange(page - 1)}>
+        <ArrowLeft size={14} />
+      </button>
+      <span style={{ fontSize: "var(--fs-sm)", color: "var(--fg-2)" }}>
+        Page {page} of {totalPages}
+      </span>
+      <button className="btn btn-secondary btn-icon" disabled={page === totalPages}
+        onClick={() => onPageChange(page + 1)}>
+        <ArrowRight size={14} />
+      </button>
     </div>
   );
 }
@@ -56,37 +94,25 @@ function ReviewHeader({
   showForm,
   onToggleForm,
 }: {
-  user: { id: string } | null | undefined; // ← DIUBAH DI SINI
+  user: { id: string } | null | undefined;
   eligibility?: { eligible: boolean };
   myReview?: { hasReviewed: boolean };
   showForm: boolean;
   onToggleForm: () => void;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        marginBottom: 16,
-      }}
-    >
+    <div style={{ display: "flex", justifyContent: "space-between",
+      alignItems: "center", marginBottom: 16 }}>
       <p style={{ margin: 0, fontSize: 13, color: "var(--fg-3)" }}>
         {!user && "Login to write a review"}
-        {user &&
-          !eligibility?.eligible &&
+        {user && !eligibility?.eligible &&
           "Only verified employees can write a review"}
-        {user &&
-          eligibility?.eligible &&
-          myReview?.hasReviewed &&
+        {user && eligibility?.eligible && myReview?.hasReviewed &&
           "You have already reviewed this company"}
       </p>
       {user && eligibility?.eligible && !myReview?.hasReviewed && (
-        <button
-          className="btn btn-primary"
-          onClick={onToggleForm}
-          style={{ fontSize: 13 }}
-        >
+        <button className="btn btn-primary" onClick={onToggleForm}
+          style={{ fontSize: 13 }}>
           {showForm ? "Cancel" : "Write a Review"}
         </button>
       )}
