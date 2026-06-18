@@ -22,27 +22,45 @@ export function useCreateJob(onSuccess?: () => void) {
       deadline: "",
       salary: "",
       tags: "",
-      bannerUrl: "",
       hasTest: false,
     },
   });
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (payload: CreateJobValues) => {
+    mutationFn: async (payload: {
+      data: CreateJobValues;
+      bannerFile?: File | null;
+    }) => {
+      const { data, bannerFile } = payload;
+
+      // 1. Create job (JSON)
       const res = await axiosInstance.post("/jobs", {
-        title: payload.title,
-        description: payload.description,
-        categoryId: payload.categoryId,
-        city: payload.city,
-        deadline: new Date(payload.deadline).toISOString(),
-        salary: payload.salary ? Number(payload.salary) : undefined,
-        tags: payload.tags
-          ? payload.tags.split(",").map((t) => t.trim()).filter(Boolean)
+        title: data.title,
+        description: data.description,
+        categoryId: data.categoryId,
+        city: data.city,
+        deadline: new Date(data.deadline).toISOString(),
+        salary: data.salary ? Number(data.salary) : undefined,
+        tags: data.tags
+          ? data.tags.split(",").map((t) => t.trim()).filter(Boolean)
           : undefined,
-        bannerUrl: payload.bannerUrl || undefined,
-        hasTest: payload.hasTest,
+        hasTest: data.hasTest,
       });
-      return res.data;
+      const createdJob = res.data;
+
+      // 2. If banner file, upload it
+      if (bannerFile && createdJob?.id) {
+        const formData = new FormData();
+        formData.append("banner", bannerFile);
+        const bannerRes = await axiosInstance.patch(
+          `/jobs/${createdJob.id}/banner`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } },
+        );
+        return bannerRes.data;
+      }
+
+      return createdJob;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
@@ -55,8 +73,8 @@ export function useCreateJob(onSuccess?: () => void) {
     },
   });
 
-  const onSubmit = async (data: CreateJobValues) => {
-    await mutateAsync(data);
+  const onSubmit = async (data: CreateJobValues, bannerFile?: File | null) => {
+    await mutateAsync({ data, bannerFile });
   };
 
   return { form, onSubmit, isPending };

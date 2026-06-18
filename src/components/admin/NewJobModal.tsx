@@ -1,8 +1,17 @@
-import { X, MapPin, Calendar, Tag, Loader2, Plus } from "lucide-react";
-import { useState } from "react";
+import {
+  X,
+  MapPin,
+  Calendar,
+  Tag,
+  Loader2,
+  Plus,
+  ImagePlus,
+} from "lucide-react";
+import { useRef, useState } from "react";
 import { useCreateJob } from "../../hooks/useCreateJob";
 import { useCreateJobCategory } from "../../hooks/useCreateJobCategory";
 import { useJobCategories } from "../../hooks/useJobCategories";
+import type { CreateJobValues } from "../../schemas/createJobSchema";
 
 interface NewJobModalProps {
   onClose: () => void;
@@ -19,7 +28,10 @@ function NewJobModal({ onClose }: NewJobModalProps) {
     formState: { errors },
   } = form;
 
+  const fileRef = useRef<HTMLInputElement>(null);
   const [newCategoryName, setNewCategoryName] = useState("");
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null);
   const createCategoryMutation = useCreateJobCategory();
   const watchedCategoryId = form.watch("categoryId");
   const isAddingNew = watchedCategoryId === "__new__";
@@ -33,6 +45,27 @@ function NewJobModal({ onClose }: NewJobModalProps) {
       form.setValue("categoryId", created.id);
       setNewCategoryName("");
     } catch {}
+  };
+
+  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!["image/jpeg", "image/jpg", "image/png"].includes(file.type)) {
+      alert("Only JPG / PNG files are allowed.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert("Banner size must be less than 5MB.");
+      return;
+    }
+    setBannerFile(file);
+    const reader = new FileReader();
+    reader.onload = () => setBannerPreview(reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleFormSubmit = (data: CreateJobValues) => {
+    onSubmit(data, bannerFile);
   };
 
   return (
@@ -62,7 +95,7 @@ function NewJobModal({ onClose }: NewJobModalProps) {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(handleFormSubmit)}>
           <div className="modal-body">
             <div className="form-grid">
               <label className="span-2">
@@ -129,7 +162,7 @@ function NewJobModal({ onClose }: NewJobModalProps) {
                       }
                     >
                       {createCategoryMutation.isPending ? (
-                        <Loader2 size={14} className="animate-spin" />
+                        <Loader2 size={14} className="spin" />
                       ) : (
                         <Plus size={14} />
                       )}
@@ -186,9 +219,91 @@ function NewJobModal({ onClose }: NewJobModalProps) {
               </label>
 
               <label className="span-2">
-                Banner URL (optional)
-                <div className="input-wrap">
-                  <input {...register("bannerUrl")} placeholder="https://..." />
+                Banner image (optional)
+                <input
+                  ref={fileRef}
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png"
+                  onChange={handleBannerChange}
+                  style={{ display: "none" }}
+                />
+                <div
+                  onClick={() => fileRef.current?.click()}
+                  style={{
+                    border: "2px dashed var(--border-2)",
+                    borderRadius: "var(--radius-md)",
+                    padding: bannerPreview ? "12px" : "24px",
+                    textAlign: "center",
+                    cursor: "pointer",
+                    transition: "all 200ms",
+                    background: bannerFile
+                      ? "var(--brand-soft)"
+                      : "var(--surface)",
+                    marginTop: 4,
+                  }}
+                >
+                  {bannerPreview ? (
+                    <>
+                      <img
+                        src={bannerPreview}
+                        alt="Banner preview"
+                        style={{
+                          maxWidth: "100%",
+                          maxHeight: 160,
+                          borderRadius: 8,
+                          objectFit: "cover",
+                          marginBottom: 8,
+                        }}
+                      />
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "var(--fs-sm)",
+                          color: "var(--brand-fg)",
+                          fontWeight: "var(--fw-semibold)",
+                        }}
+                      >
+                        {bannerFile?.name ?? "Banner selected"}
+                      </p>
+                      <p
+                        style={{
+                          margin: "4px 0 0",
+                          fontSize: "var(--fs-xs)",
+                          color: "var(--fg-3)",
+                        }}
+                      >
+                        Click to change
+                      </p>
+                    </>
+                  ) : (
+                    <>
+                      <ImagePlus
+                        size={24}
+                        style={{
+                          color: "var(--fg-3)",
+                          margin: "0 auto 8px",
+                        }}
+                      />
+                      <p
+                        style={{
+                          margin: "0 0 4px",
+                          fontSize: "var(--fs-sm)",
+                          fontWeight: "var(--fw-medium)",
+                        }}
+                      >
+                        Click to upload banner
+                      </p>
+                      <p
+                        style={{
+                          margin: 0,
+                          fontSize: "var(--fs-xs)",
+                          color: "var(--fg-3)",
+                        }}
+                      >
+                        JPG / PNG · Max 5MB
+                      </p>
+                    </>
+                  )}
                 </div>
               </label>
 
@@ -232,7 +347,7 @@ function NewJobModal({ onClose }: NewJobModalProps) {
               className="btn btn-primary"
               disabled={isPending}
             >
-              {isPending && <Loader2 size={14} className="animate-spin" />}
+              {isPending && <Loader2 size={14} className="spin" />}
               {isPending ? "Posting..." : "Post job"}
             </button>
           </div>
