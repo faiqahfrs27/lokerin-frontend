@@ -5,6 +5,7 @@ import { useSubscriptionPlans } from "../../hooks/useSubscriptionPlans";
 import { useDebouncedValue } from "../../hooks/search/useDebouncedValue";
 import { SubscriberStatsCards } from "../../components/subscription/SubscriberStats";
 import { SubscriberRow } from "../../components/subscription/SubscriberRow";
+import Pagination from "../../components/common/Pagination";
 import Spinner from "../../components/common/Spinner";
 import type { Subscriber } from "../../schemas/subscriberSchema";
 
@@ -25,14 +26,15 @@ function filterSubscribers(
 }
 
 function Subscribers() {
-  const { data: subscribers, isLoading } = useSubscribers();
+  const [page, setPage] = useState(1);
+  const { data: subscribersRes, isLoading } = useSubscribers(page);
   const { data: stats } = useSubscriberStats();
   const { data: plans } = useSubscriptionPlans();
   const [planFilter, setPlanFilter] = useState("all");
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search, 400);
 
-  const filtered = filterSubscribers(subscribers, planFilter, debouncedSearch);
+  const filtered = filterSubscribers(subscribersRes?.data, planFilter, debouncedSearch);
 
   return (
     <>
@@ -53,6 +55,11 @@ function Subscribers() {
         plans={plans ?? []}
       />
       <SubscriberList subscribers={filtered} isLoading={isLoading} />
+      <Pagination
+        page={page}
+        totalPages={subscribersRes?.meta.totalPages ?? 1}
+        onPageChange={setPage}
+      />
     </>
   );
 }

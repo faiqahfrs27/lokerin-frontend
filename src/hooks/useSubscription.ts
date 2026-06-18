@@ -17,11 +17,19 @@ function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 // DEV: list all payments for approval
-export function usePayments() {
+export function usePayments(page = 1, limit = 10) {
   return useQuery({
-    queryKey: PAYMENTS_KEY,
+    queryKey: [...PAYMENTS_KEY, page, limit],
     queryFn: async () => {
-      const res = await axiosInstance.get<Payment[]>("/subscriptions/payments");
+      const res = await axiosInstance.get<{
+        data: Payment[];
+        meta: {
+          page: number;
+          limit: number;
+          total: number;
+          totalPages: number;
+        };
+      }>("/subscriptions/payments", { params: { page, limit } });
       return res.data;
     },
   });
@@ -108,13 +116,19 @@ export function useCreateXenditInvoice() {
 }
 
 // DEV: get all subscribers with payment history
-export function useSubscribers() {
+export function useSubscribers(page = 1, limit = 10) {
   return useQuery({
-    queryKey: ["subscribers"],
+    queryKey: ["subscribers", page, limit],
     queryFn: async () => {
-      const res = await axiosInstance.get<Subscriber[]>(
-        "/subscriptions/subscribers",
-      );
+      const res = await axiosInstance.get<{
+        data: Subscriber[];
+        meta: {
+          page: number;
+          limit: number;
+          total: number;
+          totalPages: number;
+        };
+      }>("/subscriptions/subscribers", { params: { page, limit } });
       return res.data;
     },
   });

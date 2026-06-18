@@ -20,7 +20,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
 export function useCompanyReviews(
   companyId: string | undefined,
   page = 1,
-  limit = 2,
+  limit = 3,
 ) {
   return useQuery({
     queryKey: ["company-reviews", companyId, page, limit],
