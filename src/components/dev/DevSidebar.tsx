@@ -1,15 +1,14 @@
-import { NavLink } from "react-router";
 import {
-  FileQuestion,
-  CreditCard,
   CheckCircle,
-  Users,
-  Power,
-  X,
+  CreditCard,
+  FileQuestion,
   LogOut,
-  type LucideIcon,
+  Users,
+  X,
+  type LucideIcon
 } from "lucide-react";
 import { useState } from "react";
+import { NavLink } from "react-router";
 import { useAuth } from "../../stores/useAuth";
 import ThemeToggle from "./ThemeToggle";
 
@@ -204,36 +203,34 @@ function Footer() {
 
   const displayName =
     user?.profile?.fullName ?? user?.email?.split("@")[0] ?? "—";
+  const email = user?.email ?? "";
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <>
-      <div className="admin-side__footer">
-        <div className="admin-side__user">
-          <div className="admin-side__avatar">{initial}</div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div className="admin-side__user-name">{displayName}</div>
-            <div className="admin-side__user-email">role · {user?.role}</div>
+      <div className="admin-side__footer" style={{ marginTop: "auto" }}>
+        <div className="dashboard-user">
+          <div className="dashboard-avatar initials">{initial}</div>
+          <div className="dashboard-user-info">
+            <span className="dashboard-user-name">{displayName}</span>
+            <span className="dashboard-user-email">{email}</span>
           </div>
         </div>
-        <button
-          type="button"
-          className="btn btn-secondary"
+        <div
           style={{
-            width: "100%",
-            marginTop: 10,
-            fontSize: 12,
-            padding: "7px 12px",
-            display: "inline-flex",
+            display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
+            justifyContent: "space-between",
+            padding: "0 4px",
           }}
-          onClick={() => setShowModal(true)}
         >
-          <Power size={13} /> Sign out
-        </button>
-        <div className="admin-side__theme-row">
+          <button
+            className="dashboard-logout"
+            onClick={() => setShowModal(true)}
+            style={{ width: "auto" }}
+          >
+            <LogOut size={16} strokeWidth={1.75} /> Sign out
+          </button>
           <ThemeToggle />
         </div>
       </div>

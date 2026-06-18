@@ -6,7 +6,6 @@ import {
   FileText,
   LogOut,
   Menu,
-  Power,
   Users,
   X,
   type LucideIcon,
@@ -14,6 +13,8 @@ import {
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router";
 import { useAuth } from "../../stores/useAuth";
+import ThemeToggle from "../register/ThemeToggle";
+import { useCompany } from "../../hooks/company/useCompany";
 
 interface NavItem {
   to: string;
@@ -214,38 +215,52 @@ function NavItemLink({ item }: { item: NavItem }) {
 function Footer() {
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
+  const { data: company } = useCompany();
   const [showModal, setShowModal] = useState(false);
 
   const displayName = user?.company?.name ?? user?.email ?? "—";
+  const email = user?.email ?? "";
   const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <>
-      <div className="admin-side__footer">
-        <div className="admin-side__user">
-          <div className="admin-side__avatar">{initial}</div>
-          <div style={{ minWidth: 0, flex: 1 }}>
-            <div className="admin-side__user-name">{displayName}</div>
-            <div className="admin-side__user-email">{user?.email ?? ""}</div>
+      <div className="dashboard-sidebar-footer" style={{ marginTop: "auto" }}>
+        {/* User info — sama seperti UserLayout */}
+        <div className="dashboard-user">
+          {company?.logoUrl ? (
+            <img
+              src={company.logoUrl}
+              alt={displayName}
+              className="dashboard-avatar"
+              style={{ objectFit: "cover" }}
+            />
+          ) : (
+            <div className="dashboard-avatar initials">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="dashboard-user-info">
+            <span className="dashboard-user-name">{displayName}</span>
+            <span className="dashboard-user-email">{email}</span>
           </div>
         </div>
-        <button
-          type="button"
-          className="btn btn-secondary"
+        <div
           style={{
-            width: "100%",
-            marginTop: 10,
-            fontSize: 12,
-            padding: "7px 12px",
-            display: "inline-flex",
+            display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            gap: 6,
+            justifyContent: "space-between",
+            padding: "0 4px",
           }}
-          onClick={() => setShowModal(true)}
         >
-          <Power size={13} /> Sign out
-        </button>
+          <button
+            className="dashboard-logout"
+            onClick={() => setShowModal(true)}
+            style={{ width: "auto" }}
+          >
+            <LogOut size={16} strokeWidth={1.75} /> Sign out
+          </button>
+          <ThemeToggle />
+        </div>
       </div>
 
       {showModal && (
