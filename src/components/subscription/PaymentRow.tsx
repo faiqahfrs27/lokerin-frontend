@@ -51,7 +51,7 @@ function PaymentRow({ payment }: { payment: Payment }) {
       </td>
       <td style={{ textAlign: "right" }}>
         {isPending && (
-          <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
+          <div style={{ display: "flex", gap: 6, justifyContent: "flex-end", width: "100%" }}>
             <button className="btn btn-primary" disabled={loading}
               onClick={() => approve.mutate(payment.id)}
               style={{ padding: "6px 10px", fontSize: 12 }}>

@@ -3,6 +3,7 @@ import { useSubscribers, useSubscriberStats } from "../../hooks/useSubscription"
 import { useDebouncedValue } from "../../hooks/search/useDebouncedValue";
 import { SubscriberStatsCards } from "../../components/subscription/SubscriberStats";
 import { SubscriberRow } from "../../components/subscription/SubscriberRow";
+import Spinner from "../../components/common/Spinner";
 import type { Subscriber } from "../../schemas/subscriberSchema";
 
 type PlanFilter = "all" | "standard" | "professional";
@@ -97,7 +98,7 @@ function FilterBtn({ active, onClick, children }: {
 function SubscriberList({ subscribers, isLoading }: {
   subscribers: Subscriber[]; isLoading: boolean;
 }) {
-  if (isLoading) return <div className="dev-state">Loading subscribers...</div>;
+  if (isLoading) return <Spinner text="Loading subscribers..." />;
   if (subscribers.length === 0) return <div className="dev-state">No subscribers found.</div>;
 
   return (

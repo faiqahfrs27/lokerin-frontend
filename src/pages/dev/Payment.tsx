@@ -1,6 +1,7 @@
 import { usePayments } from "../../hooks/useSubscription";
 import PaymentRow from "../../components/subscription/PaymentRow";
 import type { Payment } from "../../schemas/subscriptionSchema";
+import Spinner from "../../components/common/Spinner";
 
 function Payments() {
   const { data: payments, isLoading, error } = usePayments();
@@ -24,11 +25,15 @@ function Payments() {
               <th>Status</th>
               <th>Submitted</th>
               <th>Proof</th>
-              <th></th>
+              <th style={{ textAlign: "right" }}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <TableBody payments={payments} isLoading={isLoading} error={error} />
+            <TableBody
+              payments={payments}
+              isLoading={isLoading}
+              error={error}
+            />
           </tbody>
         </table>
       </div>
@@ -46,14 +51,30 @@ function TableBody({
   error: unknown;
 }) {
   if (isLoading)
-    return <tr className="empty-row"><td colSpan={7}>Loading payments...</td></tr>;
+    return (
+      <tr className="empty-row">
+        <td colSpan={7}>
+          <Spinner text="Loading payments..." />
+        </td>
+      </tr>
+    );
   if (error)
-    return <tr className="empty-row"><td colSpan={7}>Failed to load payments.</td></tr>;
+    return (
+      <tr className="empty-row">
+        <td colSpan={7}>Failed to load payments.</td>
+      </tr>
+    );
   if (!payments || payments.length === 0)
-    return <tr className="empty-row"><td colSpan={7}>No payments yet.</td></tr>;
+    return (
+      <tr className="empty-row">
+        <td colSpan={7}>No payments yet.</td>
+      </tr>
+    );
   return (
     <>
-      {payments.map((p) => <PaymentRow key={p.id} payment={p} />)}
+      {payments.map((p) => (
+        <PaymentRow key={p.id} payment={p} />
+      ))}
     </>
   );
 }

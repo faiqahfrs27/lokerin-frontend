@@ -1,11 +1,12 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router";
-import { Plus } from "lucide-react";
+import { Plus, Search } from "lucide-react";
 import { useAssessments } from "../../hooks/useAssessments";
-import DevHero from "../../components/dev/DevHero";
+import { useDebouncedValue } from "../../hooks/search/useDebouncedValue";
 import AssessmentCard from "../../components/assessment/AssessmentCard";
 import CreateAssessmentModal from "../../components/assessment/CreateAssessmentModal";
 import type { Assessment } from "../../schemas/assessmentSchema";
+import Spinner from "../../components/common/Spinner";
 
 function AssessmentList() {
   const { data: assessments, isLoading, isError, error } = useAssessments();
@@ -14,36 +15,38 @@ function AssessmentList() {
   const navigate = useNavigate();
 
   const stats = useMemo(() => computeStats(assessments), [assessments]);
+  const debouncedSearch = useDebouncedValue(search, 400);
   const filtered = useMemo(
-    () => filterBySearch(assessments, search),
-    [assessments, search],
+    () => filterBySearch(assessments, debouncedSearch),
+    [assessments, debouncedSearch],
   );
 
-  if (isLoading) return <div className="dev-state">Memuat assessment...</div>;
+  if (isLoading) return <Spinner text="Loading assessments..." />;
   if (isError)
     return (
-      <div className="dev-state">Gagal memuat: {(error as Error).message}</div>
+      <div className="dev-state">
+        Failed to load: {(error as Error).message}
+      </div>
     );
 
   return (
-    <div className="dev-page">
-      <DevHero
-        kicker=""
-        title="Skill assessments"
-        stats={[
-          `${stats.total} total`,
-          `${stats.published} publish`,
-          `${stats.draft} draft`,
-        ]}
-        action={
-          <button
-            className="dev-btn-primary"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <Plus size={16} strokeWidth={2.5} /> Create assessment
-          </button>
-        }
-      />
+    <>
+      <div className="admin-top">
+        <div>
+          <span className="kicker">Skill Assessment</span>
+          <h1>Skill assessments</h1>
+          <p className="sub">
+            {stats.total} total · {stats.published} publish · {stats.draft}{" "}
+            draft
+          </p>
+        </div>
+        <button
+          className="btn btn-primary"
+          onClick={() => setIsModalOpen(true)}
+        >
+          <Plus size={16} strokeWidth={2.5} /> Create assessment
+        </button>
+      </div>
       <SearchBar value={search} onChange={setSearch} />
       <AssessmentGrid
         items={filtered}
@@ -52,7 +55,7 @@ function AssessmentList() {
       {isModalOpen && (
         <CreateAssessmentModal onClose={() => setIsModalOpen(false)} />
       )}
-    </div>
+    </>
   );
 }
 
@@ -64,14 +67,13 @@ function SearchBar({
   onChange: (v: string) => void;
 }) {
   return (
-    <div className="dev-toolbar">
-      <div className="dev-search">
-        <input
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="Search assessment..."
-        />
-      </div>
+    <div className="input-wrap" style={{ marginBottom: 20, maxWidth: 400 }}>
+      <Search size={16} />
+      <input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Search assessment..."
+      />
     </div>
   );
 }
@@ -85,7 +87,9 @@ function AssessmentGrid({
 }) {
   if (items.length === 0) {
     return (
-      <div className="dev-state">Belum ada assessment. Buat yang pertama!</div>
+      <div className="dev-state">
+        No assessments yet. Create your first one!
+      </div>
     );
   }
   return (
