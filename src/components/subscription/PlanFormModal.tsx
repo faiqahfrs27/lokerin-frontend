@@ -15,7 +15,6 @@ interface Props {
   onClose: () => void;
   onSubmit: (values: PlanFormValues) => void;
 }
-
 const DEFAULT_VALUES: PlanFormValues = {
   name: "",
   price: 0,
@@ -24,12 +23,10 @@ const DEFAULT_VALUES: PlanFormValues = {
 
 function PlanFormModal({ open, plan, isSubmitting, onClose, onSubmit }: Props) {
   const isEdit = !!plan;
-
   const form = useForm<PlanFormValues>({
     resolver: zodResolver(planFormSchema),
     defaultValues: DEFAULT_VALUES,
   });
-
   const { fields, append, remove } = useFieldArray({
     control: form.control,
     name: "features",
@@ -47,9 +44,7 @@ function PlanFormModal({ open, plan, isSubmitting, onClose, onSubmit }: Props) {
         : DEFAULT_VALUES,
     );
   }, [open, plan, form]);
-
   if (!open) return null;
-
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
