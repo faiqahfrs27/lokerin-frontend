@@ -11,6 +11,7 @@ import { useTogglePublish } from "../../hooks/useTogglePublish";
 import EditJobModal from "../../components/admin/EditJobModal";
 import ConfirmModal from "../../components/admin/ConfirmModal";
 import ApplicantDetailDrawer from "../../components/admin/ApplicantDetailDrawer";
+import Spinner from "../../components/common/Spinner";
 
 function JobDetail() {
   const { id } = useParams<{ id: string }>();
@@ -29,7 +30,7 @@ function JobDetail() {
     n ? new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(n) : "—";
 
   if (isLoading) {
-    return <div style={{ padding: 40, textAlign: "center", color: "var(--fg-3)" }}>Loading job details...</div>;
+    return <Spinner text="Loading job details..." fullPage />;
   }
 
   if (isError || !job) {

@@ -1,10 +1,7 @@
 import { Building2, Calendar, MapPin, ChevronRight } from "lucide-react";
 import { Link } from "react-router";
 import Spinner from "../../components/common/Spinner";
-import {
-  useMyInterviews,
-  type MyInterview,
-} from "../../hooks/useMyInterviews";
+import { useMyInterviews, type MyInterview } from "../../hooks/useMyInterviews";
 
 type ColumnKey = "today" | "thisWeek" | "upcoming" | "past";
 
@@ -287,9 +284,12 @@ function MyInterviews() {
       {!isLoading && !isError && total > 0 && (
         <div
           style={{
+            maxWidth: 1100,
+            margin: "0 auto",
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(220px, 260px))",
             gap: 14,
+            justifyContent: "center",
           }}
         >
           <KanbanColumn columnKey="today" items={groups.today} isToday />
