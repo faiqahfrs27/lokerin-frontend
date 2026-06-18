@@ -77,6 +77,10 @@ function Jobs() {
     parseAsString.withDefault("Newest"),
   );
   const [page, setPage] = useQueryState("page", parseAsInteger.withDefault(1));
+  const [nearMe, setNearMe] = useQueryState(
+    "nearMe",
+    parseAsString.withDefault("false"),
+  );
 
   // Date filter
   const [dateFilter, setDateFilter] = useQueryState(
@@ -108,6 +112,19 @@ function Jobs() {
       setCityInput(city);
     }
   }, [city]);
+
+  // Handle toggle near me
+  const handleNearMe = () => {
+    if (nearMe === "true") {
+      setNearMe("false");
+      setCityInput("");
+      setPage(1);
+    } else {
+      setNearMe("true");
+      setCityInput(city ?? "");
+      setPage(1);
+    }
+  };
 
   const { sortBy, sortOrder } = SORT_MAP[sort] ?? SORT_MAP["Newest"];
 
@@ -198,6 +215,17 @@ function Jobs() {
               }}
             />
           </div>
+          {/* Near me toggle — hanya muncul kalau lokasi sudah terdeteksi */}
+          {city && !isDenied && (
+            <button
+              className={`btn ${nearMe === "true" ? "btn-primary" : "btn-secondary"}`}
+              onClick={handleNearMe}
+              style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}
+            >
+              <MapPin size={14} />
+              {nearMe === "true" ? `Near ${city}` : "Near me"}
+            </button>
+          )}
         </div>
 
         {/* Date filter row */}
