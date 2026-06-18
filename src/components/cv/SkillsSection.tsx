@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useFieldArray } from "react-hook-form";
+import { useFieldArray, useWatch } from "react-hook-form";
 import type { Control } from "react-hook-form";
 import { X, Plus } from "lucide-react";
 import type { CvFormData } from "../../schemas/cvSchema";
@@ -9,6 +9,9 @@ export function SkillsSection({ control }: { control: Control<CvFormData> }) {
     control,
     name: "additionalSkills" as never,
   });
+  const skills = useWatch({ control, name: "additionalSkills" as never }) as
+    | string[]
+    | undefined;
 
   const [input, setInput] = useState("");
 
@@ -56,7 +59,7 @@ export function SkillsSection({ control }: { control: Control<CvFormData> }) {
               background: "var(--brand-soft)", color: "var(--brand)",
               fontSize: 13, fontWeight: 600, padding: "4px 10px",
               borderRadius: 999, border: "1px solid var(--brand)" }}>
-            {field.id}
+            {skills?.[index]}
             <button type="button" onClick={() => remove(index)}
               style={{ background: "none", border: "none",
                 cursor: "pointer", color: "var(--brand)",
