@@ -1,24 +1,21 @@
 import { useState } from "react";
+import { Search } from "lucide-react";
 import { useSubscribers, useSubscriberStats } from "../../hooks/useSubscription";
+import { useSubscriptionPlans } from "../../hooks/useSubscriptionPlans";
 import { useDebouncedValue } from "../../hooks/search/useDebouncedValue";
 import { SubscriberStatsCards } from "../../components/subscription/SubscriberStats";
 import { SubscriberRow } from "../../components/subscription/SubscriberRow";
 import Spinner from "../../components/common/Spinner";
 import type { Subscriber } from "../../schemas/subscriberSchema";
 
-type PlanFilter = "all" | "standard" | "professional";
-
 function filterSubscribers(
   subscribers: Subscriber[] | undefined,
-  planFilter: PlanFilter,
+  planFilter: string,
   search: string,
 ) {
   if (!subscribers) return [];
   return subscribers.filter((s) => {
-    const matchPlan =
-      planFilter === "all" ||
-      (planFilter === "standard" && s.plan.toLowerCase().includes("standard")) ||
-      (planFilter === "professional" && s.plan.toLowerCase().includes("professional"));
+    const matchPlan = planFilter === "all" || s.plan === planFilter;
     const matchSearch =
       !search ||
       s.user.fullName.toLowerCase().includes(search.toLowerCase()) ||
@@ -30,7 +27,8 @@ function filterSubscribers(
 function Subscribers() {
   const { data: subscribers, isLoading } = useSubscribers();
   const { data: stats } = useSubscriberStats();
-  const [planFilter, setPlanFilter] = useState<PlanFilter>("all");
+  const { data: plans } = useSubscriptionPlans();
+  const [planFilter, setPlanFilter] = useState("all");
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedValue(search, 400);
 
@@ -52,6 +50,7 @@ function Subscribers() {
         onPlanFilter={setPlanFilter}
         search={search}
         onSearch={setSearch}
+        plans={plans ?? []}
       />
       <SubscriberList subscribers={filtered} isLoading={isLoading} />
     </>
@@ -59,39 +58,44 @@ function Subscribers() {
 }
 
 function FilterBar({
-  planFilter, onPlanFilter, search, onSearch,
+  planFilter, onPlanFilter, search, onSearch, plans,
 }: {
-  planFilter: PlanFilter;
-  onPlanFilter: (f: PlanFilter) => void;
+  planFilter: string;
+  onPlanFilter: (f: string) => void;
   search: string;
   onSearch: (s: string) => void;
+  plans: { id: string; name: string }[];
 }) {
   return (
-    <div className="subscriber-filter-bar">
-      <FilterBtn active={planFilter === "all"} onClick={() => onPlanFilter("all")}>All</FilterBtn>
-      <FilterBtn active={planFilter === "standard"} onClick={() => onPlanFilter("standard")}>Standard</FilterBtn>
-      <FilterBtn active={planFilter === "professional"} onClick={() => onPlanFilter("professional")}>Professional</FilterBtn>
-      <input
-        className="subscriber-search"
-        value={search}
-        onChange={(e) => onSearch(e.target.value)}
-        placeholder="Search by name or email..."
-      />
+    <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
+      <div className="input-wrap" style={{ flex: "1 1 280px", minWidth: 220, maxWidth: 400 }}>
+        <Search size={16} />
+        <input
+          value={search}
+          onChange={(e) => onSearch(e.target.value)}
+          placeholder="Search by name or email..."
+        />
+      </div>
+      <div className="hstack" style={{ gap: 6, flexWrap: "wrap" }}>
+        <button
+          type="button"
+          className={"chip " + (planFilter === "all" ? "active" : "")}
+          onClick={() => onPlanFilter("all")}
+        >
+          All
+        </button>
+        {plans.map((p) => (
+          <button
+            key={p.id}
+            type="button"
+            className={"chip " + (planFilter === p.name ? "active" : "")}
+            onClick={() => onPlanFilter(p.name)}
+          >
+            {p.name}
+          </button>
+        ))}
+      </div>
     </div>
-  );
-}
-
-function FilterBtn({ active, onClick, children }: {
-  active: boolean; onClick: () => void; children: React.ReactNode;
-}) {
-  return (
-    <button onClick={onClick} style={{ padding: "7px 14px", borderRadius: 8,
-      fontSize: 12, fontWeight: 600, cursor: "pointer",
-      border: active ? "1px solid var(--brand)" : "1px solid var(--border)",
-      background: active ? "var(--brand-soft)" : "var(--surface-2)",
-      color: active ? "var(--brand)" : "var(--fg-3)" }}>
-      {children}
-    </button>
   );
 }
 
