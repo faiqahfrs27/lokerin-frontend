@@ -11,6 +11,7 @@ import QuestionCard from "../../components/assessment/QuestionCard";
 import AddQuestionModal from "../../components/assessment/AddQuestionModal";
 import EditQuestionModal from "../../components/assessment/EditQuestionModal";
 import type { AssessmentQuestion } from "../../schemas/assessmentSchema";
+import Spinner from "../../components/common/Spinner";
 
 const REQUIRED = 25;
 
@@ -28,13 +29,14 @@ function AssessmentDetail() {
   const deleteMutation = useDeleteQuestion(id ?? "");
   const publishMutation = usePublishAssessment(id ?? "");
 
-  if (isLoading) return <div className="dev-state">Loading detail...</div>;
+  if (isLoading) return <Spinner text="Loading assessment..." />;
   if (isError)
     return (
-      <div className="dev-state">Failed to load: {(error as Error).message}</div>
+      <div className="dev-state">
+        Failed to load: {(error as Error).message}
+      </div>
     );
-  if (!assessment)
-    return <div className="dev-state">Assessment not found</div>;
+  if (!assessment) return <div className="dev-state">Assessment not found</div>;
 
   const q = assessment.questions.length;
   const isReady = q === REQUIRED;

@@ -14,6 +14,7 @@ import {
 import PlanFormModal from "../../components/subscription/PlanFormModal";
 import DeletePlanDialog from "../../components/subscription/DeletePlanDialog";
 import PlanList from "../../components/subscription/PlanList";
+import Spinner from "../../components/common/Spinner";
 
 function SubscriptionPlans() {
   const { data: plans, isLoading, error } = useSubscriptionPlans();
@@ -52,7 +53,7 @@ function SubscriptionPlans() {
   };
 
   return (
-    <div className="dev-page">
+    <>
       <PageHeader onCreate={openCreate} />
       <PageContent
         plans={plans}
@@ -76,7 +77,7 @@ function SubscriptionPlans() {
         onClose={() => setDeleting(null)}
         onConfirm={handleDelete}
       />
-    </div>
+    </>
   );
 }
 
@@ -112,7 +113,7 @@ function PageContent({
   onEdit: (plan: SubscriptionPlan) => void;
   onDelete: (plan: SubscriptionPlan) => void;
 }) {
-  if (isLoading) return <div className="dev-state">Loading plans...</div>;
+  if (isLoading) return <Spinner text="Loading plans..." />;
   if (error) return <div className="dev-state">Failed to load plans.</div>;
   if (!plans || plans.length === 0) return <EmptyState />;
   return <PlanList plans={plans} onEdit={onEdit} onDelete={onDelete} />;

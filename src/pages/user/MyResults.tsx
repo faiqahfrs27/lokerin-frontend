@@ -4,6 +4,7 @@ import { useMyResults } from "../../hooks/useUserAssessments";
 import { useMySubscription } from "../../hooks/useSubscription";
 import type { AssessmentResult } from "../../schemas/userAssessmentSchema";
 import MyResultsList from "../../components/assessment/MyResultsList";
+import Spinner from "../../components/common/Spinner";
 
 function MyResults() {
   const { data: results, isLoading, error } = useMyResults();
@@ -50,7 +51,7 @@ function PageBody({
   error: unknown;
   sub?: { status: string } | null;
 }) {
-  if (isLoading) return <div className="dev-state">Loading...</div>;
+  if (isLoading) return <Spinner text="Loading your results..." />;
   if (error) return <div className="dev-state">Failed to load results.</div>;
 
   // Guard: belum subscribe

@@ -15,6 +15,7 @@ import type {
 import TakeAttemptUI, {
   type AnswerMap,
 } from "../../components/assessment/TakeAttemptUI";
+import Spinner from "../../components/common/Spinner";
 
 function TakeAssessment() {
   const { id: assessmentId } = useParams<{ id: string }>();
@@ -94,7 +95,7 @@ function ActiveAttempt({ assessment }: { assessment: PublishedAssessment }) {
 }
 
 function LoadingState() {
-  return <div className="dev-state">Loading assessment...</div>;
+  return <Spinner text="Loading assessment..." />;
 }
 
 function NotFoundState() {

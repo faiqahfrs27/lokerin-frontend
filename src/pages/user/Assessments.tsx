@@ -5,6 +5,7 @@ import { useAssessmentUsage } from "../../hooks/useAssessments";
 import { useMySubscription } from "../../hooks/useSubscription";
 import type { PublishedAssessment } from "../../schemas/userAssessmentSchema";
 import UserAssessmentCard from "../../components/assessment/UserAssessmentCard";
+import Spinner from "../../components/common/Spinner";
 
 function Assessments() {
   const { data: assessments, isLoading, error } = usePublishedAssessments();
@@ -68,7 +69,7 @@ function PageBody({
   sub?: { status: string } | null;
   usage?: { count: number; limit: number | null; canTake: boolean; reason: string } | null;
 }) {
-  if (isLoading) return <div className="dev-state">Loading assessments...</div>;
+  if (isLoading) return <Spinner text="Loading assessments..." />;
   if (error) return <div className="dev-state">Failed to load assessments.</div>;
 
   // Guard: belum subscribe
