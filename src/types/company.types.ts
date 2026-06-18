@@ -15,6 +15,12 @@ export interface CompanyDetail {
   logoUrl: string | null;
   descriptionRte: string | null;
   jobs: CompanyJob[];
+  jobsMeta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }
 
 export interface CompanyJob {

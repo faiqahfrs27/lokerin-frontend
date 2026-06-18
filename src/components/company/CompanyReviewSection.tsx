@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useAuth } from "../../stores/useAuth";
 import {
   useCompanyReviews,
@@ -10,6 +9,7 @@ import {
 import { ReviewList } from "./ReviewList";
 import { ReviewForm } from "./ReviewForm";
 import Spinner from "../common/Spinner";
+import Pagination from "../common/Pagination";
 import type { CreateReviewData } from "../../schemas/companyReviewSchema";
 
 export function CompanyReviewSection({ companyId }: { companyId: string }) {
@@ -49,40 +49,13 @@ export function CompanyReviewSection({ companyId }: { companyId: string }) {
       ) : (
         <>
           <ReviewList reviews={reviewsRes?.data ?? []} />
-          <ReviewPagination
+          <Pagination
             page={page}
             totalPages={reviewsRes?.meta.totalPages ?? 1}
             onPageChange={setPage}
           />
         </>
       )}
-    </div>
-  );
-}
-
-function ReviewPagination({
-  page,
-  totalPages,
-  onPageChange,
-}: {
-  page: number;
-  totalPages: number;
-  onPageChange: (p: number) => void;
-}) {
-  return (
-    <div style={{ display: "flex", justifyContent: "center",
-      alignItems: "center", gap: 8, marginTop: 24 }}>
-      <button className="btn btn-secondary btn-icon" disabled={page === 1}
-        onClick={() => onPageChange(page - 1)}>
-        <ArrowLeft size={14} />
-      </button>
-      <span style={{ fontSize: "var(--fs-sm)", color: "var(--fg-2)" }}>
-        Page {page} of {totalPages}
-      </span>
-      <button className="btn btn-secondary btn-icon" disabled={page === totalPages}
-        onClick={() => onPageChange(page + 1)}>
-        <ArrowRight size={14} />
-      </button>
     </div>
   );
 }
@@ -101,18 +74,30 @@ function ReviewHeader({
   onToggleForm: () => void;
 }) {
   return (
-    <div style={{ display: "flex", justifyContent: "space-between",
-      alignItems: "center", marginBottom: 16 }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        marginBottom: 16,
+      }}
+    >
       <p style={{ margin: 0, fontSize: 13, color: "var(--fg-3)" }}>
         {!user && "Login to write a review"}
-        {user && !eligibility?.eligible &&
+        {user &&
+          !eligibility?.eligible &&
           "Only verified employees can write a review"}
-        {user && eligibility?.eligible && myReview?.hasReviewed &&
+        {user &&
+          eligibility?.eligible &&
+          myReview?.hasReviewed &&
           "You have already reviewed this company"}
       </p>
       {user && eligibility?.eligible && !myReview?.hasReviewed && (
-        <button className="btn btn-primary" onClick={onToggleForm}
-          style={{ fontSize: 13 }}>
+        <button
+          className="btn btn-primary"
+          onClick={onToggleForm}
+          style={{ fontSize: 13 }}
+        >
           {showForm ? "Cancel" : "Write a Review"}
         </button>
       )}
