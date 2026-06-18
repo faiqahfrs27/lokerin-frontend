@@ -12,6 +12,7 @@ export type Job = {
   createdAt: string;
   hasTest: boolean;
   tags: unknown;
+  bannerUrl: string | null;
   category?: { id: string; name: string } | null;
   _count?: { applications: number };
 };
