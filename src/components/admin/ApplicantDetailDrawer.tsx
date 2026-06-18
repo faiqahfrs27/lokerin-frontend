@@ -12,6 +12,7 @@ import {
   XCircle,
   Eye,
 } from "lucide-react";
+import Spinner from "../common/Spinner";
 import { useApplicant } from "../../hooks/useApplicant";
 import { useUpdateApplicantStatus } from "../../hooks/useUpdateApplicantStatus";
 import type { ApplicantStatus } from "../../hooks/useApplicants";
@@ -79,7 +80,7 @@ function ApplicantDetailDrawer({
                   fontWeight: 800,
                 }}
               >
-                Loading...
+                Applicant details
               </h2>
             </div>
             <button
@@ -92,17 +93,7 @@ function ApplicantDetailDrawer({
             </button>
           </div>
           <div className="drawer-body">
-            {isLoading && (
-              <div
-                style={{
-                  textAlign: "center",
-                  padding: 40,
-                  color: "var(--fg-3)",
-                }}
-              >
-                Loading applicant details...
-              </div>
-            )}
+            {isLoading && <Spinner text="Loading applicant..." />}
             {isError && (
               <div
                 style={{
@@ -409,7 +400,7 @@ function ApplicantDetailDrawer({
                 }}
               >
                 {updateStatus.isPending && (
-                  <Loader2 size={14} className="animate-spin" />
+                  <Loader2 size={14} className="spin" />
                 )}
                 Reject Applicant
               </button>
@@ -450,7 +441,7 @@ function ApplicantDetailDrawer({
                 }
               >
                 {updateStatus.isPending && (
-                  <Loader2 size={14} className="animate-spin" />
+                  <Loader2 size={14} className="spin" />
                 )}
                 <Check size={14} /> Accept
               </button>
