@@ -8,20 +8,38 @@ export function useUpdateJob(id: string, onSuccess?: () => void) {
   const queryClient = useQueryClient();
 
   const { mutateAsync, isPending } = useMutation({
-    mutationFn: async (payload: CreateJobValues) => {
+    mutationFn: async (payload: {
+      data: CreateJobValues;
+      bannerFile?: File | null;
+    }) => {
+      const { data, bannerFile } = payload;
+
+      // 1. Update job (JSON)
       const res = await axiosInstance.patch(`/jobs/${id}`, {
-        title: payload.title,
-        description: payload.description,
-        categoryId: payload.categoryId,
-        city: payload.city,
-        deadline: new Date(payload.deadline).toISOString(),
-        salary: payload.salary ? Number(payload.salary) : undefined,
-        tags: payload.tags
-          ? payload.tags.split(",").map((t) => t.trim()).filter(Boolean)
+        title: data.title,
+        description: data.description,
+        categoryId: data.categoryId,
+        city: data.city,
+        deadline: new Date(data.deadline).toISOString(),
+        salary: data.salary ? Number(data.salary) : undefined,
+        tags: data.tags
+          ? data.tags.split(",").map((t) => t.trim()).filter(Boolean)
           : undefined,
-        bannerUrl: payload.bannerUrl || undefined,
-        hasTest: payload.hasTest,
+        hasTest: data.hasTest,
       });
+
+      // 2. If banner file, upload it
+      if (bannerFile) {
+        const formData = new FormData();
+        formData.append("banner", bannerFile);
+        const bannerRes = await axiosInstance.patch(
+          `/jobs/${id}/banner`,
+          formData,
+          { headers: { "Content-Type": "multipart/form-data" } },
+        );
+        return bannerRes.data;
+      }
+
       return res.data;
     },
     onSuccess: () => {

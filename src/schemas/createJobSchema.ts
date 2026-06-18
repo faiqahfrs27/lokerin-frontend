@@ -11,7 +11,6 @@ export const createJobSchema = z.object({
   deadline: z.string().min(1, "Deadline is required"),
   salary: z.string().optional(),
   tags: z.string().optional(),
-  bannerUrl: z.string().optional(),
   hasTest: z.boolean(),
 });
 
