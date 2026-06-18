@@ -1,5 +1,16 @@
-import { ArrowLeft, Briefcase, Building2, Calendar, Clock, ExternalLink, MapPin } from "lucide-react";
+import {
+  ArrowLeft,
+  Briefcase,
+  Building2,
+  Calendar,
+  CalendarCheck,
+  Clock,
+  ExternalLink,
+  MapPin,
+  StickyNote,
+} from "lucide-react";
 import { Link, useParams } from "react-router";
+import Spinner from "../components/common/Spinner";
 import { useApplicationDetail } from "../hooks/jobs/useApplicationDetail";
 
 const STATUS_MAP = {
@@ -17,11 +28,27 @@ function formatDateTime(date: string) {
   return new Date(date).toLocaleString("id-ID", { day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit" });
 }
 
+function formatDateOnly(date: string) {
+  return new Date(date).toLocaleDateString("id-ID", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
+function formatTimeOnly(date: string) {
+  return new Date(date).toLocaleTimeString("id-ID", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
 function ApplicationDetail() {
   const { id } = useParams<{ id: string }>();
   const { data: app, isLoading, isError } = useApplicationDetail(id);
 
-  if (isLoading) return <div className="dashboard-content" style={{ color: "var(--fg-3)" }}>Loading...</div>;
+  if (isLoading) return <Spinner text="Loading application..." fullPage />;
 
   if (isError || !app) return (
     <div className="dashboard-content" style={{ textAlign: "center", padding: "56px 0" }}>
@@ -60,32 +87,58 @@ function ApplicationDetail() {
         )}
       </div>
 
-      {/* Interview schedule — hanya muncul kalau accepted dan ada interview */}
+      {/* Interview schedule — rapihin (Naila's territory) */}
       {app.status === "accepted" && app.interview && (
-        <div className="card card-pad" style={{ marginBottom: 20, border: "1px solid var(--success-500)" }}>
-          <h3 style={{ margin: "0 0 16px", fontSize: "var(--fs-base)", fontWeight: "var(--fw-semibold)", color: "var(--success-fg)", display: "flex", alignItems: "center", gap: 8 }}>
-            🗓️ Interview Schedule
-          </h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: "var(--fs-sm)" }}>
-              <Clock size={16} style={{ color: "var(--fg-3)" }} />
-              <span style={{ color: "var(--fg-3)" }}>Date & time</span>
-              <span style={{ color: "var(--fg)", fontWeight: "var(--fw-medium)" }}>
-                {formatDateTime(app.interview.scheduledAt)}
-              </span>
+        <div
+          className="card card-pad"
+          style={{
+            marginBottom: 20,
+            borderLeft: "4px solid var(--success-500, #16A34A)",
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
+            <CalendarCheck size={20} style={{ color: "var(--success-fg)" }} />
+            <h3 style={{ margin: 0, fontSize: "var(--fs-base)", fontWeight: "var(--fw-bold)", color: "var(--success-fg)" }}>
+              Interview Scheduled
+            </h3>
+          </div>
+
+          <div style={{ padding: "16px 18px", background: "var(--success-bg, #F0FDF4)", borderRadius: "var(--radius-md)", marginBottom: 14 }}>
+            <div style={{ fontSize: "var(--fs-xs)", fontWeight: "var(--fw-bold)", color: "var(--success-fg)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 6 }}>
+              When
             </div>
+            <div style={{ fontSize: "var(--fs-lg)", fontWeight: "var(--fw-bold)", color: "var(--fg)", marginBottom: 2 }}>
+              {formatTimeOnly(app.interview.scheduledAt)} WIB
+            </div>
+            <div style={{ fontSize: "var(--fs-sm)", color: "var(--fg-2)" }}>
+              {formatDateOnly(app.interview.scheduledAt)}
+            </div>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {app.interview.location && (
-              <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: "var(--fs-sm)" }}>
-                <MapPin size={16} style={{ color: "var(--fg-3)" }} />
-                <span style={{ color: "var(--fg-3)" }}>Location</span>
-                <span style={{ color: "var(--fg)", fontWeight: "var(--fw-medium)" }}>{app.interview.location}</span>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "10px 12px", background: "var(--surface-2)", borderRadius: 8 }}>
+                <MapPin size={16} style={{ color: "var(--fg-3)", flexShrink: 0, marginTop: 2 }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "var(--fs-xs)", color: "var(--fg-3)", marginBottom: 2 }}>Location</div>
+                  <div style={{ fontSize: "var(--fs-sm)", fontWeight: "var(--fw-medium)", color: "var(--fg)" }}>{app.interview.location}</div>
+                </div>
               </div>
             )}
+
             {app.interview.notes && (
-              <div style={{ padding: "10px 14px", background: "var(--surface-2)", borderRadius: "var(--radius-md)", fontSize: "var(--fs-sm)", color: "var(--fg-2)" }}>
-                <strong>Notes:</strong> {app.interview.notes}
+              <div style={{ display: "flex", alignItems: "flex-start", gap: 12, padding: "10px 12px", background: "var(--surface-2)", borderRadius: 8 }}>
+                <StickyNote size={16} style={{ color: "var(--fg-3)", flexShrink: 0, marginTop: 2 }} />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "var(--fs-xs)", color: "var(--fg-3)", marginBottom: 2 }}>Notes from recruiter</div>
+                  <div style={{ fontSize: "var(--fs-sm)", color: "var(--fg-2)", whiteSpace: "pre-wrap" }}>{app.interview.notes}</div>
+                </div>
               </div>
             )}
+          </div>
+
+          <div style={{ marginTop: 14, padding: "8px 12px", background: "rgba(0,0,0,0.03)", borderRadius: 6, fontSize: "var(--fs-xs)", color: "var(--fg-3)", display: "flex", alignItems: "center", gap: 6 }}>
+            <Clock size={11} /> A reminder email will be sent 1 day before your interview.
           </div>
         </div>
       )}
