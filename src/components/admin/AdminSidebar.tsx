@@ -12,9 +12,9 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { NavLink, useLocation } from "react-router";
+import { useCompany } from "../../hooks/company/useCompany";
 import { useAuth } from "../../stores/useAuth";
 import ThemeToggle from "../register/ThemeToggle";
-import { useCompany } from "../../hooks/company/useCompany";
 
 interface NavItem {
   to: string;
@@ -220,7 +220,6 @@ function Footer() {
 
   const displayName = user?.company?.name ?? user?.email ?? "—";
   const email = user?.email ?? "";
-  const initial = displayName.charAt(0).toUpperCase();
 
   return (
     <>
