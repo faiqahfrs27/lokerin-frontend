@@ -1,44 +1,10 @@
-import {
-  BadgeCheck,
-  Bookmark,
-  CalendarDays,
-  ChevronRight,
-  FileText,
-  LayoutDashboard,
-  LogOut,
-  Settings,
-  Trophy,
-  User,
-  CreditCard,
-} from "lucide-react";
+import { ChevronRight, LogOut } from "lucide-react";
 import { useState } from "react";
 import React from "react";
 import { Link, Outlet, useLocation } from "react-router";
 import ThemeToggle from "../register/ThemeToggle";
 import { useAuth } from "../../stores/useAuth";
-import { useMySubscription } from "../../hooks/useSubscription";
-
-function getInitials(name?: string | null) {
-  if (!name) return "U";
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-}
-
-const NAV_ITEMS = [
-  { to: "/dashboard", label: "Overview", icon: LayoutDashboard },
-  { to: "/dashboard/profile", label: "My Profile", icon: User },
-  { to: "/dashboard/applications", label: "Applications", icon: FileText },
-  { to: "/dashboard/my-interviews", label: "My Interviews", icon: CalendarDays },
-  { to: "/dashboard/saved", label: "Saved Jobs", icon: Bookmark },
-  { to: "/dashboard/subscribe", label: "Subscription", icon: CreditCard },
-  { to: "/dashboard/assessments", label: "Assessments", icon: BadgeCheck },
-  { to: "/dashboard/my-results", label: "My Results", icon: Trophy },
-  { to: "/dashboard/settings", label: "Settings", icon: Settings },
-];
+import { getInitials, NAV_ITEMS, SmartSubscriptionLink } from "./DashboardNav";
 
 function LogoutModal({
   onConfirm,
@@ -120,43 +86,17 @@ function LogoutModal({
   );
 }
 
-function SmartSubscriptionLink({ isActive }: { isActive: boolean }) {
-  const { data: sub } = useMySubscription();
-  const hasActive = sub?.status === "active";
-  const to = hasActive ? "/dashboard/subscription" : "/dashboard/subscribe";
-
-  return (
-    <Link
-      to={to}
-      className={`dashboard-nav-item${isActive ? " active" : ""}`}
-      style={{ textDecoration: "none" }}
-    >
-      <CreditCard size={18} strokeWidth={1.75} />
-      <span>Subscription</span>
-      {isActive && (
-        <ChevronRight
-          size={14}
-          style={{ marginLeft: "auto", color: "var(--brand)" }}
-        />
-      )}
-    </Link>
-  );
-}
-
 function UserLayout() {
   const location = useLocation();
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-
   const displayName = user?.profile?.fullName ?? user?.email ?? "User";
   const photoUrl = user?.profile?.photoUrl;
 
   return (
     <div className="dashboard-page">
-      {/* Sidebar */}
       <aside className="dashboard-sidebar">
-        {/* Logo */}
         <Link
           to="/"
           className="dashboard-brand"
@@ -177,7 +117,6 @@ function UserLayout() {
           lokerin
         </Link>
 
-        {/* Nav */}
         <nav className="dashboard-nav">
           {NAV_ITEMS.map(({ to, label, icon: Icon }) => {
             if (to === "/dashboard/subscribe") return null;
@@ -219,7 +158,6 @@ function UserLayout() {
           })}
         </nav>
 
-        {/* User info + logout */}
         <div className="dashboard-sidebar-footer">
           <div className="dashboard-user">
             {photoUrl ? (
@@ -259,12 +197,10 @@ function UserLayout() {
         </div>
       </aside>
 
-      {/* Main content */}
       <main className="dashboard-main">
         <Outlet />
       </main>
 
-      {/* Logout modal */}
       {showLogoutModal && (
         <LogoutModal
           onConfirm={() => {
