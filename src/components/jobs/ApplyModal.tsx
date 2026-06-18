@@ -2,7 +2,6 @@ import { FileUp, X } from "lucide-react";
 import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { useApply } from "../../hooks/jobs/useApply";
-import { useUploadCv } from "../../hooks/jobs/useUploadCV";
 
 interface ApplyModalProps {
   jobId: string;
@@ -23,11 +22,9 @@ function ApplyModal({
   const [cvFile, setCvFile] = useState<File | null>(null);
   const [expectedSalary, setExpectedSalary] = useState("");
   const [step, setStep] = useState<"form" | "success">("form");
-
-  const { mutateAsync: uploadCv, isPending: isUploading } = useUploadCv();
   const { mutateAsync: apply, isPending: isApplying } = useApply();
 
-  const isPending = isUploading || isApplying;
+  const isPending = isApplying;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -50,13 +47,13 @@ function ApplyModal({
       return;
     }
 
-    const { cvUrl } = await uploadCv(cvFile);
-    await apply({
-      jobId,
-      cvUrl,
-      expectedSalary: expectedSalary ? Number(expectedSalary) : undefined,
-      testAttemptId,
-    });
+    const formData = new FormData();
+    formData.append("jobId", jobId);
+    formData.append("cv", cvFile);
+    if (expectedSalary) formData.append("expectedSalary", expectedSalary);
+    if (testAttemptId) formData.append("testAttemptId", testAttemptId);
+
+    await apply(formData);
     setStep("success");
   };
 

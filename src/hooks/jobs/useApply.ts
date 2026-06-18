@@ -3,19 +3,14 @@ import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../../lib/axios";
 
-interface ApplyPayload {
-  jobId: string;
-  cvUrl: string;
-  expectedSalary?: number;
-  testAttemptId?: string;
-}
-
 export function useApply() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (payload: ApplyPayload) => {
-      const res = await axiosInstance.post("/applications", payload);
+    mutationFn: async (formData: FormData) => {
+      const res = await axiosInstance.post("/applications", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
       return res.data;
     },
     onSuccess: () => {
