@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import type { AssessmentResult } from "../../schemas/userAssessmentSchema";
 import { downloadCertificate } from "../../utils/downloadCertificate";
 import { ShareCertificateButton } from "./ShareCertificateButton";
+import AnswerReview from "./AnswerReview";
 
 interface Props {
   result: AssessmentResult;
@@ -14,6 +15,10 @@ function ResultDisplay({ result }: Props) {
       <ResultHero result={result} />
       {result.passed ? <PassedSection result={result} /> : <FailedSection />}
       <ActionButtons />
+      <AnswerReview
+        questions={result.assessment?.questions ?? []}
+        answers={result.answers}
+      />
     </div>
   );
 }

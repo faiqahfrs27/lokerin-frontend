@@ -1437,6 +1437,15 @@ button { font-family: inherit; cursor: pointer; }
   color: var(--success-fg);
 }
 
+.question-option--incorrect {
+  background: var(--danger-bg);
+  border-color: var(--danger-500);
+  color: var(--danger-fg);
+}
+.question-option--incorrect .question-option__letter {
+  color: var(--danger-fg);
+}
+
 .question-option__letter {
   font-family: var(--font-mono);
   font-size: 12px;
