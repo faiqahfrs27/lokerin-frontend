@@ -16,7 +16,17 @@ export const publishedAssessmentSchema = z.object({
   questions: z.array(publishedQuestionSchema).optional(),
 });
 
-// ATTEMPT — Started but not yet submitted
+export const resultQuestionSchema = z.object({
+  id: z.string().uuid(),
+  question: z.string(),
+  options: z.array(z.string()),
+  correctIndex: z.number().int(),
+});
+
+export const resultAssessmentSchema = publishedAssessmentSchema.extend({
+  questions: z.array(resultQuestionSchema).optional(),
+});
+
 export const attemptStartSchema = z.object({
   resultId: z.string().uuid(),
   startedAt: z.string(),
@@ -25,17 +35,16 @@ export const attemptStartSchema = z.object({
   questions: z.array(publishedQuestionSchema),
 });
 
-// RESULT — After submit
 export const assessmentResultSchema = z.object({
   id: z.string().uuid(),
   userId: z.string().uuid(),
   assessmentId: z.string().uuid(),
   startedAt: z.string(),
   completedAt: z.string().nullable(),
-  answers: z.unknown().nullable(),
+  answers: z.record(z.string(), z.number()).nullable(),
   score: z.number().int().nullable(),
   passed: z.boolean(),
-  assessment: publishedAssessmentSchema.optional(),
+  assessment: resultAssessmentSchema.optional(),
   badgeEarned: z
     .object({
       id: z.string().uuid(),
@@ -53,15 +62,13 @@ export const assessmentResultSchema = z.object({
     .optional(),
 });
 
-// SUBMIT PAYLOAD — Body sent to /submit endpoint
 export const submitAnswersSchema = z.object({
   answers: z.record(z.string().uuid(), z.number().int().nonnegative()),
 });
 
-
-// TYPES
 export type PublishedAssessment = z.infer<typeof publishedAssessmentSchema>;
 export type PublishedQuestion = z.infer<typeof publishedQuestionSchema>;
 export type AttemptStart = z.infer<typeof attemptStartSchema>;
 export type AssessmentResult = z.infer<typeof assessmentResultSchema>;
 export type SubmitAnswersPayload = z.infer<typeof submitAnswersSchema>;
+export type ResultQuestion = z.infer<typeof resultQuestionSchema>;

@@ -10,7 +10,7 @@ import {
   type CreateQuestionInput,
 } from "../schemas/createQuestionSchema";
 
-// Fetch detail assessment
+
 export function useAssessmentDetail(id: string | undefined) {
   return useQuery({
     queryKey: ["assessment", id],
@@ -22,7 +22,6 @@ export function useAssessmentDetail(id: string | undefined) {
   });
 }
 
-// Tambah soal
 export function useAddQuestion(assessmentId: string, onSuccess?: () => void) {
   const queryClient = useQueryClient();
 
@@ -55,7 +54,6 @@ export function useAddQuestion(assessmentId: string, onSuccess?: () => void) {
   return { form, onSubmit, isPending };
 }
 
-// Hapus soal
 export function useDeleteQuestion(assessmentId: string) {
   const queryClient = useQueryClient();
 
@@ -74,7 +72,6 @@ export function useDeleteQuestion(assessmentId: string) {
   });
 }
 
-// Terbitkan assessment
 export function usePublishAssessment(assessmentId: string) {
   const queryClient = useQueryClient();
 
@@ -93,7 +90,6 @@ export function usePublishAssessment(assessmentId: string) {
   });
 }
 
-// Edit soal (update)
 export function useUpdateQuestion(
   assessmentId: string,
   questionId: string,

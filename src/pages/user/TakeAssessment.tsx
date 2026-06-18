@@ -27,7 +27,6 @@ function TakeAssessment() {
   const assessment = assessments?.find((a) => a.id === assessmentId);
   const allLoading = isLoading || subLoading || usageLoading;
 
-  // Guard: redirect kalau belum subscribe atau limit reached
   useEffect(() => {
     if (allLoading) return;
     if (!sub || sub.status !== "active") {
