@@ -1,10 +1,13 @@
+import { useState } from "react";
 import { usePayments } from "../../hooks/useSubscription";
 import PaymentRow from "../../components/subscription/PaymentRow";
+import Pagination from "../../components/common/Pagination";
 import type { Payment } from "../../schemas/subscriptionSchema";
 import Spinner from "../../components/common/Spinner";
 
 function Payments() {
-  const { data: payments, isLoading, error } = usePayments();
+  const [page, setPage] = useState(1);
+  const { data: paymentsRes, isLoading, error } = usePayments(page);
 
   return (
     <>
@@ -30,13 +33,18 @@ function Payments() {
           </thead>
           <tbody>
             <TableBody
-              payments={payments}
+              payments={paymentsRes?.data}
               isLoading={isLoading}
               error={error}
             />
           </tbody>
         </table>
       </div>
+      <Pagination
+        page={page}
+        totalPages={paymentsRes?.meta.totalPages ?? 1}
+        onPageChange={setPage}
+      />
     </>
   );
 }

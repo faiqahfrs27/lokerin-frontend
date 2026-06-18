@@ -3,12 +3,13 @@ import {
   CreditCard,
   FileQuestion,
   LogOut,
+  Menu,
   Users,
   X,
   type LucideIcon
 } from "lucide-react";
-import { useState } from "react";
-import { NavLink } from "react-router";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router";
 import { useAuth } from "../../stores/useAuth";
 import ThemeToggle from "./ThemeToggle";
 
@@ -17,11 +18,6 @@ interface NavItem {
   label: string;
   icon: LucideIcon;
   badge?: string;
-}
-
-interface DevSidebarProps {
-  isMobileOpen: boolean;
-  onClose: () => void;
 }
 
 const NAV_ITEMS: NavItem[] = [
@@ -119,43 +115,66 @@ function LogoutModal({
   );
 }
 
-function DevSidebar({ isMobileOpen, onClose }: DevSidebarProps) {
+function DevSidebar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
   return (
-    <aside className={`admin-side ${isMobileOpen ? "admin-side--open" : ""}`}>
-      <Header onClose={onClose} />
-      <Nav />
-      <Footer />
-    </aside>
+    <>
+      {!isOpen && (
+        <button
+          type="button"
+          className="admin-hamburger"
+          onClick={() => setIsOpen(true)}
+          aria-label="Open menu"
+        >
+          <Menu size={20} />
+        </button>
+      )}
+
+      <div
+        className={`admin-side-backdrop ${isOpen ? "is-open" : ""}`}
+        onClick={() => setIsOpen(false)}
+      />
+
+      <aside className={`admin-side ${isOpen ? "is-open" : ""}`}>
+        <button
+          type="button"
+          className="admin-side__close"
+          onClick={() => setIsOpen(false)}
+          aria-label="Close menu"
+        >
+          <X size={18} />
+        </button>
+        <Brand />
+        <Nav />
+        <Footer />
+      </aside>
+    </>
   );
 }
 
-function Header({ onClose }: { onClose: () => void }) {
+function Brand() {
   return (
-    <div className="admin-side__header">
-      <div className="admin-brand">
-        <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden>
-          <rect x="2" y="2" width="60" height="60" rx="16" fill="#F97316" />
-          <path
-            d="M22 16 L22 44 L42 44"
-            stroke="white"
-            strokeWidth="6"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            fill="none"
-          />
-          <circle cx="44" cy="20" r="5" fill="white" />
-        </svg>
-        <span>lokerin</span>
-        <span className="role-pill">DEV</span>
-      </div>
-      <button
-        className="admin-side__close"
-        onClick={onClose}
-        type="button"
-        aria-label="Tutup menu"
-      >
-        <X size={20} strokeWidth={2} />
-      </button>
+    <div className="admin-brand">
+      <svg width="28" height="28" viewBox="0 0 64 64" aria-hidden>
+        <rect x="2" y="2" width="60" height="60" rx="16" fill="#F97316" />
+        <path
+          d="M22 16 L22 44 L42 44"
+          stroke="white"
+          strokeWidth="6"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          fill="none"
+        />
+        <circle cx="44" cy="20" r="5" fill="white" />
+      </svg>
+      <span>lokerin</span>
+      <span className="role-pill">DEV</span>
     </div>
   );
 }
