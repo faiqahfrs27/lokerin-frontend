@@ -1,15 +1,20 @@
-import { NavLink } from "react-router";
 import {
-  Briefcase,
-  Home,
-  Users,
-  Calendar,
   BarChart3,
-  Settings,
-  Power,
+  Briefcase,
+  Building2,
+  Calendar,
+  FileText,
+  LogOut,
+  Menu,
+  Users,
+  X,
   type LucideIcon,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { NavLink, useLocation } from "react-router";
+import { useCompany } from "../../hooks/company/useCompany";
 import { useAuth } from "../../stores/useAuth";
+import ThemeToggle from "../register/ThemeToggle";
 
 interface NavItem {
   to: string;
@@ -19,21 +24,134 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: "/admin/overview", label: "Overview", icon: Home, badge: "Soon" },
   { to: "/admin/postings", label: "Job postings", icon: Briefcase },
-  { to: "/admin/applicants", label: "Applicants", icon: Users, badge: "Soon" },
-  { to: "/admin/interviews", label: "Interviews", icon: Calendar, badge: "Soon" },
-  { to: "/admin/analytics", label: "Analytics", icon: BarChart3, badge: "Soon" },
-  { to: "/admin/settings", label: "Settings", icon: Settings, badge: "Soon" },
+  { to: "/admin/applicants", label: "Applicants", icon: Users },
+  { to: "/admin/tests", label: "Tests", icon: FileText },
+  { to: "/admin/interviews", label: "Interviews", icon: Calendar },
+  { to: "/admin/analytics", label: "Analytics", icon: BarChart3 },
+  { to: "/admin/company-profile", label: "Company Profile", icon: Building2 },
 ];
 
-function AdminSidebar() {
+function LogoutModal({
+  onConfirm,
+  onCancel,
+}: {
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
   return (
-    <aside className="admin-side">
-      <Brand />
-      <Nav />
-      <Footer />
-    </aside>
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 1000,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 20,
+        background: "var(--overlay)",
+        backdropFilter: "blur(2px)",
+      }}
+    >
+      <div
+        className="card"
+        style={{ width: "100%", maxWidth: 400, overflow: "hidden" }}
+      >
+        <div style={{ padding: "24px 24px 0" }}>
+          <div
+            style={{
+              width: 48,
+              height: 48,
+              borderRadius: "50%",
+              background: "var(--danger-bg)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              marginBottom: 16,
+            }}
+          >
+            <LogOut size={20} style={{ color: "var(--danger-fg)" }} />
+          </div>
+          <h2
+            style={{
+              margin: "0 0 8px",
+              fontSize: "var(--fs-lg)",
+              fontWeight: "var(--fw-bold)",
+            }}
+          >
+            Sign out?
+          </h2>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "var(--fs-sm)",
+              color: "var(--fg-3)",
+            }}
+          >
+            You'll need to sign in again to access your dashboard.
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: 10, padding: 24 }}>
+          <button
+            className="btn btn-secondary"
+            style={{ flex: 1 }}
+            onClick={onCancel}
+          >
+            Cancel
+          </button>
+          <button
+            className="btn btn-danger"
+            style={{ flex: 1 }}
+            onClick={onConfirm}
+          >
+            Sign out
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function AdminSidebar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
+
+  return (
+    <>
+      {!isOpen && (
+        <button
+          type="button"
+          className="admin-hamburger"
+          onClick={() => setIsOpen(true)}
+          aria-label="Open menu"
+        >
+          <Menu size={20} />
+        </button>
+      )}
+
+      <div
+        className={`admin-side-backdrop ${isOpen ? "is-open" : ""}`}
+        onClick={() => setIsOpen(false)}
+      />
+
+      <aside className={`admin-side ${isOpen ? "is-open" : ""}`}>
+        <button
+          type="button"
+          className="admin-side__close"
+          onClick={() => setIsOpen(false)}
+          aria-label="Close menu"
+        >
+          <X size={18} />
+        </button>
+        <Brand />
+        <Nav />
+        <Footer />
+      </aside>
+    </>
   );
 }
 
@@ -97,36 +215,63 @@ function NavItemLink({ item }: { item: NavItem }) {
 function Footer() {
   const user = useAuth((s) => s.user);
   const logout = useAuth((s) => s.logout);
+  const { data: company } = useCompany();
+  const [showModal, setShowModal] = useState(false);
 
-  const initial = (user?.name ?? user?.email ?? "A").charAt(0).toUpperCase();
+  const displayName = user?.company?.name ?? user?.email ?? "—";
+  const email = user?.email ?? "";
 
   return (
-    <div className="admin-side__footer">
-      <div className="admin-side__user">
-        <div className="admin-side__avatar">{initial}</div>
-        <div style={{ minWidth: 0, flex: 1 }}>
-          <div className="admin-side__user-name">{user?.name ?? "—"}</div>
-          <div className="admin-side__user-email">{user?.email ?? ""}</div>
+    <>
+      <div className="dashboard-sidebar-footer" style={{ marginTop: "auto" }}>
+        {/* User info — sama seperti UserLayout */}
+        <div className="dashboard-user">
+          {company?.logoUrl ? (
+            <img
+              src={company.logoUrl}
+              alt={displayName}
+              className="dashboard-avatar"
+              style={{ objectFit: "cover" }}
+            />
+          ) : (
+            <div className="dashboard-avatar initials">
+              {displayName.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="dashboard-user-info">
+            <span className="dashboard-user-name">{displayName}</span>
+            <span className="dashboard-user-email">{email}</span>
+          </div>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 4px",
+          }}
+        >
+          <button
+            className="dashboard-logout"
+            onClick={() => setShowModal(true)}
+            style={{ width: "auto" }}
+          >
+            <LogOut size={16} strokeWidth={1.75} /> Sign out
+          </button>
+          <ThemeToggle />
         </div>
       </div>
-      <button
-        type="button"
-        className="btn btn-secondary"
-        style={{
-          width: "100%",
-          marginTop: 10,
-          fontSize: 12,
-          padding: "7px 12px",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 6,
-        }}
-        onClick={() => logout()}
-      >
-        <Power size={13} /> Sign out
-      </button>
-    </div>
+
+      {showModal && (
+        <LogoutModal
+          onConfirm={() => {
+            setShowModal(false);
+            logout();
+          }}
+          onCancel={() => setShowModal(false)}
+        />
+      )}
+    </>
   );
 }
 

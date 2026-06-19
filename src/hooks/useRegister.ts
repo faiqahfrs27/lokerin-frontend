@@ -20,7 +20,7 @@ export function useRegister() {
 
   const { mutateAsync, isPending } = useMutation({
     mutationFn: async (payload: RegisterSchema) => {
-      const res = await axiosInstance.post("/api/auth/register", {
+      const res = await axiosInstance.post("/auth/register", {
         name: payload.fullName,
         email: payload.email,
         password: payload.password,

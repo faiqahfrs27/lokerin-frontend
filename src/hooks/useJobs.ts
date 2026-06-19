@@ -12,7 +12,9 @@ export type Job = {
   createdAt: string;
   hasTest: boolean;
   tags: unknown;
+  bannerUrl: string | null;
   category?: { id: string; name: string } | null;
+  _count?: { applications: number };
 };
 
 export type JobsResponse = {
@@ -25,6 +27,9 @@ interface UseJobsParams {
   limit?: number;
   isPublished?: string;
   search?: string;
+  sortBy?: string;
+  sortOrder?: "asc" | "desc";
+  categoryId?: string;
 }
 
 export function useJobs(params: UseJobsParams = {}) {

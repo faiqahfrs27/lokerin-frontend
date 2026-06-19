@@ -1,3 +1,4 @@
+import { useGoogleAuth } from "../hooks/useGoogleAuth";
 import { ArrowRight } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router";
@@ -14,6 +15,7 @@ import { fadeUp } from "../utils/AnimationStyle";
 function Register() {
   const navigate = useNavigate();
   const { form, onSubmit, isPending } = useRegister();
+  const { handleGoogleLogin, isPending: isGooglePending } = useGoogleAuth();
   const {
     register,
     handleSubmit,
@@ -34,7 +36,11 @@ function Register() {
         </header>
 
         <div className="auth-body">
-          <form onSubmit={handleSubmit(onSubmit)} noValidate className="auth-form">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="auth-form"
+          >
             <div style={fadeUp(0)} className="auth-head">
               <h1 className="t-h2 auth-h">Create your account</h1>
               <p className="auth-sub">Join 5,000+ users on Lokerin.</p>
@@ -48,7 +54,7 @@ function Register() {
               <button
                 type="button"
                 className="role-tab"
-                onClick={() => navigate("/auth/register")}
+                onClick={() => navigate("/register/company")}
               >
                 Company
               </button>
@@ -106,12 +112,20 @@ function Register() {
 
             <TermsCheckbox
               checked={agreeToTerms}
-              onChange={() => setValue("agreeToTerms", !agreeToTerms, { shouldValidate: true })}
+              onChange={() =>
+                setValue("agreeToTerms", !agreeToTerms, {
+                  shouldValidate: true,
+                })
+              }
               error={errors.agreeToTerms}
             />
 
             <div style={fadeUp(350)}>
-              <OrangeButton type="submit" loading={isPending} disabled={isPending}>
+              <OrangeButton
+                type="submit"
+                loading={isPending}
+                disabled={isPending}
+              >
                 <span style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   Create account <ArrowRight size={14} strokeWidth={2} />
                 </span>
@@ -123,24 +137,36 @@ function Register() {
             </div>
 
             <div style={fadeUp(450)} className="social-row">
-              <button type="button" className="social-btn">
+              <button
+                type="button"
+                className="social-btn"
+                onClick={() => handleGoogleLogin()}
+                disabled={isGooglePending || isPending}
+              >
                 <FcGoogle size={22} />
               </button>
               <button type="button" className="social-btn">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="#1877F2">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
               </button>
               <button type="button" className="social-btn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
               </button>
             </div>
 
             <p style={fadeUp(500)} className="auth-foot">
               Already have an account?{" "}
-              <Link to="/login" className="link strong">Sign in</Link>
+              <Link to="/login" className="link strong">
+                Sign in
+              </Link>
             </p>
           </form>
         </div>
@@ -161,14 +187,25 @@ function Register() {
           <div className="t-avatar">RA</div>
           <div>
             <div className="t-stars">
-              {[1,2,3,4,5].map((i) => (
-                <svg key={i} width="13" height="13" viewBox="0 0 24 24" fill="#F97316">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <svg
+                  key={i}
+                  width="13"
+                  height="13"
+                  viewBox="0 0 24 24"
+                  fill="#F97316"
+                >
                   <polygon points="12 2 15 9 22 9 17 14 19 22 12 17 5 22 7 14 2 9 9 9 12 2" />
                 </svg>
               ))}
             </div>
-            <p className="t-quote">"Dapet kerjaan di Tokopedia lewat Lokerin, 11 hari dari apply ke offer. Tanpa drama."</p>
-            <div className="t-attrib">Rina A. · Product Designer · hired May 2025</div>
+            <p className="t-quote">
+              "Dapet kerjaan di Tokopedia lewat Lokerin, 11 hari dari apply ke
+              offer. Tanpa drama."
+            </p>
+            <div className="t-attrib">
+              Rina A. · Product Designer · hired May 2025
+            </div>
           </div>
         </div>
       </div>
