@@ -8,6 +8,7 @@ interface UsePublicJobsParams {
   limit?: number;
   search?: string;
   city?: string;
+  category?: string;
   categoryId?: string;
   companyId?: string;
   excludeJobId?: string;
@@ -23,6 +24,7 @@ export function usePublicJobs(params: UsePublicJobsParams = {}) {
   if (params.limit) query.set("limit", String(params.limit));
   if (params.search) query.set("search", params.search);
   if (params.city) query.set("city", params.city);
+  if (params.category) query.set("category", params.category);
   if (params.categoryId) query.set("categoryId", params.categoryId);
   if (params.companyId) query.set("companyId", params.companyId);
   if (params.excludeJobId) query.set("excludeJobId", params.excludeJobId);
