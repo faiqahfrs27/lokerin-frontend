@@ -32,7 +32,6 @@ export const NAV_ITEMS = [
   { to: "/dashboard/subscribe", label: "Subscription", icon: CreditCard },
   { to: "/dashboard/assessments", label: "Assessments", icon: BadgeCheck },
   { to: "/dashboard/my-results", label: "My Results", icon: Trophy },
-  { to: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 
 export function SmartSubscriptionLink({ isActive }: { isActive: boolean }) {
