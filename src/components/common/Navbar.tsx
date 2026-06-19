@@ -1,3 +1,5 @@
+import { Menu, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import ThemeToggle from "../register/ThemeToggle";
 import { useAuth } from "../../stores/useAuth";
@@ -17,6 +19,11 @@ const NAV_LINKS = [
 function Navbar() {
   const location = useLocation();
   const user = useAuth((s) => s.user);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location.pathname]);
 
   const links = user
     ? [...NAV_LINKS, { to: "/dashboard/applications", label: "My applications" }]
@@ -63,7 +70,51 @@ function Navbar() {
               <Link to="/register" className="btn btn-primary" style={{ textDecoration: "none" }}>Sign up</Link>
             </>
           )}
+          <button
+            className="nav-hamburger"
+            onClick={() => setIsOpen(true)}
+            aria-label="Open menu"
+          >
+            <Menu size={22} />
+          </button>
         </div>
+      </div>
+
+      <div
+        className={`nav-mobile-backdrop${isOpen ? " is-open" : ""}`}
+        onClick={() => setIsOpen(false)}
+      />
+
+      <div className={`nav-mobile-drawer${isOpen ? " is-open" : ""}`}>
+        <button
+          className="nav-mobile-close"
+          onClick={() => setIsOpen(false)}
+          aria-label="Close menu"
+        >
+          <X size={22} />
+        </button>
+
+        {links.map((link) => (
+          <Link
+            key={link.to}
+            to={link.to}
+            className={`nav-link${location.pathname === link.to ? " active" : ""}`}
+            style={{ textDecoration: "none" }}
+          >
+            {link.label}
+          </Link>
+        ))}
+
+        {!user && (
+          <div className="nav-mobile-actions">
+            <Link to="/login" className="btn btn-secondary" style={{ textDecoration: "none", textAlign: "center" }}>
+              Log in
+            </Link>
+            <Link to="/register" className="btn btn-primary" style={{ textDecoration: "none", textAlign: "center" }}>
+              Sign up
+            </Link>
+          </div>
+        )}
       </div>
     </header>
   );

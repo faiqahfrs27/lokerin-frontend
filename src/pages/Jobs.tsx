@@ -1,16 +1,10 @@
-import {
-  ArrowLeft,
-  ArrowRight,
-  Calendar,
-  Loader,
-  MapPin,
-  Search,
-} from "lucide-react";
+import { Calendar, Loader, MapPin, Search } from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import Footer from "../components/common/Footer";
 import Navbar from "../components/common/Navbar";
+import Pagination from "../components/common/Pagination";
 import LocationBanner from "../components/home/LocationBanner";
 import JobCard from "../components/jobs/JobCard";
 import { usePublicJobs } from "../hooks/jobs/usePublicJobs";
@@ -220,7 +214,12 @@ function Jobs() {
             <button
               className={`btn ${nearMe === "true" ? "btn-primary" : "btn-secondary"}`}
               onClick={handleNearMe}
-              style={{ flexShrink: 0, display: "flex", alignItems: "center", gap: 6 }}
+              style={{
+                flexShrink: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+              }}
             >
               <MapPin size={14} />
               {nearMe === "true" ? `Near ${city}` : "Near me"}
@@ -373,35 +372,11 @@ function Jobs() {
         )}
 
         {/* Pagination */}
-        {meta && meta.totalPages > 1 && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: 8,
-              marginTop: 32,
-            }}
-          >
-            <button
-              className="btn btn-secondary btn-icon"
-              disabled={page === 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              <ArrowLeft size={14} />
-            </button>
-            <span style={{ fontSize: "var(--fs-sm)", color: "var(--fg-2)" }}>
-              Page {page} of {meta.totalPages}
-            </span>
-            <button
-              className="btn btn-secondary btn-icon"
-              disabled={page === meta.totalPages}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              <ArrowRight size={14} />
-            </button>
-          </div>
-        )}
+        <Pagination
+          page={page}
+          totalPages={meta?.totalPages ?? 1}
+          onPageChange={setPage}
+        />
       </main>
       <Footer />
     </>

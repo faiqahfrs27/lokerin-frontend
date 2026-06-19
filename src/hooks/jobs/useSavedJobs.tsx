@@ -3,6 +3,7 @@ import type { AxiosError } from "axios";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../../lib/axios";
 import type { Job } from "../../types/job.types";
+import { useAuth } from "../../stores/useAuth";
 
 export interface SavedJob {
   id: string;
@@ -12,12 +13,15 @@ export interface SavedJob {
 }
 
 export function useSavedJobs() {
+  const user = useAuth((s) => s.user);
+  
   return useQuery<SavedJob[]>({
     queryKey: ["saved-jobs"],
     queryFn: async () => {
       const res = await axiosInstance.get("/saved-jobs");
       return res.data;
     },
+    enabled: !!user,
   });
 }
 
