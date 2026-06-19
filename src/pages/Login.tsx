@@ -51,7 +51,7 @@ function Login() {
             )}
 
             <div style={fadeUp(0)} className="auth-head">
-              <h1 className="t-h2 auth-h">Welcome back</h1>
+              <h1 className="t-h2 auth-h">Welcome Back</h1>
               <p className="auth-sub">Sign in to your Lokerin account.</p>
             </div>
 
