@@ -1,6 +1,5 @@
 import { Calendar, Loader, MapPin, Search } from "lucide-react";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import Footer from "../components/common/Footer";
 import Navbar from "../components/common/Navbar";
@@ -100,13 +99,6 @@ function Jobs() {
   const { mutate: unsaveJob } = useUnsaveJob();
   const savedJobIds = savedJobs?.map((s) => s.jobId) ?? [];
 
-  // Apply geolocation sebagai default city
-  useEffect(() => {
-    if (city && !cityInput) {
-      setCityInput(city);
-    }
-  }, [city]);
-
   // Handle toggle near me
   const handleNearMe = () => {
     if (nearMe === "true") {
@@ -144,6 +136,7 @@ function Jobs() {
     limit: 12,
     search: debouncedQ || undefined,
     city: debouncedCity || undefined,
+    category: cat !== "All" ? cat : undefined,
     sortBy,
     sortOrder,
     dateFrom,

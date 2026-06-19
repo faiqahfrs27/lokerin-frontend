@@ -40,6 +40,7 @@ function Home() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [locationInput, setLocationInput] = useState("");
+  const [nearMe, setNearMe] = useState(false);
   const { city, isLoading, isDenied, requestLocation } = useGeolocation();
   const location = useLocation();
   const isUnverified = location.state?.unverified;
@@ -50,19 +51,30 @@ function Home() {
   const { mutate: unsaveJob } = useUnsaveJob();
   const savedJobIds = savedJobs?.map((s) => s.jobId) ?? [];
 
+  const activeCity = nearMe ? city : null;
+
   const { data } = usePublicJobs({
     limit: 5,
     sortBy: "createdAt",
     sortOrder: "desc",
-    ...(city && { city }),
+    ...(activeCity && { city: activeCity }),
   });
   const latestJobs = data?.data ?? [];
+
+  const handleNearMe = () => {
+    if (nearMe) {
+      setNearMe(false);
+    } else {
+      requestLocation();
+      setNearMe(true);
+    }
+  };
 
   const handleSearch = () => {
     const params = new URLSearchParams();
     if (search) params.set("q", search);
     if (locationInput) params.set("city", locationInput);
-    else if (city) params.set("city", city);
+    else if (activeCity) params.set("city", activeCity);
     navigate(`/jobs?${params.toString()}`);
   };
 
@@ -118,7 +130,7 @@ function Home() {
                 <div className="input-wrap" style={{ flex: 1 }}>
                   <MapPin size={18} />
                   <input
-                    placeholder={city ?? "Jakarta, Bandung…"}
+                    placeholder={activeCity ?? "Jakarta, Bandung…"}
                     value={locationInput}
                     onChange={(e) => setLocationInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -131,12 +143,37 @@ function Home() {
                   Search <ArrowRight size={16} />
                 </button>
               </div>
-              <LocationBanner
-                city={city}
-                isLoading={isLoading}
-                isDenied={isDenied}
-                requestLocation={requestLocation}
-              />
+
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 10,
+                  alignItems: "center",
+                }}
+              >
+                {!isDenied && (
+                  <button
+                    className={`btn ${nearMe ? "btn-primary" : "btn-secondary"}`}
+                    onClick={handleNearMe}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                  >
+                    <MapPin size={14} />
+                    {nearMe && city ? `Near ${city}` : "Near me"}
+                  </button>
+                )}
+                <LocationBanner
+                  city={activeCity}
+                  isLoading={isLoading}
+                  isDenied={isDenied}
+                  requestLocation={requestLocation}
+                />
+              </div>
+
               <div className="hero-stats">
                 <div>
                   <strong>2,148</strong> open roles
@@ -157,14 +194,14 @@ function Home() {
           <div className="section-head">
             <div>
               <span className="kicker">
-                {city ? `Near ${city}` : "Fresh today"}
+                {activeCity ? `Near ${activeCity}` : "Fresh today"}
               </span>
               <h2 className="t-h3" style={{ margin: "8px 0 0" }}>
-                {city ? `Jobs in ${city}` : "Latest jobs"}
+                {activeCity ? `Jobs in ${activeCity}` : "Latest jobs"}
               </h2>
             </div>
             <Link
-              to={city ? `/jobs?city=${city}` : "/jobs"}
+              to={activeCity ? `/jobs?city=${activeCity}` : "/jobs"}
               className="btn btn-ghost"
               style={{ textDecoration: "none" }}
             >
