@@ -7,7 +7,6 @@ import { PaymentStep } from "../../components/subscription/SubscribePaymentStep"
 import type { SubscriptionPlan } from "../../schemas/subscriptionPlanSchema";
 
 function Subscribe() {
-  // Semua hook di atas — sesuai aturan React (hooks gak boleh conditional)
   const { data: plans, isLoading } = useSubscriptionPlans();
   const { mutate: subscribe, isPending } = useSubscribe();
   const { data: sub, isLoading: subLoading } = useMySubscription();
@@ -17,7 +16,6 @@ function Subscribe() {
   const [proof, setProof] = useState<File | null>(null);
   const [step, setStep] = useState<"plan" | "payment">("plan");
 
-  // Redirect kalau udah active
   if (!subLoading && sub?.status === "active") {
     navigate("/dashboard/subscription", { replace: true });
     return null;

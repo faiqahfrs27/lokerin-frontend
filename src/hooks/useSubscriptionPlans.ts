@@ -10,7 +10,6 @@ import type {
 const PLANS_KEY = ["subscription-plans"];
 
 
-// HELPERS
 function getErrorMessage(error: unknown, fallback: string): string {
   if (axios.isAxiosError(error)) {
     const message = (error as AxiosError<{ message?: string }>).response?.data
@@ -21,7 +20,6 @@ function getErrorMessage(error: unknown, fallback: string): string {
 }
 
 
-// QUERIES
 export function useSubscriptionPlans() {
   return useQuery({
     queryKey: PLANS_KEY,
@@ -35,7 +33,6 @@ export function useSubscriptionPlans() {
 }
 
 
-// MUTATIONS
 export function useCreatePlan() {
   const qc = useQueryClient();
   return useMutation({

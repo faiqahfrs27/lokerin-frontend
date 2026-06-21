@@ -72,12 +72,10 @@ function PageBody({
   if (isLoading) return <Spinner text="Loading assessments..." />;
   if (error) return <div className="dev-state">Failed to load assessments.</div>;
 
-  // Guard: belum subscribe
   if (!sub || sub.status !== "active") {
     return <SubscribeGate />;
   }
 
-  // Guard: Standard udah limit
   if (usage && !usage.canTake && usage.reason === "limit_reached") {
     return <LimitReachedGate usage={usage} />;
   }

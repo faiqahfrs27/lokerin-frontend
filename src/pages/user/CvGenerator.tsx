@@ -35,14 +35,12 @@ function CvGenerator() {
     },
   });
 
-  // Guard: redirect to pricing if not subscriber
   useEffect(() => {
     if (!subLoading && sub?.status !== "active") {
       navigate("/pricing", { replace: true });
     }
   }, [sub, subLoading, navigate]);
 
-  // Populate form with saved CV data
   useEffect(() => {
     if (cvData) reset(cvData);
   }, [cvData, reset]);

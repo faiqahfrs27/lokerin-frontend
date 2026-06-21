@@ -16,7 +16,6 @@ function getErrorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
-// DEV: list all payments for approval
 export function usePayments(page = 1, limit = 10) {
   return useQuery({
     queryKey: [...PAYMENTS_KEY, page, limit],
@@ -35,7 +34,6 @@ export function usePayments(page = 1, limit = 10) {
   });
 }
 
-// DEV: approve a payment
 export function useApprovePayment() {
   const qc = useQueryClient();
   return useMutation({
@@ -51,7 +49,6 @@ export function useApprovePayment() {
   });
 }
 
-// DEV: reject a payment
 export function useRejectPayment() {
   const qc = useQueryClient();
   return useMutation({
@@ -67,7 +64,6 @@ export function useRejectPayment() {
   });
 }
 
-// USER: get current subscription status
 export function useMySubscription() {
   return useQuery({
     queryKey: ["my-subscription"],
@@ -80,7 +76,6 @@ export function useMySubscription() {
   });
 }
 
-// USER: subscribe to a plan with payment proof upload
 export function useSubscribe() {
   const qc = useQueryClient();
   return useMutation({
@@ -100,7 +95,6 @@ export function useSubscribe() {
   });
 }
 
-// USER: create Xendit invoice for payment
 export function useCreateXenditInvoice() {
   return useMutation({
     mutationFn: async (planId: string) => {
@@ -115,7 +109,6 @@ export function useCreateXenditInvoice() {
   });
 }
 
-// DEV: get all subscribers with payment history
 export function useSubscribers(page = 1, limit = 10) {
   return useQuery({
     queryKey: ["subscribers", page, limit],
@@ -134,7 +127,6 @@ export function useSubscribers(page = 1, limit = 10) {
   });
 }
 
-// DEV: get subscriber stats
 export function useSubscriberStats() {
   return useQuery({
     queryKey: ["subscriber-stats"],
