@@ -218,8 +218,10 @@ function NewJobModal({ onClose }: NewJobModalProps) {
                 </div>
               </label>
 
-              <label className="span-2">
-                Banner image (optional)
+              <div className="span-2">
+                <span style={{ display: "block", marginBottom: 4, fontSize: "var(--fs-sm)", color: "var(--fg)" }}>
+                  Banner image (optional)
+                </span>
                 <input
                   ref={fileRef}
                   type="file"
@@ -304,8 +306,8 @@ function NewJobModal({ onClose }: NewJobModalProps) {
                       </p>
                     </>
                   )}
-                </div>
-              </label>
+               </div>
+              </div>
 
               <label className="span-2">
                 Description

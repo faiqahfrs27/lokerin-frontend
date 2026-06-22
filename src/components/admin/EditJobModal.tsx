@@ -183,8 +183,17 @@ function EditJobModal({ job, onClose }: EditJobModalProps) {
                 </div>
               </label>
 
-              <label className="span-2">
-                Banner image (optional)
+              <div className="span-2">
+                <span
+                  style={{
+                    display: "block",
+                    marginBottom: 4,
+                    fontSize: "var(--fs-sm)",
+                    color: "var(--fg)",
+                  }}
+                >
+                  Banner image (optional)
+                </span>
                 <input
                   ref={fileRef}
                   type="file"
@@ -270,7 +279,7 @@ function EditJobModal({ job, onClose }: EditJobModalProps) {
                     </>
                   )}
                 </div>
-              </label>
+              </div>
 
               <label className="span-2">
                 Description

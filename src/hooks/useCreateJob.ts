@@ -4,6 +4,7 @@ import type { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
+import { uploadToCloudinary } from "../lib/cloudinary";
 import {
   createJobSchema,
   type CreateJobValues,
@@ -32,35 +33,41 @@ export function useCreateJob(onSuccess?: () => void) {
       bannerFile?: File | null;
     }) => {
       const { data, bannerFile } = payload;
+      const toastId = toast.loading(
+        bannerFile ? "Uploading banner..." : "Creating job...",
+      );
 
-      // 1. Create job (JSON)
-      const res = await axiosInstance.post("/jobs", {
-        title: data.title,
-        description: data.description,
-        categoryId: data.categoryId,
-        city: data.city,
-        deadline: new Date(data.deadline).toISOString(),
-        salary: data.salary ? Number(data.salary) : undefined,
-        tags: data.tags
-          ? data.tags.split(",").map((t) => t.trim()).filter(Boolean)
-          : undefined,
-        hasTest: data.hasTest,
-      });
-      const createdJob = res.data;
+      try {
+        let bannerUrl: string | undefined;
+        if (bannerFile) {
+          bannerUrl = await uploadToCloudinary(bannerFile);
+          toast.loading("Creating job...", { id: toastId });
+        }
 
-      // 2. If banner file, upload it
-      if (bannerFile && createdJob?.id) {
-        const formData = new FormData();
-        formData.append("banner", bannerFile);
-        const bannerRes = await axiosInstance.patch(
-          `/jobs/${createdJob.id}/banner`,
-          formData,
-          { headers: { "Content-Type": "multipart/form-data" } },
-        );
-        return bannerRes.data;
+        const res = await axiosInstance.post("/jobs", {
+          title: data.title,
+          description: data.description,
+          categoryId: data.categoryId,
+          city: data.city,
+          deadline: new Date(data.deadline).toISOString(),
+          salary: data.salary ? Number(data.salary) : undefined,
+          tags: data.tags
+            ? data.tags
+                .split(",")
+                .map((t) => t.trim())
+                .filter(Boolean)
+            : undefined,
+          hasTest: data.hasTest,
+          bannerUrl,
+        });
+
+        toast.dismiss(toastId);
+        return res.data;
+      } catch (error) {
+        toast.dismiss(toastId);
+        console.error("Upload/Create job failed:", error);
+        throw error;
       }
-
-      return createdJob;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
@@ -69,7 +76,7 @@ export function useCreateJob(onSuccess?: () => void) {
       onSuccess?.();
     },
     onError: (error: AxiosError<{ message: string }>) => {
-      toast.error(error.response?.data.message || "Gagal membuat lowongan");
+      toast.error(error.response?.data?.message || "Gagal membuat lowongan");
     },
   });
 

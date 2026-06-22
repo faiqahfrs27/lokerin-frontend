@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import { CheckCircle2, Clock, Loader2, XCircle } from "lucide-react";
 import Spinner from "../../components/common/Spinner";
 import { useTestForJob, type UserTest } from "../../hooks/useTestForJob";
+import { useStartAttempt } from "../../hooks/useStartAttempt";
 import {
   useSubmitAttempt,
   type AttemptResult,
@@ -10,21 +11,54 @@ import {
 
 function TakeTest() {
   const { id: jobId } = useParams<{ id: string }>();
-  const { data: test, isLoading, isError } = useTestForJob(jobId);
+  const { data: test, isLoading: isLoadingTest, isError: isErrorTest } =
+    useTestForJob(jobId);
+  const {
+    data: startData,
+    isLoading: isStarting,
+    isError: isStartError,
+    error: startError,
+  } = useStartAttempt(jobId);
 
-  if (isLoading) return <Spinner text="Loading test..." fullPage />;
-  if (isError || !test) return <StateMessage text="Test not found." />;
+  if (isLoadingTest || isStarting) {
+    return <Spinner text="Loading test..." fullPage />;
+  }
+  if (isErrorTest || !test) {
+    return <StateMessage text="Test not found." />;
+  }
+  if (isStartError) {
+    const msg =
+      (startError as { response?: { data?: { message?: string } } })?.response
+        ?.data?.message ?? "Failed to start test.";
+    return <StateMessage text={msg} />;
+  }
+  if (!startData) return <Spinner text="Loading test..." fullPage />;
 
-  return <ActiveTest test={test} />;
+  return <ActiveTest test={test} startData={startData} />;
 }
 
-function ActiveTest({ test }: { test: UserTest }) {
+function ActiveTest({
+  test,
+  startData,
+}: {
+  test: UserTest;
+  startData: { attemptId: string; attemptedAt: string; durationMinutes: number };
+}) {
   const navigate = useNavigate();
   const [answers, setAnswers] = useState<Record<string, number>>({});
   const [result, setResult] = useState<AttemptResult | null>(null);
-  const [timeLeft, setTimeLeft] = useState(test.durationMinutes * 60);
   const submittedRef = useRef(false);
   const submitMutation = useSubmitAttempt(test.id);
+
+  const startedAt = new Date(startData.attemptedAt).getTime();
+  const totalSeconds = startData.durationMinutes * 60;
+
+  const calcTimeLeft = () => {
+    const elapsed = (Date.now() - startedAt) / 1000;
+    return Math.max(0, Math.floor(totalSeconds - elapsed));
+  };
+
+  const [timeLeft, setTimeLeft] = useState(calcTimeLeft);
 
   const handleSubmit = async () => {
     if (submittedRef.current) return;
@@ -39,20 +73,25 @@ function ActiveTest({ test }: { test: UserTest }) {
     setResult(data);
   };
 
-  // Countdown timer
+  // Auto-submit kalo time udah habis saat mount
+  useEffect(() => {
+    if (calcTimeLeft() <= 0 && !submittedRef.current) {
+      handleSubmit();
+    }
+  }, []);
+
+  // Countdown tick
   useEffect(() => {
     if (result) return;
     const intervalId = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(intervalId);
-          if (!submittedRef.current) {
-            handleSubmit();
-          }
-          return 0;
+      const remaining = calcTimeLeft();
+      setTimeLeft(remaining);
+      if (remaining <= 0) {
+        clearInterval(intervalId);
+        if (!submittedRef.current) {
+          handleSubmit();
         }
-        return prev - 1;
-      });
+      }
     }, 1000);
     return () => clearInterval(intervalId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,7 +107,6 @@ function ActiveTest({ test }: { test: UserTest }) {
 
   return (
     <div style={{ maxWidth: 800, margin: "40px auto", padding: "0 16px" }}>
-      {/* Sticky countdown timer */}
       <div
         style={{
           position: "sticky",
@@ -141,7 +179,9 @@ function ActiveTest({ test }: { test: UserTest }) {
                     type="radio"
                     name={q.id}
                     checked={answers[q.id] === optIdx}
-                    onChange={() => setAnswers({ ...answers, [q.id]: optIdx })}
+                    onChange={() =>
+                      setAnswers({ ...answers, [q.id]: optIdx })
+                    }
                   />
                   {opt}
                 </label>
@@ -162,7 +202,7 @@ function ActiveTest({ test }: { test: UserTest }) {
         Submit test
       </button>
       <p style={{ color: "var(--ink-soft)", marginTop: 8, fontSize: 13 }}>
-        Unanswered questions count as 0 points. Test auto-submits when time runs out.
+        Timer tracked di server — refresh page tetap lanjut. Unanswered = 0 points.
       </p>
     </div>
   );
@@ -186,10 +226,7 @@ function ResultView({
       }}
     >
       {result.passed ? (
-        <CheckCircle2
-          size={64}
-          style={{ color: "#16a34a", margin: "0 auto" }}
-        />
+        <CheckCircle2 size={64} style={{ color: "#16a34a", margin: "0 auto" }} />
       ) : (
         <XCircle size={64} style={{ color: "#dc2626", margin: "0 auto" }} />
       )}
