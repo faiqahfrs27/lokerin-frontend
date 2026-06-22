@@ -33,26 +33,41 @@ export function useCreateJob(onSuccess?: () => void) {
       bannerFile?: File | null;
     }) => {
       const { data, bannerFile } = payload;
+      const toastId = toast.loading(
+        bannerFile ? "Uploading banner..." : "Creating job...",
+      );
 
-      let bannerUrl: string | undefined;
-      if (bannerFile) {
-        bannerUrl = await uploadToCloudinary(bannerFile);
+      try {
+        let bannerUrl: string | undefined;
+        if (bannerFile) {
+          bannerUrl = await uploadToCloudinary(bannerFile);
+          toast.loading("Creating job...", { id: toastId });
+        }
+
+        const res = await axiosInstance.post("/jobs", {
+          title: data.title,
+          description: data.description,
+          categoryId: data.categoryId,
+          city: data.city,
+          deadline: new Date(data.deadline).toISOString(),
+          salary: data.salary ? Number(data.salary) : undefined,
+          tags: data.tags
+            ? data.tags
+                .split(",")
+                .map((t) => t.trim())
+                .filter(Boolean)
+            : undefined,
+          hasTest: data.hasTest,
+          bannerUrl,
+        });
+
+        toast.dismiss(toastId);
+        return res.data;
+      } catch (error) {
+        toast.dismiss(toastId);
+        console.error("Upload/Create job failed:", error);
+        throw error;
       }
-
-      const res = await axiosInstance.post("/jobs", {
-        title: data.title,
-        description: data.description,
-        categoryId: data.categoryId,
-        city: data.city,
-        deadline: new Date(data.deadline).toISOString(),
-        salary: data.salary ? Number(data.salary) : undefined,
-        tags: data.tags
-          ? data.tags.split(",").map((t) => t.trim()).filter(Boolean)
-          : undefined,
-        hasTest: data.hasTest,
-        bannerUrl,
-      });
-      return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["jobs"] });
