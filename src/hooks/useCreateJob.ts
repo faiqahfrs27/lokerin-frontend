@@ -1,31 +1,14 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
 import type { AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { axiosInstance } from "../lib/axios";
+import { uploadToCloudinary } from "../lib/cloudinary";
 import {
   createJobSchema,
   type CreateJobValues,
 } from "../schemas/createJobSchema";
-
-async function uploadToCloudinary(file: File): Promise<string> {
-  const sigRes = await axiosInstance.post("/cloudinary/sign");
-  const { signature, timestamp, apiKey, cloudName, folder } = sigRes.data;
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("api_key", apiKey);
-  formData.append("timestamp", String(timestamp));
-  formData.append("signature", signature);
-  formData.append("folder", folder);
-
-  const uploadRes = await axios.post(
-    `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-    formData,
-  );
-  return uploadRes.data.secure_url;
-}
 
 export function useCreateJob(onSuccess?: () => void) {
   const queryClient = useQueryClient();
@@ -51,13 +34,11 @@ export function useCreateJob(onSuccess?: () => void) {
     }) => {
       const { data, bannerFile } = payload;
 
-      // Upload banner directly to Cloudinary (kalo ada)
       let bannerUrl: string | undefined;
       if (bannerFile) {
         bannerUrl = await uploadToCloudinary(bannerFile);
       }
 
-      // Create job dengan bannerUrl include
       const res = await axiosInstance.post("/jobs", {
         title: data.title,
         description: data.description,
