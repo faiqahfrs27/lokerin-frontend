@@ -12,8 +12,8 @@ export function useAssessments() {
   });
 }
 
-// Check assessment usage for current subscription cycle
 export interface UsageData {
+  unlockedAssessmentIds: string[];
   count: number;
   limit: number | null;
   canTake: boolean;

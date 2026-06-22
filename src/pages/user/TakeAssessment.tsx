@@ -33,7 +33,8 @@ function TakeAssessment() {
       navigate("/pricing", { replace: true });
       return;
     }
-    if (usage && !usage.canTake) {
+    const isUnlocked = usage?.unlockedAssessmentIds.includes(assessmentId ?? "");
+    if (usage && !isUnlocked && !usage.canTake) {
       navigate("/dashboard/assessments", { replace: true });
     }
   }, [allLoading, sub, usage, navigate]);

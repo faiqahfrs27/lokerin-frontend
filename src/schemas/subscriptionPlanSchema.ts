@@ -10,7 +10,6 @@ export const subscriptionPlanSchema = z.object({
   updatedAt: z.string(),
 });
 
-// Form schema 
 export const planFormSchema = z.object({
   name: z
     .string()
@@ -28,14 +27,12 @@ export const planFormSchema = z.object({
 export type SubscriptionPlan = z.infer<typeof subscriptionPlanSchema>;
 export type PlanFormValues = z.infer<typeof planFormSchema>;
 
-// Payload sent to API 
 export type PlanApiPayload = {
   name: string;
   price: number;
   features: string[];
 };
 
-// Helper
 export function toApiPayload(values: PlanFormValues): PlanApiPayload {
   return {
     name: values.name,

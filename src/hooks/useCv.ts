@@ -15,7 +15,6 @@ function getErrorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
-// Get CV data
 export function useGetCv() {
   return useQuery({
     queryKey: CV_KEY,
@@ -26,7 +25,6 @@ export function useGetCv() {
   });
 }
 
-// Save CV data
 export function useSaveCv() {
   const qc = useQueryClient();
   return useMutation({
@@ -42,14 +40,12 @@ export function useSaveCv() {
   });
 }
 
-// Download CV as PDF
 export function useDownloadCv() {
   return useMutation({
     mutationFn: async () => {
       const res = await axiosInstance.get("/cv/download", {
         responseType: "blob",
       });
-      // Trigger browser download
       const url = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement("a");
       link.href = url;
